@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": null,
-    "database": "kids_db",
+    "password": "Nhat@01072005",
+    "database": "homey_db",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

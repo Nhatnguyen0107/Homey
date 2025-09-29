@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/user/home";
 import Dashboard from "./pages/admin/dashboard/dashboard";
-import ProductList from "./pages/admin/products/product-list";
 import UserList from "./pages/admin/users/user-list";
 import Login from "./pages/login";
 import Admin from "./pages/admin/admin";
@@ -18,8 +17,6 @@ import Profile from "./pages/admin/setting/profile";
 import Categories from "./pages/admin/categories/categories";
 import Categoriesform from "./pages/admin/categories/categories-form";
 import CategoriesForm from "./pages/admin/categories/categories-form";
-import Tags from "./pages/admin/tags/tags";
-import TagsForm from "./pages/admin/tags/tagsForm";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -77,16 +74,8 @@ function App() {
             <Route path="category-form/:id" element={<CategoriesForm />} />
             <Route path="shipping" element={<Shipping />} />
             <Route path="profile" element={<Profile />} />
-<<<<<<< HEAD
           </Route >
         </Route >
-=======
-            <Route path="tag-list" element={<Tags />} />
-            <Route path="tag-form" element={<TagsForm />} />
-            <Route path="tag-form/:id" element={<TagsForm />} />
-          </Route>
-        </Route>
->>>>>>> main
 
         {/* Add more routes here as needed */}
         < Route element={< PublicRoute />}>
