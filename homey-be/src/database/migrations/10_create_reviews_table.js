@@ -1,23 +1,39 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable("order_items", {
+  await queryInterface.createTable("reviews", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
+      allowNull: false,
     },
-    orderId: {
+    room_id: {
       type: Sequelize.UUID,
       allowNull: false,
-      references: { model: "orders", key: "id" },
+      references: {
+        model: "rooms",
+        key: "id",
+      },
       onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
-    productId: {
+    user_id: {
       type: Sequelize.UUID,
       allowNull: false,
-      references: { model: "products", key: "id" },
+      references: {
+        model: "users",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
-    quantity: { type: Sequelize.INTEGER, allowNull: false },
-    price: { type: Sequelize.DECIMAL(10, 2), allowNull: false },
+    rating: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    comment: {
+      type: Sequelize.STRING(255),
+      allowNull: true,
+    },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,
@@ -32,5 +48,5 @@ export async function up(queryInterface, Sequelize) {
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable("order_items");
+  await queryInterface.dropTable("reviews");
 }

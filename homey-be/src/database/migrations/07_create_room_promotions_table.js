@@ -1,18 +1,33 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable("refresh_tokens", {
+  await queryInterface.createTable("room_promotions", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
+      allowNull: false,
     },
-    userId: {
+    room_id: {
       type: Sequelize.UUID,
       allowNull: false,
-      references: { model: "users", key: "id" },
+      references: {
+        model: "rooms",
+        key: "id",
+      },
       onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+      primaryKey: true, // composite PK
     },
-    token: { type: Sequelize.STRING(255), allowNull: false },
-    expiresAt: { type: Sequelize.DATE, allowNull: true },
+    promotion_id: {
+      type: Sequelize.UUID,
+      allowNull: false,
+      references: {
+        model: "promotions",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+      primaryKey: true, // composite PK
+    },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,
@@ -27,5 +42,5 @@ export async function up(queryInterface, Sequelize) {
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable("refresh_tokens");
+  await queryInterface.dropTable("room_promotions");
 }

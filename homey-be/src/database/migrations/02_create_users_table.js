@@ -6,9 +6,33 @@ export async function up(queryInterface, Sequelize) {
       primaryKey: true,
       allowNull: false,
     },
-    name: { type: Sequelize.STRING(100), allowNull: false },
-    email: { type: Sequelize.STRING(150), allowNull: false, unique: true },
-    passwordHash: { type: Sequelize.STRING(255), allowNull: false },
+    userName: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
+    },
+    password: {
+      type: Sequelize.STRING(255),
+      allowNull: false,
+    },
+    email: {
+      type: Sequelize.STRING(150),
+      allowNull: false,
+      unique: true,
+    },
+    phone: {
+      type: Sequelize.STRING(20),
+      allowNull: true,
+    },
+    role_id: {
+      type: Sequelize.UUID,
+      allowNull: false,
+      references: {
+        model: "roles",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,
