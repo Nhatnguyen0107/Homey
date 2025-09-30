@@ -27,10 +27,10 @@ const db = {
 };
 
 // Gọi associate cho tất cả models
-Object.values(db).forEach((model) => {
-  if (model?.associate) {
-    model.associate(db);
-  }
-});
+// Object.values(db).forEach((model) => {
+//   if (model?.associate) {
+//     model.associate(db);
+//   }
+// });
 
 export default db;

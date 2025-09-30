@@ -21,9 +21,9 @@ class UserRepository {
       return await (includeRefreshToken
         ? this.model.findByPk(id, { include: db.RefreshToken })
         : db.sequelize.query("SELECT * from users WHERE id = $id", {
-          bind: { id },
-          type: QueryTypes.SELECT,
-        }));
+            bind: { id },
+            type: QueryTypes.SELECT,
+          }));
     } catch (error) {
       throw new Error("Error fetching user: " + error.message);
     }
@@ -98,15 +98,15 @@ WHERE id=:id`,
     try {
       const user = withPassword
         ? await this.model.scope("withPassword").findOne({
-          where: {
-            email,
-          },
-        })
+            where: {
+              email,
+            },
+          })
         : await this.model.findOne({
-          where: {
-            email,
-          },
-        });
+            where: {
+              email,
+            },
+          });
       return user;
     } catch (error) {
       throw new Error("Error check user existed: " + error.message);

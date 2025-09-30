@@ -1,98 +1,38 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/user/home";
-import Dashboard from "./pages/admin/dashboard/dashboard";
-import UserList from "./pages/admin/users/user-list";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
-import Admin from "./pages/admin/admin";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { PublicRoute } from "./components/PublicRoute";
-import { useEffect } from "react";
-import { useAppDispatch } from "./hooks";
-import { getMe } from "./redux/authSlice";
-import { useAuth } from "./hooks/useAuth";
-import { useSocket } from "./hooks/useSocket";
-import NotFound from "./NotFound";
-import Shipping from "./pages/admin/shipping/shipping";
-import Profile from "./pages/admin/setting/profile";
-import Categories from "./pages/admin/categories/categories";
-import Categoriesform from "./pages/admin/categories/categories-form";
-import CategoriesForm from "./pages/admin/categories/categories-form";
+import Register from "./pages/Register";
+// import AdminHome from "./pages/AdminHome";
+import PrivateRoute from "./routes/PrivateRoute";
+import Home from "./pages/Home";
 
-function App() {
-  const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAuth();
-  const { socket } = useSocket();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(getMe());
-    }
-  }, [isAuthenticated, dispatch]);
-
-  useEffect(() => {
-    socket.connect();
-
-    function onConnect() {
-      console.log("connect");
-    }
-
-    function onDisconnect() {
-      console.log("disconnect");
-    }
-
-    function onBarEvent(value: string) {
-      console.log(value);
-    }
-
-    setTimeout(() => {
-      socket.emit("foo", "client sent foo");
-    }, 3000);
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("bar", onBarEvent);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("bar", onBarEvent);
-    };
-  }, []);
-
+export default function App() {
   return (
-    <>
+    <BrowserRouter>
       <Routes>
+        {/* Trang chủ công khai */}
         <Route path="/" element={<Home />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/admin" element={<Admin />}>
-            <Route index element={<Dashboard />} />
-            <Route path="product-list" element={<ProductList />} />
-            <Route path="user-list" element={<UserList />} />
-            <Route path="category-list" element={<Categories />} />
-            <Route path="category-form" element={<Categoriesform />} />
-            <Route path="category-form" element={<CategoriesForm />} />
-            <Route path="category-form/:id" element={<CategoriesForm />} />
-            <Route path="shipping" element={<Shipping />} />
-            <Route path="profile" element={<Profile />} />
-          </Route >
-        </Route >
 
-        {/* Add more routes here as needed */}
-        < Route element={< PublicRoute />}>
-          <Route path="/login" element={<Login />} />
-        </Route >
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* Catch-all route for 404 */}
-        < Route path="*" element={< NotFound />} />
-      </Routes >
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute role="user">
+              <Home />
+            </PrivateRoute>
+          }
+        />
 
-      {/* Toast container */}
-      < div
-        className="toast toast-bottom toast-center"
-        id="toast-container"
-      ></div >
-    </>
+        {/* <Route
+          path="/admin"
+          element={
+            <PrivateRoute role="admin">
+              <AdminHome />
+            </PrivateRoute>
+          }
+        /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
