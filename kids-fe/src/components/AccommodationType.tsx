@@ -1,10 +1,10 @@
 import React from "react";
 
 const accommodations = [
-    { id: 1, name: "Khách sạn", image: "../img/hotel.jpg" },
-    { id: 2, name: "Căn hộ", image: "../img/apartment.jpg" },
-    { id: 3, name: "Resort", image: "../img/resort.jpg" },
-    { id: 4, name: "Biệt thự", image: "../img/villa.jpg" },
+    { id: 1, name: "Khách sạn", image: "../assets/img/hotel.jpg" },
+    { id: 2, name: "Căn hộ", image: "../assets/img/apartment.jpg" },
+    { id: 3, name: "Resort", image: "../assets/img/resort.jpg" },
+    { id: 4, name: "Biệt thự", image: "../assets/img/villa.jpg" },
 ];
 
 const AccommodationTypes: React.FC = () => {

@@ -1,13 +1,11 @@
 import React from "react";
 
-
-
 const destinations = [
-    { id: 1, name: "TP. Hồ Chí Minh", image: "../img/hochiminh.jpg" },
-    { id: 2, name: "Đà Nẵng", image: "../img/danang.jpg" },
-    { id: 3, name: "Vũng Tàu", image: "../img/vungtau.jpg" },
-    { id: 4, name: "Hà Nội", image: "../img/hanoi.jpg" },
-    { id: 5, name: "Đà Lạt", image: "../img/dalat.jpg" },
+    { id: 1, name: "TP. Hồ Chí Minh", image: "../assets/img/hochiminh.jpg" },
+    { id: 2, name: "Đà Nẵng", image: "../assets/img/danang.jpg" },
+    { id: 3, name: "Vũng Tàu", image: "../assets/img/vungtau.jpg" },
+    { id: 4, name: "Hà Nội", image: "../assets/img/hanoi.jpg" },
+    { id: 5, name: "Đà Lạt", image: "../assets/img/dalat.jpg" },
 ];
 
 const Destinations: React.FC = () => {
