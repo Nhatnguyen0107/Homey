@@ -8,22 +8,22 @@ export const TagsService = {
   },
 
   async getById(id: string): Promise<TAny> {
-    const res = await axios.get<TAny>(`/categories/${id}`);
+    const res = await axios.get<TAny>(`/tags/${id}`);
     return res.data;
   },
 
   async create(data: Partial<TAny>): Promise<TAny> {
-    const res = await axios.post<TAny>("/categories", data);
+    const res = await axios.post<TAny>("/tags", data);
     return res.data;
   },
 
   async update(id: string, data: Partial<TAny>): Promise<TAny> {
-    const res = await axios.put<TAny>(`/categories/${id}`, data);
+    const res = await axios.put<TAny>(`/tags/${id}`, data);
     return res.data;
   },
 
   async delete(id: string): Promise<void> {
-    await axios.delete(`/categories/${id}`);
+    await axios.delete(`/tags/${id}`);
   },
 };
 

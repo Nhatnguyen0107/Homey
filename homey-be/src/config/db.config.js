@@ -1,5 +1,9 @@
 export default {
+<<<<<<< HEAD
   url: process.env.DATABASE_URL || "mysql://root:nguyenthien22112005@localhost:3306/homey",
+=======
+  url: process.env.DATABASE_URL || "mysql://root@localhost:3306/kids_db",
+>>>>>>> main
   dialect: process.env.DATABASE_DIALECT || "mysql",
   pool: {
     max: parseInt(process.env.DB_POOL_MAX, 10) || 5,

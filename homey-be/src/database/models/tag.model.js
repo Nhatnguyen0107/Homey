@@ -1,13 +1,13 @@
 import { Model, DataTypes } from "sequelize";
 
 export default (sequelize) => {
-  class Category extends Model {
+  class Tag extends Model {
     static associate(models) {
-      this.hasMany(models.Product, { foreignKey: "categoryId" });
+      this.belongsToMany(models.Product, { through: models.ProductTag });
     }
   }
 
-  Category.init(
+  Tag.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -16,8 +16,8 @@ export default (sequelize) => {
       },
       name: DataTypes.STRING,
     },
-    { sequelize, modelName: "Category", tableName: "categories" }
+    { sequelize, modelName: "Tag", tableName: "tags" }
   );
 
-  return Category;
+  return Tag;
 };
