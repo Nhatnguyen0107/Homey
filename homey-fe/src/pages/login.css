@@ -1,0 +1,188 @@
+/* Đặt lại mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+/* Toàn bộ trang */
+.login {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #6c63ff, #48c6ef);
+    padding: 20px;
+}
+
+/* Khung form */
+.login form {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animation vào */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tiêu đề */
+.title {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+#formTitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.4rem;
+}
+
+#formP {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Input */
+.input {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.input label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    display: inline-block;
+    color: #333;
+}
+
+.input input[type="text"],
+.input input[type="password"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.25s;
+}
+
+.input input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 6px rgba(108, 99, 255, 0.3);
+}
+
+/* Error */
+.error {
+    font-size: 0.8rem;
+    color: #e63946;
+    margin-top: 0.2rem;
+}
+
+/* Remember me */
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Button Sign In */
+#signIn {
+    width: 100%;
+    background: #6c63ff;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    padding: 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+#signIn:hover {
+    background: #5548d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Phần cuối */
+.endLogin {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+#note {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Icon */
+#icon {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#icon .social {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: 0.25s;
+}
+
+#icon .facebook:hover {
+    background: #3b5998;
+    color: white;
+    border-color: #3b5998;
+}
+
+#icon .google:hover {
+    background: #ea4335;
+    color: white;
+    border-color: #ea4335;
+}
+
+/* Sign up link */
+.signUp p {
+    display: inline;
+    margin-right: 0.3rem;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.signUp a {
+    color: #6c63ff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.signUp a:hover {
+    text-decoration: underline;
+}
