@@ -3,7 +3,8 @@ import Home from "./pages/user/home";
 import Dashboard from "./pages/admin/dashboard/dashboard";
 import ProductList from "./pages/admin/products/product-list";
 import UserList from "./pages/admin/users/user-list";
-import Login from "./pages/login";
+import Login from "./pages/login/login";
+import Register from "./pages/register/register";
 import Admin from "./pages/admin/admin";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicRoute } from "./components/PublicRoute";
@@ -78,12 +79,14 @@ function App() {
             <Route path="tag-list" element={<Tags />} />
             <Route path="tag-form" element={<TagsForm />} />
             <Route path="tag-form/:id" element={<TagsForm />} />
+
           </Route>
         </Route>
 
         {/* Add more routes here as needed */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
 
         {/* Catch-all route for 404 */}
