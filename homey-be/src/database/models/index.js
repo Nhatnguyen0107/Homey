@@ -1,17 +1,18 @@
 import AppConfig from "../../config/index.js";
 import Sequelize from "sequelize";
 
-import userModel from "./user.model.js";
-import profileModel from "./profile.model.js";
-import categoryModel from "./category.model.js";
-import productModel from "./product.model.js";
-import orderModel from "./order.model.js";
-import orderItemModel from "./orderItem.model.js";
-import roleModel from "./role.model.js";
-import refreshTokenModel from "./refreshToken.model.js";
-import tagModel from "./tag.model.js";
-import productTagModel from "./productTag.model.js";
-import userRoleModel from "./userRole.model.js";
+import userModel from "./users.model.js";
+// import profileModel from "./profile.model.js";
+import categoryModel from "./categories.model.js";
+import roleModel from "./roles.model.js";
+import bookingModel from "./bookings.model.js";
+import cityModel from "./cities.model.js";
+import paymentModel from "./payments.model.js";
+import reviewModel from "./reviews.model.js";
+import room_promotionsModel from "./room_promotions.model.js";
+import roomModel from "./rooms.model.js";
+import promotionModel from "./promotions.model.js";
+
 
 const sequelize = new Sequelize(AppConfig.database.url, {
   dialect: AppConfig.database.dialect, // ✅ Rất quan trọng!
@@ -21,16 +22,15 @@ const sequelize = new Sequelize(AppConfig.database.url, {
 const db = {
   sequelize,
   User: userModel(sequelize),
-  Profile: profileModel(sequelize),
   Category: categoryModel(sequelize),
-  Product: productModel(sequelize),
-  Order: orderModel(sequelize),
-  OrderItem: orderItemModel(sequelize),
   Role: roleModel(sequelize),
-  RefreshToken: refreshTokenModel(sequelize),
-  Tag: tagModel(sequelize),
-  ProductTag: productTagModel(sequelize),
-  UserRole: userRoleModel(sequelize),
+  Payment: paymentModel(sequelize),
+  Room: roomModel(sequelize),
+  Promotion: promotionModel(sequelize),
+  Review: reviewModel(sequelize),
+  RoomPromotion: room_promotionsModel(sequelize),
+  Booking: bookingModel(sequelize),
+  City: cityModel(sequelize),
 };
 
 // Gọi associate cho tất cả models
