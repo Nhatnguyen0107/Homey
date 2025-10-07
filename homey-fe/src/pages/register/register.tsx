@@ -1,0 +1,101 @@
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import "./register.css";
+
+// định nghĩa kiểu dữ liệu
+type RegisterForm = {
+    full_name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
+
+// Yup schema validate
+const schema = yup.object({
+    full_name: yup.string().required("Full name is required"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup
+        .string()
+        .required("Password is required")
+        .min(6, "Password must be at least 6 characters"),
+    confirmPassword: yup
+        .string()
+        .oneOf([yup.ref("password")], "Passwords do not match")
+        .required("Confirm password is required"),
+});
+
+export default function Register() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterForm>({
+        resolver: yupResolver(schema),
+    });
+
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const onSubmit = async (data: RegisterForm) => {
+        try {
+            await axios.post("http://localhost:3000/api/v1/auth/signup", {
+                userName: data.full_name,
+                email: data.email,
+                password: data.password,
+            });
+
+            alert("Register success! Please login.");
+            navigate("/login");
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Registration failed");
+        }
+    };
+
+    return (
+        <div className="register-container">
+            <form onSubmit={handleSubmit(onSubmit)} className="register-form">
+                <h2>Register</h2>
+                {error && <p className="error">{error}</p>}
+
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    {...register("full_name")}
+                />
+                <p className="error">{errors.full_name?.message}</p>
+
+                <input
+                    type="email"
+                    placeholder="Email"
+                    {...register("email")}
+                />
+                <p className="error">{errors.email?.message}</p>
+
+                <input
+                    type="password"
+                    placeholder="Password"
+                    {...register("password")}
+                />
+                <p className="error">{errors.password?.message}</p>
+
+                <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...register("confirmPassword")}
+                />
+                <p className="error">{errors.confirmPassword?.message}</p>
+
+                <button type="submit">Register</button>
+
+                <p className="redirect">
+                    Already have an account?{" "}
+                    <Link to="/login">Login</Link>
+                </p>
+            </form>
+        </div>
+    );
+}
