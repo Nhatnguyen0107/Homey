@@ -3,15 +3,19 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import type { LoginForm } from "../../types/auth";
-import { useAppDispatch } from "../../hooks/index";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { signin } from "../../redux/authSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "./login.css";
 
 const schema = yup
   .object({
     email: yup.string().required("Please enter email").email("Invalid email!"),
-    password: yup.string().required("Please enter password").min(6, "Password must be at least 6 characters long"),
+    password: yup
+      .string()
+      .required("Please enter password")
+      .min(6, "Password must be at least 6 characters long"),
     isRemember: yup.boolean(),
   })
   .required();
@@ -27,10 +31,23 @@ const Login = () => {
   });
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
   const onSubmit = (data: LoginForm) => {
     dispatch(signin(data));
   };
+
+  // ✅ Redirect sau khi login thành công
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   return (
     <div className="login-container">
@@ -78,7 +95,7 @@ const Login = () => {
 
           <div className="signUp">
             <p>Don't have an account?</p>
-            <Link to="/register">Sign up</Link> {/* 👈 sang Register.tsx */}
+            <Link to="/register">Sign up</Link>
           </div>
         </div>
       </form>

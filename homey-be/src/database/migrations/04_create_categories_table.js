@@ -9,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
     name: {
       type: Sequelize.STRING(100),
       allowNull: false,
-      unique: true
+      unique: true,
     },
     createdAt: {
       type: Sequelize.DATE,
