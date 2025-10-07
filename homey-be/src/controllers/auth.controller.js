@@ -1,145 +1,117 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import UserService from "../services/user.service.js";
-import jwtConfig from "../config/jwt.config.js";
-import BaseController from "./base.controller.js";
-import { getExpiresAtFromToken } from "../helpers/jwt.js";
+import db from "../database/models/index.js";
+import AppConfig from "../config/index.js";
 
-class AuthController extends BaseController {
-  constructor() {
-    super();
-    this.service = new UserService();
-  }
-
+export default class AuthController {
+  // Đăng ký
   async signup(req, res) {
     try {
-      const { name, email, password } = req.body;
-      const isUserExisted = !!(await this.service.getUserByEmail(email));
-      if (isUserExisted) {
-        return res.status(400).json({ message: "User exists" });
-      }
-      const passwordHash = await bcrypt.hash(password, 10);
-      const newUser = { name, email, passwordHash };
-      await this.service.createUser(newUser);
-      res.json({ message: "User created" });
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+      const { userName, email, password, phone } = req.body;
+
+      // Kiểm tra email tồn tại
+      const exist = await db.User.findOne({ where: { email } });
+      if (exist) return res.status(400).json({ message: "Email đã tồn tại" });
+
+      // Hash mật khẩu
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Lấy role mặc định là customer
+      const role = await db.Role.findOne({ where: { name: "customer" } });
+      if (!role) return res.status(400).json({ message: "Không tìm thấy role customer" });
+
+      // Tạo user mới
+      const user = await db.User.create({
+        userName,
+        email,
+        password: hashedPassword,
+        phone,
+        role_id: role.id,
+      });
+
+      return res.status(201).json({ message: "Đăng ký thành công", user });
+    } catch (err) {
+      console.error("Signup error:", err);
+      return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
   }
 
+  // Đăng nhập
   async signin(req, res) {
     try {
-      const { email, password, isRemember } = req.body;
-      const user = await this.service.getUserByEmail(email, true);
-      if (!user)
-        return res.status(400).json({ message: "Invalid credentials" });
-      const valid = await bcrypt.compare(password, user.passwordHash);
-      if (!valid)
-        return res.status(400).json({ message: "Invalid credentials" });
+      const { email, password } = req.body;
 
-      const { accessToken, refreshToken } = await this._generateTokens(
-        user.id,
-        !isRemember
+      // Tìm user theo email, include role
+      const user = await db.User.findOne({
+        where: { email },
+        include: [{ model: db.Role, as: "role" }],
+      });
+
+      if (!user) return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
+
+      // So sánh mật khẩu
+      const validPass = await bcrypt.compare(password, user.password);
+      if (!validPass) return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
+
+      // Tạo JWT token
+      const token = jwt.sign(
+        { sub: user.id, role: user.role?.name },
+        AppConfig.jwt.JWT_SECRET || "secret_key",
+        { expiresIn: "1h" }
       );
-      this._setTokensAsCookies(res, accessToken, refreshToken);
-      res.json({ accessToken, refreshToken }); // also send in JSON for API clients
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+
+      // Lưu token vào cookie
+      res.cookie("accessToken", token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60 * 1000,
+      });
+
+      // ✅ Nếu bạn dùng backend render: chuyển hướng về trang chủ
+      // return res.redirect("/home");
+
+      // ✅ Nếu bạn dùng frontend React/Vue: trả JSON để frontend xử lý
+      return res.json({
+        message: "Đăng nhập thành công",
+        user: {
+          id: user.id,
+          userName: user.userName,
+          email: user.email,
+          role: user.role?.name,
+        },
+        accessToken: token,
+      });
+    } catch (err) {
+      console.error("Signin error:", err);
+      return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
   }
 
-  async refresh(req, res) {
+  // Lấy thông tin profile
+  async getProfile(req, res) {
     try {
-      const token = req.cookies.refreshToken || req.body.refreshToken;
-      if (!token)
-        return res.status(401).json({ message: "Missing refresh token" });
-
-      jwt.verify(token, jwtConfig.JWT_REFRESH_SECRET, async (err, payload) => {
-        if (err)
-          return res.status(403).json({ message: "Invalid refresh token" });
-
-        const user = await this.service.getUserById(payload.sub, true);
-        if (user?.RefreshToken?.token !== token)
-          return res.status(403).json({ message: "Refresh token revoked" });
-
-        const { accessToken, refreshToken } = await this._generateTokens(
-          payload.sub,
-          true
-        );
-        this._setTokensAsCookies(res, accessToken, refreshToken);
-        res.json({ accessToken, refreshToken });
+      const user = await db.User.findByPk(req.user.id, {
+        include: [{ model: db.Role, as: "role" }],
       });
-    } catch (error) {
-      console.error("Error creating user:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+      if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+
+      return res.json({
+        id: user.id,
+        userName: user.userName,
+        email: user.email,
+        role: user.role?.name,
+      });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
   }
 
   async signout(req, res) {
     try {
-      const userId = req.user?.id;
-      if (userId) {
-        await this.service.updateUser(userId, { refreshToken: null }, true);
-      }
       res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
-      res.json({ message: "Signed out" });
-    } catch (error) {
-      console.error("Error creating user:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async getProfile(req, res) {
-    try {
-      res.json(req.user);
-    } catch (error) {
-      console.error("Error creating user:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  // ===== HELPER FUNCTIONS =====
-  async _generateTokens(userId, accessTokenOnly = false) {
-    const accessToken = jwt.sign({ sub: userId }, jwtConfig.JWT_SECRET, {
-      expiresIn: jwtConfig.JWT_EXPIRES_IN,
-    });
-
-    if (!accessTokenOnly) {
-      const refreshToken = jwt.sign(
-        { sub: userId },
-        jwtConfig.JWT_REFRESH_SECRET,
-        {
-          expiresIn: jwtConfig.JWT_REFRESH_EXPIRES_IN,
-        }
-      );
-      await this.service.updateUser(userId, { refreshToken }, true);
-      return { accessToken, refreshToken };
-    }
-    return { accessToken };
-  }
-
-  _setTokensAsCookies(res, accessToken, refreshToken) {
-    if (accessToken) {
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true, // set = false if want access from browser
-        sameSite: "strict",
-        secure: false,
-        expires: getExpiresAtFromToken(accessToken),
-      });
-    }
-
-    if (refreshToken) {
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true, // set = false if want access from browser
-        sameSite: "strict",
-        secure: false,
-        expires: getExpiresAtFromToken(refreshToken),
-      });
+      return res.json({ message: "Đăng xuất thành công" });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
   }
 }
-
-export default AuthController;

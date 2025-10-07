@@ -5,6 +5,7 @@ import danang from "../assets/img/danang.jpg";
 import vungtau from "../assets/img/vungtau.jpg";
 import hanoi from "../assets/img/hanoi.jpg";
 import dalat from "../assets/img/dalat.jpg";
+import vn from '../assets/img/Vn.png'
 
 const destinations = [
     { id: 1, name: "TP. Hồ Chí Minh", image: hochiminh },
@@ -24,8 +25,10 @@ const Destinations: React.FC = () => {
                         key={d.id}
                         className="rounded-xl overflow-hidden shadow hover:scale-105 transition"
                     >
+
                         <img src={d.image} alt={d.name} className="w-full h-40 object-cover" />
-                        <p className="text-center p-2 font-semibold">{d.name} </p>
+                        <p className="text-center p-2 font-semibold">{d.name} </p><img className="text-center" src={vn} alt="" />
+
                     </div>
                 ))}
             </div>

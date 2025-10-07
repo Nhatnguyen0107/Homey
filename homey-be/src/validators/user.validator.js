@@ -1,18 +1,12 @@
-import Joi from "joi";
-import middlewares from "../middlewares/index.js";
+import { Joi, validate } from "express-validation";
 
-class UserValidator {
-  constructor() {}
-
-  createUserSchema() {
-    return middlewares.validate(
-      Joi.object({
+export const UserValidator = {
+  createUserSchema: () =>
+    validate({
+      body: Joi.object({
         name: Joi.string().min(3).max(30).required(),
-        email: Joi.string().min(3).max(30).required(),
-        // age: Joi.number().integer().min(18).max(100).required(),
-      })
-    );
-  }
-}
-
-export default UserValidator;
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required(),
+      }),
+    }),
+};

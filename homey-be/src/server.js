@@ -6,27 +6,46 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { Server } from "socket.io";
-
+import roomRoutes from "./routes/room.js";
 import db from "./database/models/index.js";
 import AppConfig from "./config/index.js";
 import ApiRouter from "./routes/index.js";
+import roomTypeRoutes from "./routes/roomType.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+dotenv.config();
 
 const app = express();
 const server = createServer(app);
-const port = AppConfig.port;
+const port = AppConfig.port || process.env.NODE_PORT || 3000;
+
+// Giúp xác định __dirname trong ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Public thư mục uploads nằm bên ngoài thư mục BE
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"))
+);
+
 const io = new Server(server, {
-  cors: "http://localhost:5173", // replace with your React app URL
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
 });
 
-dotenv.config();
-db.sequelize.sync({ force: false }); // Sync database models
+db.sequelize.sync({ force: false });
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // replace with your React app URL
+    origin: "http://localhost:5173",
     credentials: true,
   })
-); // Enable CORS for all routes
-app.use(express.json()); // Middleware to parse JSON bodies
+);
+app.use(express.json());
 app.use(cookieParser());
 
 // ===== PASSPORT JWT STRATEGY =====
@@ -34,6 +53,7 @@ const jwtFromRequest = ExtractJwt.fromExtractors([
   ExtractJwt.fromAuthHeaderAsBearerToken(),
   (req) => req.cookies.accessToken,
 ]);
+
 passport.use(
   new Strategy(
     {
@@ -47,35 +67,19 @@ passport.use(
     }
   )
 );
+
 app.use(passport.initialize());
-// ===== PASSPORT JWT STRATEGY =====
 
-// ===== SocketIO =====
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
-//   // socket.broadcast.emit("broadcast");
-//   socket.on("foo", (msg) => {
-//     // socket.emit("bar", `server send: ${msg}`);
-//     // io.emit("bar", "sent to all clients");
-//   });
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-// });
-// ===== SocketIO =====
+app.use("/api/v1/room-types", roomTypeRoutes);
 
-// cho phép truy cập thư mục uploads
-app.use("/uploads", express.static("uploads"));
-
-// // Define routes
+// Routes
+app.use("/api/rooms", roomRoutes);
 app.use(`/api/${AppConfig.apiVersion}`, ApiRouter[AppConfig.apiVersion]);
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`✅ Server listening on port ${port}`);
 });
 
-process.on("uncaughtException", function (exception) {
-  console.log(exception); // to see your exception details in the console
-  // if you are on production, maybe you can send the exception details to your
-  // email as well ?
+process.on("uncaughtException", (exception) => {
+  console.error("❌ Uncaught Exception:", exception);
 });

@@ -1,52 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import Offers from "../../components/Offers";
 import Destinations from "../../components/Destinations";
 import AccommodationType from "../../components/AccommodationType";
-import { Link, useNavigate } from "react-router-dom";
-import Logo from '../../assets/img/logo.png';
-import { useAppDispatch } from "../../hooks";
-import { useAuth } from "../../hooks/useAuth";
-import { signout } from "../../redux/authSlice";
+
+interface Room {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string;
+  description: string;
+}
 
 const Home: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate(); // ✅ hook để điều hướng
-  const user = useAuth();
+  const [rooms, setRooms] = useState<Room[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/v1/rooms")
+      .then((res) => res.json())
+      .then((data) => setRooms(data))
+      .catch((err) => console.error("Lỗi load rooms:", err));
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50" >
-      {/* Header */}
-      <header className="bg-blue-800 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <img src={Logo} alt="" className="h-20 w-50 object-contain" />
-          <div className="space-x-4">
-            {!user ? (
-              <Link to="/login">Login</Link>
-            ) : (
-              <a
-                role="button"
-                className="cursor-pointer"
-                onClick={() =>
-                  dispatch(signout()).then(() => {
-                    navigate("/login");
-                  })
-                }
-              >
-                Logout
-              </a>
-            )}
-            <Link to="/admin" className="underline ml-2">
-              Admin
-            </Link>
-
-
-
-            <button className="hover:underline" onClick={() => navigate('/register')}>Đăng ký</button>
-            <button className="hover:underline" onClick={() => navigate('/login')}>Đăng nhập</button>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Search */}
       <div className="container mx-auto p-6">
         <h2 className="text-3xl font-bold mb-4">Tìm chỗ nghỉ tiếp theo</h2>
@@ -69,6 +46,32 @@ const Home: React.FC = () => {
       {/* Accommodation Types */}
       <div className="container mx-auto p-6">
         <AccommodationType />
+      </div>
+
+      {/* Rooms */}
+      <div className="container mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-4">Danh sách phòng</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {rooms.map((room) => (
+            <div
+              key={room.id}
+              className="bg-white shadow rounded-lg overflow-hidden"
+            >
+              <img
+                src={`http://localhost:3000${room.image_url}`}
+                alt={room.name}
+                className="h-40 w-full object-cover"
+              />
+              <div className="p-4">
+                <h3 className="font-bold text-lg">{room.name}</h3>
+                <p className="text-gray-600">{room.description}</p>
+                <p className="text-blue-600 font-semibold mt-2">
+                  {room.price.toLocaleString()} VND/đêm
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Footer */}

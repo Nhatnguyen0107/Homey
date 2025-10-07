@@ -1,14 +1,15 @@
 import { Router } from "express";
 import AuthController from "../controllers/auth.controller.js";
-import middlewares from "../middlewares/index.js";
+import { jwt } from "../middlewares/index.js";
 
 const controller = new AuthController();
 const router = Router();
-// define the auth route
-router.post("/signin", controller.signin);
-router.post("/signout", controller.signout);
-router.post("/signup", controller.signup);
-router.post("/refresh", controller.refresh);
-router.get("/me", middlewares.jwt(), controller.getProfile);
+
+// ⚡️ Dùng bind để giữ context cho class method
+router.post("/signin", controller.signin.bind(controller));
+router.post("/signout", controller.signout.bind(controller));
+router.post("/signup", controller.signup.bind(controller));
+// router.post("/refresh", controller.refresh?.bind(controller)); // nếu có refresh
+router.get("/me", jwt(), controller.getProfile.bind(controller));
 
 export default router;

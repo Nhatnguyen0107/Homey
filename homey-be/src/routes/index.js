@@ -6,6 +6,7 @@ import authRouter from "./auth.js";
 import middlewares from "../middlewares/index.js";
 import categoryRouter from "./category.js";
 import tagsRouter from "./tags.js";
+import roomRoutes from "./room.js";
 
 export default {
   v1: Router()
@@ -14,5 +15,6 @@ export default {
     .use("/upload", routerUpload)
     .use("/auth", authRouter)
     .use("/categories", categoryRouter)
-    .use("/tags", tagsRouter), // Using categoryRouter for tags as well
+    .use("/tags", tagsRouter)
+    .use("/rooms", roomRoutes),  // Using categoryRouter for tags as well
 };

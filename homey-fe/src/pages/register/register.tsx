@@ -1,4 +1,3 @@
-// src/pages/Register.tsx
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -43,11 +42,13 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterForm) => {
         try {
-            await axios.post("http://localhost:5000/auth/register", {
-                full_name: data.full_name,
+            await axios.post("http://localhost:3000/api/v1/auth/signup", {
+                userName: data.full_name,
                 email: data.email,
                 password: data.password,
             });
+
+            alert("Register success! Please login.");
             navigate("/login");
         } catch (err: any) {
             setError(err.response?.data?.message || "Registration failed");

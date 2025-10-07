@@ -3,33 +3,49 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import type { LoginForm } from "../../types/auth";
-import { useAppDispatch } from "../../hooks/index";
-import { signin } from "../../redux/authSlice";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../hooks";
+import { getMe } from "../../redux/authSlice";
 import "./login.css";
 
 const schema = yup
   .object({
     email: yup.string().required("Please enter email").email("Invalid email!"),
-    password: yup.string().required("Please enter password").min(6, "Password must be at least 6 characters long"),
+    password: yup
+      .string()
+      .required("Please enter password")
+      .min(6, "Password must be at least 6 characters long"),
     isRemember: yup.boolean(),
   })
   .required();
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: yupResolver(schema),
     defaultValues: { isRemember: false },
   });
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const onSubmit = (data: LoginForm) => {
-    dispatch(signin(data));
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/v1/auth/signin", data, {
+        withCredentials: true,
+      });
+
+      // ✅ lưu token và user vào localStorage
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // ✅ cập nhật redux user
+      dispatch(getMe());
+
+      navigate("/"); // điều hướng về home
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
@@ -42,23 +58,13 @@ const Login = () => {
 
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input
-            {...register("email")}
-            id="email"
-            type="text"
-            placeholder="Enter your email"
-          />
+          <input {...register("email")} id="email" type="text" placeholder="Enter your email" />
           <p className="error">{errors.email?.message}</p>
         </div>
 
         <div className="input-group">
           <label htmlFor="password">Password</label>
-          <input
-            {...register("password")}
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-          />
+          <input {...register("password")} id="password" type="password" placeholder="Enter your password" />
           <p className="error">{errors.password?.message}</p>
         </div>
 
@@ -78,7 +84,7 @@ const Login = () => {
 
           <div className="signUp">
             <p>Don't have an account?</p>
-            <Link to="/register">Sign up</Link> {/* 👈 sang Register.tsx */}
+            <Link to="/register">Sign up</Link>
           </div>
         </div>
       </form>

@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/user/home";
 import Dashboard from "./pages/admin/dashboard/dashboard";
@@ -12,7 +13,6 @@ import { useEffect } from "react";
 import { useAppDispatch } from "./hooks";
 import { getMe } from "./redux/authSlice";
 import { useAuth } from "./hooks/useAuth";
-import { useSocket } from "./hooks/useSocket";
 import NotFound from "./NotFound";
 import Shipping from "./pages/admin/shipping/shipping";
 import Profile from "./pages/admin/setting/profile";
@@ -20,52 +20,42 @@ import Categories from "./pages/admin/categories/categories";
 import CategoriesForm from "./pages/admin/categories/categories-form";
 import Tags from "./pages/admin/tags/tags";
 import TagsForm from "./pages/admin/tags/tagsForm";
+import { AuthProvider } from "./context/AuthContext";
+import Header from "./components/Header";
+import AccommodationType from "./components/AccommodationType";
+import RoomTypeDetail from "./components/RoomTypeDetail";
 
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuth();
-  const { socket } = useSocket();
 
+  // Nếu đã login → lấy thông tin user
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(getMe());
     }
   }, [isAuthenticated, dispatch]);
 
-  useEffect(() => {
-    socket.connect();
-
-    function onConnect() {
-      console.log("connect");
-    }
-
-    function onDisconnect() {
-      console.log("disconnect");
-    }
-
-    function onBarEvent(value: string) {
-      console.log(value);
-    }
-
-    setTimeout(() => {
-      socket.emit("foo", "client sent foo");
-    }, 3000);
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("bar", onBarEvent);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("bar", onBarEvent);
-    };
-  }, []);
-
   return (
-    <>
+    <AuthProvider>
+      <Header />
+
       <Routes>
+
+        {/* điều hướng tới trang con loại phòng */}
         <Route path="/" element={<Home />} />
+        <Route path="/room-types" element={<AccommodationType />} />
+        <Route path="/room-types/:id" element={<RoomTypeDetail />} />
+
+        {/* Public routes */}
+        <Route path="/" element={<Home />} />
+
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        {/* Protected admin routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Dashboard />} />
@@ -79,26 +69,13 @@ function App() {
             <Route path="tag-list" element={<Tags />} />
             <Route path="tag-form" element={<TagsForm />} />
             <Route path="tag-form/:id" element={<TagsForm />} />
-
           </Route>
         </Route>
 
-        {/* Add more routes here as needed */}
-        <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-
-        {/* Catch-all route for 404 */}
+        {/* 404 page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-
-      {/* Toast container */}
-      <div
-        className="toast toast-bottom toast-center"
-        id="toast-container"
-      ></div>
-    </>
+    </AuthProvider>
   );
 }
 

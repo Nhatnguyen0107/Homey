@@ -1,3 +1,5 @@
+// src/types/auth.ts
+
 export type LoginForm = {
   email: string;
   password: string;
@@ -13,10 +15,17 @@ export type LogoutRes = {
   message: string;
 };
 
-export type UserRes = {
-  email: string;
+export type User = {
   id: string;
+  email: string;
   name: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type AuthContextType = {
+  user: User | null;                // user hiện tại
+  isAuthenticated: boolean;         // đã đăng nhập hay chưa
+  login: (data: LoginForm) => Promise<void>;
+  logout: () => void;
 };

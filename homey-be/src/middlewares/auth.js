@@ -1,5 +1,5 @@
 import passport from "passport";
 
-export function jwt(options = { session: false }) {
-  return passport.authenticate("jwt", options);
+export function jwt() {
+  return passport.authenticate("jwt", { session: false });
 }
