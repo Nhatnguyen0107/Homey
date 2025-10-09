@@ -62,7 +62,7 @@ const CategoriesForm = () => {
   }, []);
 
   return (
-    <div>
+    <div className={styles["category-list"]}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="">Name</label>

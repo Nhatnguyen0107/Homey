@@ -43,6 +43,12 @@ const Header: React.FC = () => {
                             >
                                 Admin
                             </Link>
+                            <Link
+                                to="/"
+                                className="underline hover:text-yellow-300 ml-2"
+                            >
+                                User
+                            </Link>
                         </>
                     ) : (
                         <>

@@ -2,18 +2,14 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   FaBars,
   FaChevronDown,
-  FaTable,
-  FaThLarge,
-  FaRegUser,
-  FaProductHunt,
-  FaRegBell,
-  FaSearch,
-  FaCog,
-  FaRegCommentDots,
-  FaRegDotCircle,
-  FaUserCog,
-  FaShippingFast,
+  FaTachometerAlt,
+  FaUsers,
+  FaBed,
+  FaThList,
+  FaClipboardList,
   FaTags,
+  FaStar,
+  FaUserCog,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import type { Menu } from "../types/menu";
@@ -29,43 +25,48 @@ const menu: MenuType = [
   {
     label: "Dashboard",
     to: "",
-    icon: <FaThLarge />,
-    badge: 4,
+    icon: <FaTachometerAlt />, // biểu tượng bảng điều khiển
   },
   {
-    label: "Products",
-    to: "product-list",
-    icon: <FaProductHunt />,
-    children: [],
-  },
-  {
-    label: "Users",
+    label: "Quản lý người dùng",
     to: "user-list",
-    icon: <FaRegUser />,
+    icon: <FaUsers />, // người dùng
     children: [],
   },
   {
-    label: "Categories",
+    label: "Quản lý phòng",
+    to: "room-list",
+    icon: <FaBed />, // phòng (giường)
+    children: [],
+  },
+  {
+    label: "Quản lý danh mục",
     to: "category-list",
-    icon: <FaRegUser />,
+    icon: <FaThList />, // danh sách
     children: [],
   },
   {
-    label: "Tags",
-    to: "tag-list",
-    icon: <FaTags />,
+    label: "Quản lý Booking",
+    to: "booking-list",
+    icon: <FaClipboardList />, // phiếu/booking
     children: [],
   },
   {
-    label: "Shipping",
-    to: "shipping",
-    icon: <FaShippingFast />,
+    label: "Quản lý khuyến mãi",
+    to: "promotion-list",
+    icon: <FaTags />, // thẻ khuyến mãi
     children: [],
   },
   {
-    label: "Setting",
+    label: "Quản lý đánh giá",
+    to: "review-list",
+    icon: <FaStar />, // ngôi sao (đánh giá)
+    children: [],
+  },
+  {
+    label: "Cài đặt",
     to: "profile",
-    icon: <FaUserCog />,
+    icon: <FaUserCog />, // cài đặt tài khoản
     children: [],
   },
 ];
@@ -92,20 +93,20 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     <div className="min-h-screen flex bg-[#f8fafd]">
       {/* Sidebar */}
       <aside
-        className={`transition-all duration-200 bg-white shadow-lg border-r border-gray-100 h-screen fixed z-30 top-0 left-0 ${
-          sidebarOpen ? "w-64" : "w-20"
-        }`}
+        className={`transition-all duration-200 bg-white shadow-lg border-r border-gray-100 h-screen fixed z-30 top-0 left-0 ${sidebarOpen ? "w-64" : "w-20"
+          }`}
       >
         {/* Logo */}
         <Link
-          to="/"
+          to="/admin"
           className="flex items-center gap-2 px-6 py-6 border-b border-gray-100"
         >
           <img
-            src="https://phpstack-1384472-5196432.cloudwaysapps.com/assets/images/logo/1.png"
-            alt="Logo"
-            className="h-8"
+            src="/icons/homey-logo.svg"
+            alt="Homey Admin"
+            className="h-8 object-contain"
           />
+
         </Link>
         {/* Menu */}
         <nav className="flex-1 flex flex-col px-2 py-4 overflow-y-auto">
@@ -122,27 +123,24 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <li key={item.label}>
                   <Link
                     to={item.to}
-                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer group ${
-                      item.active
-                        ? "bg-[#f3f1fe] text-[#3d2176] font-bold"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer group ${item.active
+                      ? "bg-[#f3f1fe] text-[#3d2176] font-bold"
+                      : "text-gray-700 hover:bg-gray-100"
+                      }`}
                   >
                     <span className="text-lg mr-3">{item.icon}</span>
                     <span
-                      className={`flex-1 truncate ${
-                        sidebarOpen ? "inline" : "hidden"
-                      }`}
+                      className={`flex-1 truncate ${sidebarOpen ? "inline" : "hidden"
+                        }`}
                     >
                       {item.label}
                     </span>
                     {item.badge && sidebarOpen && (
                       <span
-                        className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                          typeof item.badge === "string"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : "bg-purple-100 text-purple-600"
-                        }`}
+                        className={`ml-2 text-xs px-2 py-0.5 rounded-full ${typeof item.badge === "string"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : "bg-purple-100 text-purple-600"
+                          }`}
                       >
                         {item.badge}
                       </span>
@@ -157,11 +155,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       {item.children.map((sub) => (
                         <li
                           key={sub.label}
-                          className={`px-3 py-1 rounded cursor-pointer text-sm ${
-                            sub.active
-                              ? "bg-[#ede9fe] text-[#3d2176] font-bold"
-                              : "text-gray-600 hover:bg-gray-100"
-                          }`}
+                          className={`px-3 py-1 rounded cursor-pointer text-sm ${sub.active
+                            ? "bg-[#ede9fe] text-[#3d2176] font-bold"
+                            : "text-gray-600 hover:bg-gray-100"
+                            }`}
                         >
                           {sub.label}
                         </li>
@@ -184,55 +181,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <div
-        className={`flex-1 flex flex-col min-h-screen transition-all duration-200 ${
-          sidebarOpen ? "ml-64" : "ml-20"
-        }`}
+        className={`flex-1 flex flex-col min-h-screen transition-all duration-200 ${sidebarOpen ? "ml-64" : "ml-20"
+          }`}
       >
         {/* Header */}
-        <header className="flex items-center justify-between bg-white shadow px-6 h-16 sticky top-0 z-20">
-          <div className="flex items-center gap-4">
-            <button
-              className="text-2xl text-gray-600"
-              onClick={() => setSidebarOpen((v) => !v)}
-            >
-              <FaBars />
-            </button>
-            <div className="text-gray-400 text-sm flex items-center gap-2">
-              <FaTable className="text-lg" />
-              <span>Table</span>
-              <span className="mx-1">/</span>
-              <span className="text-purple-600 font-semibold">Data Table</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <FaSearch className="text-gray-400 text-lg cursor-pointer" />
-            <FaRegBell className="text-gray-400 text-lg cursor-pointer" />
-            <span className="text-purple-600 font-bold flex items-center gap-1">
-              <FaRegDotCircle /> 26 <span className="text-xs">℃</span>
-            </span>
-            <img
-              src="https://flagcdn.com/us.svg"
-              alt="US"
-              className="w-6 h-6 rounded-full border"
-            />
-            <FaRegCommentDots className="text-gray-400 text-lg cursor-pointer" />
-            <FaCog className="text-gray-400 text-lg cursor-pointer" />
-            <Link to="profile">
-              <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                alt="User"
-                className="w-8 h-8 rounded-full border-2 border-purple-200"
-              />
-            </Link>
-          </div>
-        </header>
         {/* Content */}
         <main className="flex-1 p-6 bg-[#f8fafd]">{children}</main>
         {/* Footer */}
-        <footer className="bg-white text-center py-3 text-gray-500 text-sm shadow-inner">
+        {/* <footer className="bg-white text-center py-3 text-gray-500 text-sm shadow-inner">
           Copyright © {new Date().getFullYear()} Axelit. All rights reserved
           <span className="text-pink-400 mx-1">♥</span> v1.0.0
-        </footer>
+        </footer> */}
       </div>
     </div>
   );
