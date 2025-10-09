@@ -10,7 +10,6 @@ import roomRoutes from "./routes/room.js";
 import db from "./database/models/index.js";
 import AppConfig from "./config/index.js";
 import ApiRouter from "./routes/index.js";
-import roomTypeRoutes from "./routes/roomType.js";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -70,7 +69,6 @@ passport.use(
 
 app.use(passport.initialize());
 
-app.use("/api/v1/room-types", roomTypeRoutes);
 
 // Routes
 app.use("/api/rooms", roomRoutes);

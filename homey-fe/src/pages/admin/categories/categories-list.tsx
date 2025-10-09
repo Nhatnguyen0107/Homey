@@ -2,7 +2,7 @@ import { FaSearch, FaEdit, FaTrash, FaSortUp, FaSortDown } from "react-icons/fa"
 import { useState } from "react";
 import "../../../styles/admin/table.css";
 
-const UserList: React.FC = () => {
+const CategoryList: React.FC = () => {
   const [search, setSearch] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
 
@@ -16,7 +16,7 @@ const UserList: React.FC = () => {
         <h2>User List</h2>
         <div className="search-box">
           <FaSearch className="search-icon" />
-          <input type="text" placeholder="Search users..." />
+          <input type="text" placeholder="Search categories..." />
         </div>
       </div>
 
@@ -24,10 +24,7 @@ const UserList: React.FC = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
+            <th>Name</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -35,10 +32,7 @@ const UserList: React.FC = () => {
           <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td className="action-cell">
+            <td>
               <button className="btn-action edit">
                 <FaEdit /> Edit
               </button>
@@ -57,4 +51,4 @@ const UserList: React.FC = () => {
   );
 };
 
-export default UserList;
+export default CategoryList;

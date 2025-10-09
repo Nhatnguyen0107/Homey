@@ -12,7 +12,6 @@ import reviewModel from "./reviews.model.js";
 import room_promotionsModel from "./room_promotions.model.js";
 import roomModel from "./rooms.model.js";
 import promotionModel from "./promotions.model.js";
-import roomType from "./room_types.model.js";
 
 
 const sequelize = new Sequelize(AppConfig.database.url, {
@@ -32,7 +31,6 @@ const db = {
   RoomPromotion: room_promotionsModel(sequelize),
   Booking: bookingModel(sequelize),
   City: cityModel(sequelize),
-  RoomType: roomType(sequelize),
 };
 
 // Gọi associate cho tất cả models

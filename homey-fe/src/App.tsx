@@ -2,8 +2,11 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/user/home";
 import Dashboard from "./pages/admin/dashboard/dashboard";
-import ProductList from "./pages/admin/products/product-list";
+import RoomList from "./pages/admin/rooms/room-list";
 import UserList from "./pages/admin/users/user-list";
+import BookingList from "./pages/admin/booking/booking-list";
+import PromotionList from "./pages/admin/promotions/promotion-list";
+import ReviewList from "./pages/admin/reviews/review-list";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Admin from "./pages/admin/admin";
@@ -14,12 +17,9 @@ import { useAppDispatch } from "./hooks";
 import { getMe } from "./redux/authSlice";
 import { useAuth } from "./hooks/useAuth";
 import NotFound from "./NotFound";
-import Shipping from "./pages/admin/shipping/shipping";
 import Profile from "./pages/admin/setting/profile";
-import Categories from "./pages/admin/categories/categories";
+import CategoriesList from "./pages/admin/categories/categories-list";
 import CategoriesForm from "./pages/admin/categories/categories-form";
-import Tags from "./pages/admin/tags/tags";
-import TagsForm from "./pages/admin/tags/tagsForm";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import AccommodationType from "./components/AccommodationType";
@@ -64,16 +64,15 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Dashboard />} />
-            <Route path="product-list" element={<ProductList />} />
             <Route path="user-list" element={<UserList />} />
-            <Route path="category-list" element={<Categories />} />
+            <Route path="room-list" element={<RoomList />} />
+            <Route path="booking-list" element={<BookingList />} />
+            <Route path="promotion-list" element={<PromotionList />} />
+            <Route path="review-list" element={<ReviewList />} />
+            <Route path="category-list" element={<CategoriesList />} />
             <Route path="category-form" element={<CategoriesForm />} />
             <Route path="category-form/:id" element={<CategoriesForm />} />
-            <Route path="shipping" element={<Shipping />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="tag-list" element={<Tags />} />
-            <Route path="tag-form" element={<TagsForm />} />
-            <Route path="tag-form/:id" element={<TagsForm />} />
           </Route>
         </Route>
 
