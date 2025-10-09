@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks";
 import { getMe } from "../../redux/authSlice";
 import "./login.css";
+import type { TAny } from "../../types/common";
 
 const schema = yup
   .object({
@@ -22,14 +23,14 @@ const schema = yup
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as TAny,
     defaultValues: { isRemember: false },
   });
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit: TAny = async (data: LoginForm) => {
     try {
       const res = await axios.post("http://localhost:3000/api/v1/auth/signin", data, {
         withCredentials: true,

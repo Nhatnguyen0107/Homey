@@ -1,14 +1,11 @@
-import { FaSearch, FaEdit, FaTrash, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import "../../../styles/admin/table.css";
 
 const RoomList: React.FC = () => {
     const [search, setSearch] = useState("");
-    const [sortAsc, setSortAsc] = useState(true);
+    // const [sortAsc, setSortAsc] = useState(true);
 
-    // 🔹 Mock data cho rooms
-    const mockRooms = [
-    ];
 
     return (
         <div className="data-container">

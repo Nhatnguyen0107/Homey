@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/axios";
 import type { User, AuthContextType } from "../types/auth";
+import type { TAny } from "../types/common";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,7 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         fetchUser();
     }, []);
 
-    const signin = async (email: string, password: string) => {
+    const login: TAny = async (email: string, password: string) => {
         const res = await api.post<{ token: string; user: User }>("/auth/signin", {
             email,
             password,
@@ -32,16 +33,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(res.data.user);
     };
 
-    const signup = async (
-        userName: string,
-        email: string,
-        password: string,
-        phone: string
-    ) => {
-        await api.post("/auth/signup", { userName, email, password, phone });
-    };
+    // const signup = async (
+    //     userName: string,
+    //     email: string,
+    //     password: string,
+    //     phone: string
+    // ) => {
+    //     await api.post("/auth/signup", { userName, email, password, phone });
+    // };
 
-    const signout = async () => {
+    const logout = async () => {
         try {
             await api.post("/auth/signout");
         } catch {
@@ -52,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, signin, signup, signout }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
