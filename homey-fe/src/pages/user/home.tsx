@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 🧭 thêm dòng này
 import SearchBar from "../../components/SearchBar";
 import Offers from "../../components/Offers";
 import Destinations from "../../components/Destinations";
@@ -14,6 +15,7 @@ interface Room {
 
 const Home: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
+  const navigate = useNavigate(); // 🧭 khởi tạo điều hướng
 
   useEffect(() => {
     fetch("http://localhost:3000/api/v1/rooms")
@@ -55,7 +57,8 @@ const Home: React.FC = () => {
           {rooms.map((room) => (
             <div
               key={room.id}
-              className="bg-white shadow rounded-lg overflow-hidden"
+              onClick={() => navigate(`/room/${room.id}`)}
+              className="bg-white shadow rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition"
             >
               <img
                 src={`http://localhost:3000${room.image_url}`}

@@ -23,7 +23,9 @@ import CategoriesForm from "./pages/admin/categories/categories-form";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import AccommodationType from "./components/AccommodationType";
-import RoomTypeDetail from "./components/RoomTypeDetail";
+import RoomTypeDetail from "./pages/RoomTypeDetail";
+import RoomDetailPage from "./pages/RoomDetailPage";
+import RoomDetail from "./pages/RoomDetail";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -50,7 +52,10 @@ function App() {
         {/* Public routes */}
         <Route path="/" element={<Home />} />
 
+        <Route path="/room/:id" element={<RoomDetailPage />} />
+
         <Route element={<PublicRoute />}>
+          <Route path="/room/:id" element={<RoomDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
@@ -71,7 +76,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* 404 page */}
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
