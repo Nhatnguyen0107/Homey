@@ -1,24 +1,23 @@
 import type { Pagination } from "./common";
 
-export type Booking = {
+export type Promotion = {
     id?: string;
-    room_id?: string;
-    user_id?: string;
+    code?: string;
+    discount_type?: string;
+    discount_value?: number;
     start_date?: string;
     end_date?: string;
-    quantity?: string;
-    total_price?: number;
     status?: string;
     createdAt?: string;
     updatedAt?: string;
 };
 
-export interface BookingResDto {
-    data: Booking[];
+export interface PromotionResDto {
+    data: Promotion[];
     pagination: Pagination;
 }
 
-export type GetAllBookingParams = {
+export type GetAllPromotionParams = {
     page?: number;
     pageSize?: number;
     search?: string;

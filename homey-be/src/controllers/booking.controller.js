@@ -1,18 +1,18 @@
-import RoomService from "../services/room.service.js";
+import BookingService from "../services/booking.service.js";
 import BaseController from "./base.controller.js";
 
-class RoomController extends BaseController {
+class BookingController extends BaseController {
     constructor() {
         super();
-        this.service = new RoomService();
+        this.service = new BookingService();
     }
 
-    async getAllRooms(req, res) {
+    async getAllBookings(req, res) {
         try {
-            const rooms = await this.service.getAllRooms(req);
-            res.json(rooms);
+            const bookings = await this.service.getAllBookings(req);
+            res.json(bookings);
         } catch (error) {
-            console.error("Error fetching Rooms:", error);
+            console.error("Error fetching bookings:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
@@ -63,4 +63,4 @@ class RoomController extends BaseController {
     // }
 }
 
-export default RoomController;
+export default BookingController;

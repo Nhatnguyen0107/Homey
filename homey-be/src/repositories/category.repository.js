@@ -8,6 +8,51 @@ class CategoryRepository {
 
   async getAllCategories(req) {
     try {
+      const {
+        page = 1,
+        pageSize = 5,
+        search = "",
+        sortField = "createdAt",
+        sortOrder = "DESC",
+      } = req.query;
+
+      const limit = Math.max(parseInt(pageSize), 1);
+      const offset = (Math.max(parseInt(page), 1) - 1) * limit;
+      const count = await this.model.count({
+        where: {
+          [Op.or]: {
+            name: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+        },
+      });
+      const rows = await db.sequelize.query(
+        `
+          SELECT id, name, createdAt, updatedAt
+          FROM categories
+          WHERE name LIKE $search 
+          ORDER BY ${sortField} ${sortOrder}
+          LIMIT $offset, $limit
+        `,
+        {
+          bind: {
+            limit,
+            offset,
+            search: `%${search}%`,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+      return {
+        data: rows,
+        pagination: {
+          total: count,
+          page: parseInt(page),
+          pageSize: limit,
+          totalPages: Math.ceil(count / limit) || 1,
+        },
+      };
     } catch (error) {
       throw new Error("Error fetching products: " + error.message);
     }

@@ -1,18 +1,18 @@
-import RoomService from "../services/room.service.js";
+import PromotionService from "../services/promotion.service.js";
 import BaseController from "./base.controller.js";
 
-class RoomController extends BaseController {
+class PromotionController extends BaseController {
     constructor() {
         super();
-        this.service = new RoomService();
+        this.service = new PromotionService();
     }
 
-    async getAllRooms(req, res) {
+    async getAllPromotions(req, res) {
         try {
-            const rooms = await this.service.getAllRooms(req);
-            res.json(rooms);
+            const promotions = await this.service.getAllPromotions(req);
+            res.json(promotions);
         } catch (error) {
-            console.error("Error fetching Rooms:", error);
+            console.error("Error fetching promotions:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
@@ -63,4 +63,4 @@ class RoomController extends BaseController {
     // }
 }
 
-export default RoomController;
+export default PromotionController;

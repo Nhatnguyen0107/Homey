@@ -1,11 +1,11 @@
 import { Router } from "express";
-import UserController from "../controllers/user.controller.js";
+import PromotionController from "../controllers/promotion.controller.js";
 // import middlewares from "../middlewares/index.js";
 
-const controller = new UserController();
+const controller = new PromotionController();
 const router = Router();
 // define the about route
-router.get("/", controller.getAllUsers);
+router.get("/", controller.getAllPromotions);
 // router.post("/", controller.createUser);
 // router.delete("/:id", controller.deleteUser);
 // router.get("/:id", controller.getUserById);

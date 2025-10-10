@@ -1,10 +1,10 @@
 import axios from "./axiosClient";
-import type { BookingResDto, GetAllBookingParams } from "../types/booking";
+import type { PromotionResDto, GetAllPromotionParams } from "../types/promotion";
 import type { TAny } from "../types/common";
 
-export const BookingService = {
-    async getAll(params?: GetAllBookingParams): Promise<BookingResDto> {
-        const res = await axios.get<BookingResDto>("/bookings", { params });
+export const PromotionService = {
+    async getAll(params?: GetAllPromotionParams): Promise<PromotionResDto> {
+        const res = await axios.get<PromotionResDto>("/promotions", { params });
         return res.data;
     },
 
@@ -28,4 +28,4 @@ export const BookingService = {
     // },
 };
 
-export default BookingService;
+export default PromotionService;

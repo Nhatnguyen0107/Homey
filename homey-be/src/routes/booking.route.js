@@ -1,11 +1,11 @@
 import { Router } from "express";
-import UserController from "../controllers/user.controller.js";
+import BookingController from "../controllers/booking.controller.js";
 // import middlewares from "../middlewares/index.js";
 
-const controller = new UserController();
+const controller = new BookingController();
 const router = Router();
 // define the about route
-router.get("/", controller.getAllUsers);
+router.get("/", controller.getAllBookings);
 // router.post("/", controller.createUser);
 // router.delete("/:id", controller.deleteUser);
 // router.get("/:id", controller.getUserById);

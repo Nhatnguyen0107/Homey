@@ -8,7 +8,7 @@ class UserRepository {
     this.model = db.User; // Initialize the User model
   }
 
-  async getAllUsers() {
+  async getAllUsers(req) {
     try {
       const {
         page = 1,
@@ -20,23 +20,24 @@ class UserRepository {
 
       const limit = Math.max(parseInt(pageSize), 1);
       const offset = (Math.max(parseInt(page), 1) - 1) * limit;
+
+      // Đếm tổng số user thỏa điều kiện search
       const count = await this.model.count({
         where: {
-          [Op.or]: {
-            name: {
-              [Op.like]: `%${search}%`,
-            },
+          userName: {
+            [Op.like]: `%${search}%`,
           },
         },
       });
 
+      // Lấy danh sách user
       const rows = await db.sequelize.query(
         `
           SELECT id, userName, password, email, phone, createdAt, updatedAt
           FROM users
-          WHERE name LIKE $search 
+          WHERE userName LIKE $search
           ORDER BY ${sortField} ${sortOrder}
-          LIMIT $offset, $limit
+          LIMIT $limit OFFSET $offset
         `,
         {
           bind: {
@@ -47,6 +48,7 @@ class UserRepository {
           type: QueryTypes.SELECT,
         }
       );
+
       return {
         data: rows,
         pagination: {

@@ -1,10 +1,21 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-// import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import { resetStatus, getBookingList } from "../../../redux/bookingSlice";
 import "../../../styles/admin/table.css";
 
 const BookingList: React.FC = () => {
     // const [search, setSearch] = useState("");
     // const [sortAsc, setSortAsc] = useState(true);
+    const bookings = useAppSelector((state) => state.booking.bookings);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(resetStatus());
+        dispatch(getBookingList({}));
+    }, []);
 
     return (
         <div className="data-container">
@@ -29,22 +40,25 @@ const BookingList: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td className="action-cell">
-                            <button className="btn-action edit">
-                                <FaEdit /> Edit
-                            </button>
-                            <button className="btn-action delete">
-                                <FaTrash /> Delete
-                            </button>
-                        </td>
-                    </tr>
+                    {bookings.map((book) => (
+                        <tr key={book.id}>
+                            <td>{book.id}</td>
+                            <td>{book.start_date}</td>
+                            <td>{book.end_date}</td>
+                            <td>{book.quantity}</td>
+                            <td>{book.total_price}</td>
+                            <td>{book.status}</td>
+                            <td className="action-cell">
+                                <button className="btn-action edit">
+                                    <FaEdit /> Edit
+                                </button>
+                                <button className="btn-action delete">
+                                    <FaTrash /> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+
                 </tbody>
             </table>
 
