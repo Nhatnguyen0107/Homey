@@ -29,7 +29,7 @@ class CategoryRepository {
       });
       const rows = await db.sequelize.query(
         `
-          SELECT id, name, createdAt, updatedAt
+          SELECT id, name, image_url, createdAt, updatedAt
           FROM categories
           WHERE name LIKE $search 
           ORDER BY ${sortField} ${sortOrder}

@@ -9,7 +9,7 @@ import "./styles/index.css";
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <BrowserRouter>
-      <AuthProvider> {/* ✅ bọc App bên trong */}
+      <AuthProvider>
         <App />
       </AuthProvider>
     </BrowserRouter>

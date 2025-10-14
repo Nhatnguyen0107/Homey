@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 
@@ -37,7 +37,7 @@ const RoomDetailPage: React.FC = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
-            <Header />
+
 
             <main className="flex-grow container mx-auto p-6">
                 <h2 className="text-3xl font-bold mb-4">{room.name}</h2>
