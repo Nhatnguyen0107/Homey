@@ -20,7 +20,7 @@ const AccommodationType: React.FC = () => {
                 const res = await axios.get("http://localhost:3000/api/v1/categories");
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
                 const unique = list.filter(
-                    (item, index, arr) => arr.findIndex((t) => t.id === item.id) === index
+                    (item: TAny, index: number, arr: TAny) => arr.findIndex((t: TAny) => t.id === item.id) === index
                 );
                 setCategories(unique);
             } catch (err) {

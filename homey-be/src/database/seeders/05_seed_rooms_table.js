@@ -105,12 +105,6 @@ export async function up(queryInterface) {
 
 
 
-
-
-
-
-
-
   ], {});
 }
 

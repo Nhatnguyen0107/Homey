@@ -4,6 +4,7 @@ import SearchBar from "../../components/SearchBar";
 import Offers from "../../components/Offers";
 import Destinations from "../../components/Destinations";
 import AccommodationType from "../../components/AccommodationType";
+import RoomList from "../../components/RoomList";
 
 interface Room {
   id: string;
@@ -53,27 +54,11 @@ const Home: React.FC = () => {
       {/* Rooms */}
       <div className="container mx-auto p-6">
         <h2 className="text-2xl font-bold mb-4">Danh sách phòng</h2>
+        <RoomList />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {rooms.map((room) => (
-            <div
-              key={room.id}
-              onClick={() => navigate(`/room/${room.id}`)}
-              className="bg-white shadow rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition"
-            >
-              <img
-                src={`http://localhost:3000${room.image_url}`}
-                alt={room.name}
-                className="h-40 w-full object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg">{room.name}</h3>
-                <p className="text-gray-600">{room.description}</p>
-                <p className="text-blue-600 font-semibold mt-2">
-                  {room.price.toLocaleString()} VND/đêm
-                </p>
-              </div>
-            </div>
-          ))}
+
+          {/* sửa lại và bỏ bảng room_type */}
+
         </div>
       </div>
 

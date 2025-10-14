@@ -13,8 +13,9 @@ export async function up(queryInterface, Sequelize) {
       unique: true,
     },
     image_url: {
-      type: Sequelize.STRING(255),
-      allowNull: true, // thêm cột này để hiển thị ảnh loại phòng
+      type: Sequelize.JSON,
+      allowNull: false,
+      defaultValue: []
     },
     createdAt: {
       type: Sequelize.DATE,

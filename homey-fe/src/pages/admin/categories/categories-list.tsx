@@ -1,14 +1,25 @@
-import { FaSearch, FaEdit, FaTrash, FaSortUp, FaSortDown } from "react-icons/fa";
-import { useState } from "react";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import {
+  getCategoryList,
+  resetStatus,
+  deleteCategory,
+} from "../../../redux/categorySlice";
 import "../../../styles/admin/table.css";
 
 const CategoryList: React.FC = () => {
-  const [search, setSearch] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
+  // const [search, setSearch] = useState("");
+  // const [sortAsc, setSortAsc] = useState(true);
+  const categories = useAppSelector((state) => state.category.categories);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  // mock data
-  const mockUsers = [
-  ];
+  useEffect(() => {
+    dispatch(resetStatus());
+    dispatch(getCategoryList({}));
+  }, []);
 
   return (
     <div className="data-container">
@@ -29,18 +40,20 @@ const CategoryList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td>
-              <button className="btn-action edit">
-                <FaEdit /> Edit
-              </button>
-              <button className="btn-action delete">
-                <FaTrash /> Delete
-              </button>
-            </td>
-          </tr>
+          {categories.map((cate) => (
+            <tr key={cate.id}>
+              <td>{cate.id}</td>
+              <td>{cate.name}</td>
+              <td>
+                <button className="btn-action edit">
+                  <FaEdit /> Edit
+                </button>
+                <button className="btn-action delete">
+                  <FaTrash /> Delete
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 

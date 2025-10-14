@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const RoomTypeDetail: React.FC = () => {
-    const { id } = useParams();
+    const { id: _id } = useParams();
 
     const rooms = [
         { id: 1, name: "La Siesta Premium Saigon Central", location: "Quận 1", price: 3442500, rating: 9.4, image: "https://cf.bstatic.com/xdata/images/hotel/square600/229288103.webp?k=9984a86932390ff4d27fc298609dd38ae0f0136547283699cdb08a61b5a82cf7&o=" },

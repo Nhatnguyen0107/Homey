@@ -1,14 +1,22 @@
-import { FaSearch, FaEdit, FaTrash, FaSortUp, FaSortDown } from "react-icons/fa";
-import { useState } from "react";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import { resetStatus, getPromotionList } from "../../../redux/promotionSlice";
 import "../../../styles/admin/table.css";
 
 const PromotionList: React.FC = () => {
-    const [search, setSearch] = useState("");
-    const [sortAsc, setSortAsc] = useState(true);
+    // const [search, setSearch] = useState("");
+    // const [sortAsc, setSortAsc] = useState(true);
 
-    // mock data
-    const mockUsers = [
-    ];
+    const promotions = useAppSelector((state) => state.promotion.promotions);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(resetStatus());
+        dispatch(getPromotionList({}));
+    }, []);
 
     return (
         <div className="data-container">
@@ -34,23 +42,26 @@ const PromotionList: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td className="action-cell">
-                            <button className="btn-action edit">
-                                <FaEdit /> Edit
-                            </button>
-                            <button className="btn-action delete">
-                                <FaTrash /> Delete
-                            </button>
-                        </td>
-                    </tr>
+                    {promotions.map((promo) => (
+                        <tr key={promo.id}>
+                            <td>{promo.id}</td>
+                            <td>{promo.code}</td>
+                            <td>{promo.discount_type}</td>
+                            <td>{promo.discount_value}</td>
+                            <td>{promo.start_date}</td>
+                            <td>{promo.end_date}</td>
+                            <td>{promo.status}</td>
+                            <td className="action-cell">
+                                <button className="btn-action edit">
+                                    <FaEdit /> Edit
+                                </button>
+                                <button className="btn-action delete">
+                                    <FaTrash /> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+
                 </tbody>
             </table>
 

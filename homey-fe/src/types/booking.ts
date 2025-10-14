@@ -4,8 +4,11 @@ export type Booking = {
     id?: string;
     room_id?: string;
     user_id?: string;
-    rating?: number;
-    comment?: string;
+    start_date?: string;
+    end_date?: string;
+    quantity?: string;
+    total_price?: number;
+    status?: string;
     createdAt?: string;
     updatedAt?: string;
 };

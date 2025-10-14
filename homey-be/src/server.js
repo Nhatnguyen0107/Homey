@@ -6,7 +6,6 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { Server } from "socket.io";
-import roomRoutes from "./routes/room.js";
 import db from "./database/models/index.js";
 import AppConfig from "./config/index.js";
 import ApiRouter from "./routes/index.js";
@@ -28,8 +27,6 @@ app.use(
   "/uploads",
   express.static(path.join(__dirname, "../uploads"))
 );
-
-app.use("/api/v1/rooms", roomRoutes);
 
 const io = new Server(server, {
   cors: {
@@ -73,7 +70,6 @@ app.use(passport.initialize());
 
 
 // Routes
-app.use("/api/rooms", roomRoutes);
 app.use(`/api/${AppConfig.apiVersion}`, ApiRouter[AppConfig.apiVersion]);
 
 server.listen(port, () => {

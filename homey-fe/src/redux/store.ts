@@ -1,13 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productSlice from "./productSlice";
 import authSlice from "./authSlice";
 import categorySlice from "./categorySlice";
+import userSlice from "./userSlice";
+import roomSlice from "./roomSlice";
+import bookingSlice from "./bookingSlice";
+import promotionSlice from "./promotionSlice";
+import reviewSlice from "./reviewSlice";
 
 export const store = configureStore({
   reducer: {
-    product: productSlice,
     auth: authSlice,
     category: categorySlice,
+    user: userSlice,
+    room: roomSlice,
+    booking: bookingSlice,
+    promotion: promotionSlice,
+    review: reviewSlice,
   },
 });
 

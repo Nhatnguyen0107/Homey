@@ -23,9 +23,16 @@ export type User = {
   updatedAt: Date;
 };
 
+export interface UserRes {
+  id: number;
+  username: string;
+  email: string;
+  // ...các field khác của user
+}
+
 export type AuthContextType = {
-  user: User | null;                // user hiện tại
-  isAuthenticated: boolean;         // đã đăng nhập hay chưa
+  user?: User | null;                // user hiện tại
+  isAuthenticated?: boolean;         // đã đăng nhập hay chưa
   login: (data: LoginForm) => Promise<void>;
   logout: () => void;
 };
