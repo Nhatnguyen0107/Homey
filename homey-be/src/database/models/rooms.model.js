@@ -15,6 +15,13 @@ export default (sequelize) => {
                 foreignKey: "room_id",
                 as: "promotions",
             });
+
+
+            Room.hasOne(models.RoomDetail, {
+                foreignKey: "room_id",
+                as: "detail",
+                onDelete: "CASCADE",
+            });
         }
     }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // 🧭 thêm dòng này
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 import Offers from "../../components/Offers";
 import Destinations from "../../components/Destinations";
@@ -15,7 +15,7 @@ interface Room {
 
 const Home: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const navigate = useNavigate(); // 🧭 khởi tạo điều hướng
+  const navigate = useNavigate(); // khởi tạo điều hướng
 
   useEffect(() => {
     fetch("http://localhost:3000/api/v1/rooms")

@@ -10,13 +10,25 @@
 
 // export default router;
 
-// src/routes/room.js
 import express from "express";
-import { getAllRooms } from "../controllers/room.controller.js";
+import {
+    getAllRooms,
+    getRoomsByCategory,
+    getRoomById,
+    getRoomDetailById,
+} from "../controllers/room.controller.js";
 
 const router = express.Router();
 
+
+router.get("/room-detail/:id", getRoomDetailById);
+router.get("/category/:categoryId", getRoomsByCategory);
 router.get("/", getAllRooms);
+router.get("/:id", getRoomById);
 
 export default router;
+
+
+
+
 

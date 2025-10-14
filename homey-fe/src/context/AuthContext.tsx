@@ -17,8 +17,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     useEffect(() => {
-        fetchUser();
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            fetchUser();
+        } else {
+            console.warn("Không có token — bỏ qua auth để hiển thị trang");
+        }
     }, []);
+
 
     const signin = async (email: string, password: string) => {
         const res = await api.post<{ token: string; user: User }>("/auth/signin", {

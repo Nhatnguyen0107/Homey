@@ -1,4 +1,5 @@
 export default {
+  // url: process.env.DATABASE_URL || "mysql://root@95b3a0aff86e.ngrok-free.app/homey_db",
   url: process.env.DATABASE_URL || "mysql://root:nguyenthien22112005@localhost:3306/homey_db",
   dialect: process.env.DATABASE_DIALECT || "mysql",
   pool: {
