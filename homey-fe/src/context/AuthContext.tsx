@@ -26,12 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, []);
 
-<<<<<<< HEAD
     const login: TAny = async (email: string, password: string) => {
-=======
-
-    const signin = async (email: string, password: string) => {
->>>>>>> nguyenthien
         const res = await api.post<{ token: string; user: User }>("/auth/signin", {
             email,
             password,
