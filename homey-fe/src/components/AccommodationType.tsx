@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../services/axiosClient";
+import type { TAny } from "../types/common";
 
 interface Category {
     id: string;
@@ -20,7 +21,7 @@ const AccommodationType: React.FC = () => {
                 const res = await axiosClient.get("categories");
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
 
-                const parsedList = list.map((item: any) => ({
+                const parsedList = list.map((item: TAny) => ({
                     ...item,
                     image_url: Array.isArray(item.image_url)
                         ? item.image_url

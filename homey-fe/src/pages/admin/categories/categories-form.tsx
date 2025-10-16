@@ -1,77 +1,83 @@
-// import { useEffect } from "react";
-// import { useAppDispatch, useAppSelector } from "../../../hooks";
-// import {
-//   createCategory,
-//   getCategoryDetail,
-//   updateCategory,
-// } from "../../../redux/categorySlice";
-// import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import {
+    createCategory,
+    getCategoryDetail,
+    updateCategory,
+} from "../../../redux/categorySlice";
+import { useNavigate, useParams } from "react-router-dom";
 
-// import { useForm } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import * as yup from "yup";
-// import type { TAny } from "../../../types/common";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import type { TAny } from "../../../types/common";
 
-// const schema = yup
-//   .object({
-//     name: yup.string().required(),
-//   })
-//   .required();
+import "../../../styles/admin/form.css";
 
-// const CategoriesForm = () => {
-//   const dispatch = useAppDispatch();
-//   const status = useAppSelector((state) => state.category.status);
-//   const category = useAppSelector((state) => state.category.category);
-//   const navigate = useNavigate();
-//   const { id } = useParams();
+const schema = yup
+    .object({
+        name: yup.string().required(),
+    })
+    .required();
 
-//   const {
-//     register,
-//     handleSubmit,
-//     reset,
-//     formState: { errors },
-//   } = useForm({
-//     resolver: yupResolver(schema),
-//   });
-//   const onSubmit = (data: TAny) => {
-//     if (id) {
-//       dispatch(updateCategory({ id, data }));
-//     } else {
-//       dispatch(createCategory(data));
-//     }
-//   };
+const CategoriesForm = () => {
+    const dispatch = useAppDispatch();
+    const status = useAppSelector((state) => state.category.status);
+    const category = useAppSelector((state) => state.category.category);
+    const navigate = useNavigate();
+    const { id } = useParams();
 
-//   useEffect(() => {
-//     if (status) {
-//       navigate("/admin/category-list");
-//     }
-//   }, [status]);
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schema),
+    });
+    const onSubmit = (data: TAny) => {
+        if (id) {
+            dispatch(updateCategory({ id, data }));
+        } else {
+            dispatch(createCategory(data));
+        }
+    };
 
-//   useEffect(() => {
-//     if (category) {
-//       reset({
-//         name: category.name,
-//       });
-//     }
-//   }, [category]);
+    useEffect(() => {
+        if (status) {
+            navigate("/admin/category-list");
+        }
+    }, [status]);
 
-//   useEffect(() => {
-//     if (id) {
-//       dispatch(getCategoryDetail(id));
-//     }
-//   }, []);
+    useEffect(() => {
+        if (category) {
+            reset({
+                name: category.name,
+            });
+        }
+    }, [category]);
 
-//   return (
-//     <div className={styles["category-list"]}>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <div>
-//           <label htmlFor="">Name</label>
-//           <input {...register("name")} type="text" className="border-1" />
-//           <p>{errors.name?.message}</p>
-//         </div>
-//         <button type="submit">{id ? "Update" : "Create"}</button>
-//       </form>
-//     </div>
-//   );
-// };
-// export default CategoriesForm;
+    useEffect(() => {
+        if (id) {
+            dispatch(getCategoryDetail(id));
+        }
+    }, []);
+
+    return (
+        <div className="form-container">
+            <form onSubmit={handleSubmit(onSubmit)} className="category-form">
+                <div className="form-group">
+                    <label htmlFor="name">Category Name</label>
+                    <input {...register("name")} type="text" id="name" />
+                    <p className="error-message">{errors.name?.message}</p>
+                </div>
+
+                <button type="submit" className="btn-submit">
+                    {id ? "Update" : "Create"}
+                </button>
+            </form>
+        </div>
+
+    );
+};
+export default CategoriesForm;

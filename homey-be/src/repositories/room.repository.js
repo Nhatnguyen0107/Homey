@@ -61,6 +61,83 @@ class RoomRepository {
             throw new Error("Error fetching rooms: " + (error.message || error));
         }
     }
+
+    async getRoomById(id) {
+        try {
+            return await this.model.findByPk(id);
+        } catch (error) {
+            throw new Error("Error fetching room: " + error.message);
+        }
+    }
+
+    async createRoom(data) {
+        try {
+            return await this.model.create(data);
+        } catch (error) {
+            console.error("❌ Error creating room:", error);
+            throw new Error("Error creating room: " + error.message);
+        }
+    }
+
+    async editRoom(id, data) {
+        try {
+            const room = await this.getRoomById(id);
+            if (!room) throw new Error("Room not found");
+            return await room.update({
+                name: data.name,
+            });
+        } catch (error) {
+            throw new Error("Error updating room: " + error.message);
+        }
+    }
+
+    async deleteRoom(id) {
+        try {
+            const room = await this.getRoomById(id);
+            if (!room) throw new Error("Room not found");
+            return await room.destroy();
+        } catch (error) {
+            throw new Error("Error deleting room: " + error.message);
+        }
+    }
+
+    //   async getUserByEmail(email, withPassword = false) {
+    //     try {
+    //       const user = withPassword
+    //         ? await this.model.scope("withPassword").findOne({
+    //             where: {
+    //               email,
+    //             },
+    //           })
+    //         : await this.model.findOne({
+    //             where: {
+    //               email,
+    //             },
+    //           });
+    //       return user;
+    //     } catch (error) {
+    //       throw new Error("Error check user existed: " + error.message);
+    //     }
+    //   }
+
+    //   async _updateOrCreateRefreshToken(user, token) {
+    //     try {
+    //       // Get expiresAt from JWT
+    //       const expiresAt = getExpiresAtFromToken(token);
+
+    //       if (user.RefreshToken) {
+    //         await user.RefreshToken.update({
+    //           userId: user.id,
+    //           token,
+    //           expiresAt,
+    //         });
+    //       } else {
+    //         await user.createRefreshToken({ token, expiresAt });
+    //       }
+    //     } catch (error) {
+    //       throw new Error("Error check user existed: " + error.message);
+    //     }
+    //   }
 }
 
 export default RoomRepository;

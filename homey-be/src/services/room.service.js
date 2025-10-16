@@ -12,37 +12,37 @@ class RoomService {
             throw new Error("Error fetching rooms: " + error.message);
         }
     }
-    // async getCategoryById(id) {
-    //   try {
-    //     return await this.repository.getCategoryById(id);
-    //   } catch (error) {
-    //     throw new Error("Error fetching category: " + error.message);
-    //   }
-    // }
+    async getRoomById(id) {
+        try {
+            return await this.repository.getRoomById(id);
+        } catch (error) {
+            throw new Error("Error fetching room: " + error.message);
+        }
+    }
 
-    // async createCategory(data) {
-    //   try {
-    //     return await this.repository.createCategory(data);
-    //   } catch (error) {
-    //     throw new Error("Error creating product: " + error.message);
-    //   }
-    // }
+    async createRoom(data) {
+        try {
+            return await this.repository.createRoom(data);
+        } catch (error) {
+            throw new Error("Error creating room: " + error.message);
+        }
+    }
 
-    // async editCategory(id, data) {
-    //   try {
-    //     return await this.repository.editCategory(id, data);
-    //   } catch (error) {
-    //     throw new Error("Error updating category: " + error.message);
-    //   }
-    // }
+    async editRoom(id, data) {
+        try {
+            return await this.repository.editRoom(id, data);
+        } catch (error) {
+            throw new Error("Error updating room: " + error.message);
+        }
+    }
 
-    // async deleteCategory(id) {
-    //   try {
-    //     return await this.repository.deleteCategory(id);
-    //   } catch (error) {
-    //     throw new Error("Error deleting category: " + error.message);
-    //   }
-    // }
+    async deleteRoom(id) {
+        try {
+            return await this.repository.deleteRoom(id);
+        } catch (error) {
+            throw new Error("Error deleting room: " + error.message);
+        }
+    }
 }
 
 export default RoomService;

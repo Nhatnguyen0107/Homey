@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Review, GetAllReviewParams } from "../types/review";
-import type { Pagination, TAny } from "../types/common";
+import type { Pagination, /*TAny*/ } from "../types/common";
 import ReviewService from "../services/reviewService";
 
 type ReviewState = {

@@ -1,6 +1,6 @@
 import axios from "./axiosClient";
 import type { BookingResDto, GetAllBookingParams } from "../types/booking";
-import type { TAny } from "../types/common";
+// import type { TAny } from "../types/common";
 
 export const BookingService = {
     async getAll(params?: GetAllBookingParams): Promise<BookingResDto> {

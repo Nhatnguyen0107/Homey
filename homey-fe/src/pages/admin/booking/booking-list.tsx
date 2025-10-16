@@ -1,7 +1,7 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, /*useState*/ } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { resetStatus, getBookingList } from "../../../redux/bookingSlice";
 import "../../../styles/admin/table.css";
 
@@ -9,7 +9,7 @@ const BookingList: React.FC = () => {
     // const [search, setSearch] = useState("");
     // const [sortAsc, setSortAsc] = useState(true);
     const bookings = useAppSelector((state) => state.booking.bookings);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     useEffect(() => {

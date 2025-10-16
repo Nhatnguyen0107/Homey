@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Promotion, GetAllPromotionParams } from "../types/promotion";
-import type { Pagination, TAny } from "../types/common";
+import type { Pagination, /*TAny*/ } from "../types/common";
 import PromotionService from "../services/promotionService";
 
 type PromotionState = {

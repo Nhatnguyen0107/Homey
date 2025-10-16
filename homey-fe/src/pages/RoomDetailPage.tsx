@@ -17,7 +17,7 @@ interface RoomDetail {
     room_name: string;
     price: number;
     description: string;
-    images: string[] | string;
+    images: string[];
     rating: number;
     room?: Room;
 }
