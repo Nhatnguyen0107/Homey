@@ -6,16 +6,26 @@ import { resetStatus, getRoomList } from "../../../redux/roomSlice";
 import "../../../styles/admin/table.css";
 
 const RoomList: React.FC = () => {
-    // const [search, setSearch] = useState("");
-    // const [sortAsc, setSortAsc] = useState(true);
     const rooms = useAppSelector((state) => state.room.rooms);
+    const pagination = useAppSelector((state) => state.room.pagination);
+    // backend nên trả về { data, pagination: { page, pageSize, totalPages, totalItems } }
+
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
+    const [page, setPage] = useState(1);
+    const pageSize = 5;
+
     useEffect(() => {
         dispatch(resetStatus());
-        dispatch(getRoomList({}));
-    }, []);
+        dispatch(getRoomList({ page, pageSize }));
+    }, [dispatch, page]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage !== page) {
+            setPage(newPage);
+        }
+    };
 
     return (
         <div className="data-container">
@@ -59,12 +69,36 @@ const RoomList: React.FC = () => {
                             </td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
 
+            {/* Pagination */}
             <div className="pagination">
-                <button className="page-btn active">1</button>
+                <button
+                    className="page-btn"
+                    disabled={page === 1}
+                    onClick={() => handlePageChange(page - 1)}
+                >
+                    Prev
+                </button>
+
+                {Array.from({ length: pagination?.totalPages || 1 }, (_, i) => (
+                    <button
+                        key={i + 1}
+                        className={`page-btn ${page === i + 1 ? "active" : ""}`}
+                        onClick={() => handlePageChange(i + 1)}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+
+                <button
+                    className="page-btn"
+                    disabled={page === pagination?.totalPages}
+                    onClick={() => handlePageChange(page + 1)}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

@@ -21,6 +21,29 @@ const CategoryList: React.FC = () => {
     dispatch(getCategoryList({}));
   }, []);
 
+  function themdanhmuc() {
+    navigate("/admin/category-form");
+  }
+
+  const editCategory = (id?: string) => {
+    if (id) {
+      navigate(`/admin/categories/category-form/${id}`);
+    }
+  };
+
+  const deleteCate = (id?: string) => {
+    if (id) {
+      dispatch(
+        deleteCategory({
+          id,
+          // cb: () => {
+          //   dispatch(getCategoryList({}));
+          // },
+        })
+      );
+    }
+  };
+
   return (
     <div className="data-container">
       <div className="data-header">
@@ -45,10 +68,10 @@ const CategoryList: React.FC = () => {
               <td>{cate.id}</td>
               <td>{cate.name}</td>
               <td>
-                <button className="btn-action edit">
+                <button className="btn-action edit" type="button" onClick={() => editCategory(cate.id)}>
                   <FaEdit /> Edit
                 </button>
-                <button className="btn-action delete">
+                <button className="btn-action delete" type="button" onClick={() => deleteCate(cate.id)}>
                   <FaTrash /> Delete
                 </button>
               </td>

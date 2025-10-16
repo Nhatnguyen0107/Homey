@@ -1,12 +1,8 @@
 // src/components/AccommodationType.tsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-<<<<<<< HEAD
-import { Link } from "react-router-dom"; // ✅ thêm dòng này
 import type { TAny } from "../types/common";
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> nguyenthien
 
 interface Category {
     id: string;
@@ -22,12 +18,7 @@ const AccommodationType: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-<<<<<<< HEAD
-
-                const res = await axios.get("http://localhost:3000/api/v1/room-types");
-=======
                 const res = await axios.get("http://localhost:3000/api/v1/categories");
->>>>>>> nguyenthien
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
                 const unique = list.filter(
                     (item: TAny, index: number, arr: TAny) => arr.findIndex((t: TAny) => t.id === item.id) === index
