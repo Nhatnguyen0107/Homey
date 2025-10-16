@@ -1,7 +1,7 @@
 // src/components/AccommodationType.tsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosClient from "../services/axiosClient";
 
 interface Category {
     id: string;
@@ -17,7 +17,7 @@ const AccommodationType: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.get("http://localhost:3000/api/v1/categories");
+                const res = await axiosClient.get("categories");
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
 
                 const parsedList = list.map((item: any) => ({
@@ -53,7 +53,7 @@ const AccommodationType: React.FC = () => {
                             <img
                                 src={
                                     c.image_url && c.image_url.length > 0
-                                        ? `http://localhost:3000${c.image_url[0]}`
+                                        ? `${c.image_url[0]}`
                                         : "/default-room.jpg"
                                 }
                                 alt={c.name}

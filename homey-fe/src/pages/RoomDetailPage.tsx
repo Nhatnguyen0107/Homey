@@ -1,9 +1,9 @@
 // src/pages/RoomDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import axiosClient from "../services/axiosClient";
 
 interface Room {
     id: string;
@@ -32,7 +32,7 @@ const RoomDetailPage: React.FC = () => {
     useEffect(() => {
         const fetchRoomDetail = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/v1/rooms/room-detail/${id}`);
+                const res = await axiosClient.get(`rooms/room-detail/${id}`);
                 const data = res.data.data || res.data;
 
                 data.images = Array.isArray(data.images)
@@ -75,7 +75,7 @@ const RoomDetailPage: React.FC = () => {
                             detail.images.map((img: string, index: number) => (
                                 <img
                                     key={index}
-                                    src={`http://localhost:3000${img}`}
+                                    src={`${img}`}
                                     alt={`Ảnh ${index + 1}`}
                                     className="rounded-lg shadow h-48 w-full object-cover"
                                 />

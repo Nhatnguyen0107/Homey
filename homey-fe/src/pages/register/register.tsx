@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../services/axiosClient";
 import { useState } from "react";
 import "./register.css";
 
@@ -42,7 +42,7 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterForm) => {
         try {
-            await axios.post("http://localhost:3000/api/v1/auth/signup", {
+            await axiosClient.post("auth/signup", {
                 userName: data.full_name,
                 email: data.email,
                 password: data.password,

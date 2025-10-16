@@ -1,7 +1,7 @@
 // src/pages/CategoryRoomsPage.tsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import axiosClient from "../services/axiosClient";
 
 
 interface Room {
@@ -20,7 +20,7 @@ const CategoryRoomsPage: React.FC = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/v1/rooms/category/${id}`);
+                const res = await axiosClient.get(`rooms/category/${id}`);
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
                 setRooms(list);
             } catch (err) {
@@ -55,7 +55,7 @@ const CategoryRoomsPage: React.FC = () => {
                             className="border rounded-lg shadow hover:shadow-lg transition p-3 block"
                         >
                             <img
-                                src={`http://localhost:3000${room.image_url}`}
+                                src={`${room.image_url}`}
                                 alt={room.name}
                                 className="w-full h-48 object-cover rounded-md"
                             />

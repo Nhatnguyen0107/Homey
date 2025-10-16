@@ -19,7 +19,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate(); // khởi tạo điều hướng
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/rooms")
+    fetch("rooms")
       .then((res) => res.json())
       .then((data) => setRooms(data))
       .catch((err) => console.error("Lỗi load rooms:", err));

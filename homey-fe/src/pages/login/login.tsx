@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import type { LoginForm } from "../../types/auth";
-import axios from "axios";
+import axiosClient from "../../services/axiosClient";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks";
 import { getMe } from "../../redux/authSlice";
@@ -32,7 +32,7 @@ const Login = () => {
 
   const onSubmit: TAny = async (data: LoginForm) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/signin", data, {
+      const res = await axiosClient.post("auth/signin", data, {
         withCredentials: true,
       });
 

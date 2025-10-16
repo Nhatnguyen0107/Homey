@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../services/axiosClient";
+
 
 interface Category {
     id: string;
@@ -24,7 +25,7 @@ const RoomList: React.FC = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const res = await axios.get("http://localhost:3000/api/v1/rooms");
+                const res = await axiosClient.get("rooms");
                 const data = Array.isArray(res.data) ? res.data : res.data.data;
 
                 const parsed = data.map((room: any) => ({
@@ -62,7 +63,7 @@ const RoomList: React.FC = () => {
                             <img
                                 src={
                                     room.image_url && room.image_url.length > 0
-                                        ? `http://localhost:3000${room.image_url[0]}`
+                                        ? `${room.image_url[0]}`
                                         : "/default-room.jpg"
                                 }
                                 alt={room.name}
