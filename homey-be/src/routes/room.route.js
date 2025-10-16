@@ -1,15 +1,16 @@
-import { Router } from "express";
-import RoomController from "../controllers/room.controller.js";
-// import middlewares from "../middlewares/index.js";
+import express from "express";
+import {
+    getAllRooms,
+    getRoomsByCategory,
+    getRoomById,
+    getRoomDetailById,
+} from "../controllers/room.controller.js";
 
-const controller = new RoomController();
-const router = Router();
-// define the about route
-router.get("/", controller.getAllRooms);
-// router.post("/", controller.createUser);
-// router.delete("/:id", controller.deleteUser);
-// router.get("/:id", controller.getUserById);
-// router.put("/:id", controller.editUser);
+const router = express.Router();
+
+router.get("/room-detail/:id", getRoomDetailById);
+router.get("/category/:categoryId", getRoomsByCategory);
+router.get("/", getAllRooms);
+router.get("/:id", getRoomById);
 
 export default router;
-

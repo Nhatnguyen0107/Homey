@@ -14,9 +14,19 @@ export default (sequelize) => {
                 type: DataTypes.STRING(100),
                 allowNull: false,
             },
+            // image_url là JSON (mảng đường dẫn) theo migration bạn seed
             image_url: {
-                type: DataTypes.STRING(255),
-                allowNull: true,
+                type: DataTypes.JSON,
+                allowNull: false,
+                defaultValue: [],
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
             },
         },
         {
@@ -24,6 +34,14 @@ export default (sequelize) => {
             timestamps: true,
         }
     );
+
+    Category.associate = (db) => {
+        // match tên foreign key trong bảng rooms (category_id)
+        Category.hasMany(db.Room, {
+            foreignKey: "category_id",
+            as: "rooms",
+        });
+    };
 
     return Category;
 };

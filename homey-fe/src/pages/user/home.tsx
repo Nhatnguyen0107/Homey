@@ -27,38 +27,34 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Search */}
-      <div className="container mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-4">Tìm chỗ nghỉ tiếp theo</h2>
-        <p className="text-gray-600 mb-6">
-          Tìm ưu đãi khách sạn, chỗ nghỉ dạng nhà và nhiều hơn nữa...
-        </p>
-        <SearchBar />
-      </div>
+      <div className="container mx-auto p-6 space-y-10">
+        {/* Search */}
+        <section>
+          <h2 className="text-3xl font-bold mb-4">Tìm chỗ nghỉ tiếp theo</h2>
+          <p className="text-gray-600 mb-6">
+            Tìm ưu đãi khách sạn, chỗ nghỉ dạng nhà và nhiều hơn nữa...
+          </p>
+          <SearchBar />
+        </section>
 
-      {/* Offers */}
-      <div className="container mx-auto p-6">
-        <Offers />
-      </div>
+        {/* Offers */}
+        <section>
+          <Offers />
+        </section>
 
-      {/* Destinations */}
-      <div className="container mx-auto p-6">
-        <Destinations />
-      </div>
+        {/* Destinations */}
+        <section>
+          <Destinations />
+        </section>
 
-      {/* Accommodation Types */}
-      <div className="container mx-auto p-6">
-        <AccommodationType />
-      </div>
+        {/* Accommodation Types (Danh mục phòng) */}
+        <div className="container mx-auto p-6">
+          <AccommodationType />
+        </div>
 
-      {/* Rooms */}
-      <div className="container mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-4">Danh sách phòng</h2>
-        <RoomList />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* sửa lại và bỏ bảng room_type */}
-
+        {/* Rooms (Danh sách phòng) */}
+        <div className="container mx-auto p-6">
+          <RoomList />
         </div>
       </div>
 
