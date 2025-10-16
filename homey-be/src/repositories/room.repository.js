@@ -1,65 +1,64 @@
-import { Op, QueryTypes } from "sequelize";
+// src/repositories/room.repository.js
+import { Op } from "sequelize";
 import db from "../database/models/index.js";
-import { v4 as uuidv4 } from "uuid";
-import { getExpiresAtFromToken } from "../helpers/jwt.js";
 
 class RoomRepository {
     constructor() {
-        this.model = db.Room; // Initialize the User model
+        this.model = db.Room;
     }
 
     async getAllRooms(req) {
         try {
-            const {
-                page = 1,
-                pageSize = 5,
-                search = "",
-                sortField = "createdAt",
-                sortOrder = "DESC",
-            } = req.query;
+            // Ép kiểu và fallback giá trị mặc định
+            const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
+            const pageSize = Number(req.query.pageSize) > 0 ? Number(req.query.pageSize) : 6;
+            const search = req.query.search ? String(req.query.search).trim() : "";
+            const sortField = req.query.sortField || "createdAt";
+            const sortOrder = req.query.sortOrder || "DESC";
 
-            const limit = Math.max(parseInt(pageSize), 1);
-            const offset = (Math.max(parseInt(page), 1) - 1) * limit;
+            const limit = pageSize;
+            const offset = (page - 1) * limit;
 
-            // Đếm tổng số user thỏa điều kiện search
-            const count = await this.model.count({
-                where: {
-                    name: {
-                        [Op.like]: `%${search}%`,
-                    },
-                },
+            // Xác thực sortField, sortOrder
+            const validSortFields = ["createdAt", "name", "price"];
+            const validSortOrders = ["ASC", "DESC"];
+            const safeSortField = validSortFields.includes(sortField) ? sortField : "createdAt";
+            const safeSortOrder = validSortOrders.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : "DESC";
+
+            // Truy vấn dữ liệu
+            const { count, rows } = await this.model.findAndCountAll({
+                // ⚠️ bỏ điều kiện where & include đi để test
+                order: [[safeSortField, safeSortOrder]],
+                limit,
+                offset,
+                attributes: ["id", "name", "description", "price", "image_url", "createdAt", "updatedAt"],
             });
 
-            // Lấy danh sách user
-            const rows = await db.sequelize.query(
-                `
-          SELECT id, name, description, price, image_url, stock, createdAt, updatedAt
-          FROM rooms
-          WHERE name LIKE $search
-          ORDER BY ${sortField} ${sortOrder}
-          LIMIT $limit OFFSET $offset
-        `,
-                {
-                    bind: {
-                        limit,
-                        offset,
-                        search: `%${search}%`,
-                    },
-                    type: QueryTypes.SELECT,
+            // Xử lý image_url dạng JSON
+            const data = rows.map((r) => {
+                const room = r.toJSON ? r.toJSON() : r;
+                if (room.image_url && typeof room.image_url === "string") {
+                    try {
+                        room.image_url = JSON.parse(room.image_url);
+                    } catch (e) {
+                        room.image_url = [room.image_url];
+                    }
                 }
-            );
+                return room;
+            });
 
             return {
-                data: rows,
+                data,
                 pagination: {
                     total: count,
-                    page: parseInt(page),
+                    page,
                     pageSize: limit,
-                    totalPages: Math.ceil(count / limit) || 1,
+                    totalPages: Math.max(1, Math.ceil(count / limit)),
                 },
             };
         } catch (error) {
-            throw new Error("Error fetching rooms: " + error.message);
+            console.error("RoomRepository Error:", error);
+            throw new Error("Error fetching rooms: " + (error.message || error));
         }
     }
 

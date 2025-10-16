@@ -1,12 +1,13 @@
 // src/services/axiosClient.ts
 import axios from "axios";
+import { API_URL } from "../constants";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:3000/api/v1/",
+  baseURL: API_URL,
   withCredentials: true,
 });
 
-// ✅ Tự động gắn token vào header
+// Tự động gắn token vào header
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {

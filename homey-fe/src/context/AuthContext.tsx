@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/axios";
 import type { User, AuthContextType } from "../types/auth";
 import type { TAny } from "../types/common";
+import axiosClient from "../services/axiosClient";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const fetchUser = async () => {
         try {
-            const res = await api.get<User>("/auth/me");
+            const res = await axiosClient.get<User>("/auth/me");
             setUser(res.data);
         } catch {
             setUser(null);
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login: TAny = async (email: string, password: string) => {
-        const res = await api.post<{ token: string; user: User }>("/auth/signin", {
+        const res = await axiosClient.post<{ token: string; user: User }>("/auth/signin", {
             email,
             password,
         });
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await api.post("/auth/signout");
+            await axiosClient.post("/auth/signout");
         } catch {
             // ignore nếu backend không trả về gì
         }

@@ -1,3 +1,4 @@
+// src/controllers/room.controller.js
 import RoomService from "../services/room.service.js";
 import BaseController from "./base.controller.js";
 
@@ -59,6 +60,24 @@ class RoomController extends BaseController {
         } catch (error) {
             console.error("Error dalete room:", error);
             return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    async getRoomDetailById(req, res) {
+        try {
+            const result = await roomService.getRoomDetailById(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    async getRoomsByCategory(req, res) {
+        try {
+            const result = await roomService.getRoomsByCategory(req.params.categoryId);
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 }

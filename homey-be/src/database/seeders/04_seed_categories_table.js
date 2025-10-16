@@ -12,25 +12,24 @@ export async function up(queryInterface) {
             {
                 id: uuidv4(),
                 name: "Hotel",
-                image_url:
-
-                    "/uploads/img/hotel.jpg",
+                image_url: JSON.stringify(["/uploads/img/hotel.jpg"]),
                 createdAt: now,
                 updatedAt: now,
             },
+
             {
                 id: uuidv4(),
                 name: "Homestay",
-                image_url:
-                    "/uploads/img/homestay.jpg",
+                image_url: JSON.stringify(["/uploads/img/homestay.jpg"]),
+
                 createdAt: now,
                 updatedAt: now,
             },
             {
                 id: uuidv4(),
                 name: "Resort",
-                image_url:
-                    "/uploads/img/resort.webp",
+                image_url: JSON.stringify(["/uploads/img/resort.webp"]),
+
                 createdAt: now,
                 updatedAt: now,
             },

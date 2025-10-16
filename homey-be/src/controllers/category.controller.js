@@ -10,11 +10,11 @@ class CategoryController extends BaseController {
 
   async getAllCategories(req, res) {
     try {
-      const categories = await this.service.getAllCategories(req);
-      res.json(categories);
+      const categories = await categoryService.getAllCategories(req);
+      res.status(200).json(categories);
     } catch (error) {
       console.error("Error fetching categories:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ message: "Error fetching categories" });
     }
   }
 
