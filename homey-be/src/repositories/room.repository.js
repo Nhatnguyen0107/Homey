@@ -63,83 +63,44 @@ class RoomRepository {
         }
     }
 
-    //   async getUserById(id, includeRefreshToken = false) {
-    //     try {
-    //       return await (includeRefreshToken
-    //         ? this.model.findByPk(id, { include: db.RefreshToken })
-    //         : db.sequelize.query("SELECT * from users WHERE id = $id", {
-    //             bind: { id },
-    //             type: QueryTypes.SELECT,
-    //           }));
-    //     } catch (error) {
-    //       throw new Error("Error fetching user: " + error.message);
-    //     }
-    //   }
+    async getRoomById(id) {
+        try {
+            return await this.model.findByPk(id);
+        } catch (error) {
+            throw new Error("Error fetching room: " + error.message);
+        }
+    }
 
-    //   async createUser(userData) {
-    //     try {
-    //       return await db.sequelize.query(
-    //         "INSERT INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)",
-    //         {
-    //           replacements: {
-    //             id: uuidv4(),
-    //             name: userData.name,
-    //             email: userData.email,
-    //             passwordHash: userData.passwordHash,
-    //           },
-    //           type: QueryTypes.INSERT,
-    //         }
-    //       );
-    //     } catch (error) {
-    //       throw new Error("Error creating user: " + error.message);
-    //     }
-    //   }
+    async createRoom(data) {
+        try {
+            return await this.model.create(data);
+        } catch (error) {
+            console.error("❌ Error creating room:", error);
+            throw new Error("Error creating room: " + error.message);
+        }
+    }
 
-    //   async updateUser(id, data, updateRefreshToken = false) {
-    //     const { refreshToken: token, ...userData } = data;
-    //     try {
-    //       const user = await this.getUserById(id, updateRefreshToken);
-    //       if (!user) throw new Error("User not found");
+    async editRoom(id, data) {
+        try {
+            const room = await this.getRoomById(id);
+            if (!room) throw new Error("Room not found");
+            return await room.update({
+                name: data.name,
+            });
+        } catch (error) {
+            throw new Error("Error updating room: " + error.message);
+        }
+    }
 
-    //       if (updateRefreshToken) {
-    //         await this._updateOrCreateRefreshToken(user, token);
-    //         return user;
-    //       } else {
-    //         const result = await db.sequelize.query(
-    //           `UPDATE users
-    // SET name=:name, email=:email, passwordHash=:passwordHash
-    // WHERE id=:id`,
-    //           {
-    //             replacements: {
-    //               id,
-    //               name: userData.name,
-    //               email: userData.email,
-    //               passwordHash: "",
-    //             },
-    //             type: QueryTypes.UPDATE,
-    //           }
-    //         );
-    //         return result;
-    //       }
-    //     } catch (error) {
-    //       throw new Error("Error updating user: " + error.message);
-    //     }
-    //   }
-
-    //   async deleteUser(id) {
-    //     try {
-    //       const user = await this.getUserById(id);
-    //       if (!user) throw new Error("User not found");
-    //       return await db.sequelize.query(`DELETE FROM users WHERE id=:id`, {
-    //         replacements: {
-    //           id,
-    //         },
-    //         type: QueryTypes.DELETE,
-    //       });
-    //     } catch (error) {
-    //       throw new Error("Error deleting user: " + error.message);
-    //     }
-    //   }
+    async deleteRoom(id) {
+        try {
+            const room = await this.getRoomById(id);
+            if (!room) throw new Error("Room not found");
+            return await room.destroy();
+        } catch (error) {
+            throw new Error("Error deleting room: " + error.message);
+        }
+    }
 
     //   async getUserByEmail(email, withPassword = false) {
     //     try {

@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
@@ -21,13 +21,13 @@ const CategoryList: React.FC = () => {
     dispatch(getCategoryList({}));
   }, []);
 
-  function themdanhmuc() {
+  function addCategory() {
     navigate("/admin/category-form");
   }
 
   const editCategory = (id?: string) => {
     if (id) {
-      navigate(`/admin/categories/category-form/${id}`);
+      navigate(`/admin/category-form/${id}`);
     }
   };
 
@@ -47,7 +47,16 @@ const CategoryList: React.FC = () => {
   return (
     <div className="data-container">
       <div className="data-header">
-        <h2>User List</h2>
+        <div>
+          <div className="title-name">
+            <h2>Categories List</h2>
+          </div>
+          <div>
+            <button className="btn-add" onClick={addCategory}>
+              <FaPlus /> Add Category
+            </button>
+          </div>
+        </div>
         <div className="search-box">
           <FaSearch className="search-icon" />
           <input type="text" placeholder="Search categories..." />

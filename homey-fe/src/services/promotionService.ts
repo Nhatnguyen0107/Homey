@@ -1,6 +1,6 @@
 import axios from "./axiosClient";
 import type { PromotionResDto, GetAllPromotionParams } from "../types/promotion";
-import type { TAny } from "../types/common";
+// import type { TAny } from "../types/common";
 
 export const PromotionService = {
     async getAll(params?: GetAllPromotionParams): Promise<PromotionResDto> {

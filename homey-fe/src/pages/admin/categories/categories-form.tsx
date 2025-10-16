@@ -12,6 +12,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import type { TAny } from "../../../types/common";
 
+import "../../../styles/admin/form.css";
+
 const schema = yup
     .object({
         name: yup.string().required(),
@@ -62,16 +64,20 @@ const CategoriesForm = () => {
     }, []);
 
     return (
-        <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label htmlFor="">Name</label>
-                    <input {...register("name")} type="text" className="border-1" />
-                    <p>{errors.name?.message}</p>
+        <div className="form-container">
+            <form onSubmit={handleSubmit(onSubmit)} className="category-form">
+                <div className="form-group">
+                    <label htmlFor="name">Category Name</label>
+                    <input {...register("name")} type="text" id="name" />
+                    <p className="error-message">{errors.name?.message}</p>
                 </div>
-                <button type="submit">{id ? "Update" : "Create"}</button>
+
+                <button type="submit" className="btn-submit">
+                    {id ? "Update" : "Create"}
+                </button>
             </form>
         </div>
+
     );
 };
 export default CategoriesForm;

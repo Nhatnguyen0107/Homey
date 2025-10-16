@@ -1,7 +1,7 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, /*useState*/ } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "../../../styles/admin/table.css";
 import { resetStatus, getReviewList } from "../../../redux/reviewSlice";
 
@@ -10,7 +10,7 @@ const ReviewList: React.FC = () => {
     // const [sortAsc, setSortAsc] = useState(true);
 
     const reviews = useAppSelector((state) => state.review.reviews);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     useEffect(() => {

@@ -17,50 +17,50 @@ class RoomController extends BaseController {
         }
     }
 
-    // async getCategoryById(req, res) {
-    //   try {
-    //     const { id } = req.params;
-    //     const category = await this.service.getCategoryById(id);
-    //     res.json(category);
-    //   } catch (error) {
-    //     console.error("Error fetching category:", error);
-    //     return res.status(500).json({ error: "Internal Server Error" });
-    //   }
-    // }
+    async getRoomById(req, res) {
+        try {
+            const { id } = req.params;
+            const room = await this.service.getRoomById(id);
+            res.json(room);
+        } catch (error) {
+            console.error("Error fetching room:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
 
-    // async createCategory(req, res) {
-    //   try {
-    //     const data = req.body;
-    //     await this.service.createCategory(data);
-    //     return res.status(200).json({ status: true });
-    //   } catch (error) {
-    //     console.error("Error creating category:", error);
-    //     return res.status(500).json({ error: "Internal Server Error" });
-    //   }
-    // }
+    async createRoom(req, res) {
+        try {
+            const data = req.body;
+            await this.service.createRoom(data);
+            return res.status(200).json({ status: true });
+        } catch (error) {
+            console.error("Error creating room:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
 
-    // async editCategory(req, res) {
-    //   try {
-    //     const { id } = req.params;
-    //     const data = req.body;
-    //     await this.service.editCategory(id, data);
-    //     return res.status(200).json({ status: true });
-    //   } catch (error) {
-    //     console.error("Error creating category:", error);
-    //     return res.status(500).json({ error: "Internal Server Error" });
-    //   }
-    // }
+    async editRoom(req, res) {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            await this.service.editRoom(id, data);
+            return res.status(200).json({ status: true });
+        } catch (error) {
+            console.error("Error creating room:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
 
-    // async deleteCategory(req, res) {
-    //   try {
-    //     const { id } = req.params;
-    //     await this.service.deleteCategory(id);
-    //     return res.status(200).json({ status: true });
-    //   } catch (error) {
-    //     console.error("Error dalete category:", error);
-    //     return res.status(500).json({ error: "Internal Server Error" });
-    //   }
-    // }
+    async deleteRoom(req, res) {
+        try {
+            const { id } = req.params;
+            await this.service.deleteRoom(id);
+            return res.status(200).json({ status: true });
+        } catch (error) {
+            console.error("Error dalete room:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
 }
 
 export default RoomController;

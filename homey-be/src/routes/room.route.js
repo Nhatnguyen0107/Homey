@@ -6,10 +6,10 @@ const controller = new RoomController();
 const router = Router();
 // define the about route
 router.get("/", controller.getAllRooms);
-// router.post("/", controller.createUser);
-// router.delete("/:id", controller.deleteUser);
-// router.get("/:id", controller.getUserById);
-// router.put("/:id", controller.editUser);
+router.post("/", controller.createRoom);
+router.delete("/:id", controller.deleteRoom);
+router.get("/:id", controller.getRoomById);
+router.put("/:id", controller.editRoom);
 
 export default router;
 

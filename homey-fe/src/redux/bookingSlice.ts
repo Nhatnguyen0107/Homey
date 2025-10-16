@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Booking, GetAllBookingParams } from "../types/booking";
-import type { Pagination, TAny } from "../types/common";
+import type { Pagination, /*TAny*/ } from "../types/common";
 import BookingService from "../services/bookingService";
 
 type BookingState = {

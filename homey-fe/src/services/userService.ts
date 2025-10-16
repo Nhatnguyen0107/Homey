@@ -1,6 +1,6 @@
 import axios from "./axiosClient";
 import type { UserResDto, GetAllUserParams } from "../types/user";
-import type { TAny } from "../types/common";
+// import type { TAny } from "../types/common";
 
 export const UserService = {
     async getAll(params?: GetAllUserParams): Promise<UserResDto> {

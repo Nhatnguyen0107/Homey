@@ -19,7 +19,7 @@ import { useAuth } from "./hooks/useAuth";
 import NotFound from "./NotFound";
 import Profile from "./pages/admin/setting/profile";
 import CategoriesList from "./pages/admin/categories/categories-list";
-// import CategoriesForm from "./pages/admin/categories/categories-form";
+import CategoriesForm from "./pages/admin/categories/categories-form";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import AccommodationType from "./components/AccommodationType";
@@ -73,8 +73,8 @@ function App() {
             <Route path="promotion-list" element={<PromotionList />} />
             <Route path="review-list" element={<ReviewList />} />
             <Route path="category-list" element={<CategoriesList />} />
-            {/* <Route path="category-form" element={<CategoriesForm />} />
-            <Route path="category-form/:id" element={<CategoriesForm />} /> */}
+            <Route path="category-form" element={<CategoriesForm />} />
+            <Route path="category-form/:id" element={<CategoriesForm />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Route>

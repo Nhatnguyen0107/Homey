@@ -1,7 +1,7 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, /*useState*/ } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { resetStatus, getPromotionList } from "../../../redux/promotionSlice";
 import "../../../styles/admin/table.css";
 
@@ -10,7 +10,7 @@ const PromotionList: React.FC = () => {
     // const [sortAsc, setSortAsc] = useState(true);
 
     const promotions = useAppSelector((state) => state.promotion.promotions);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
