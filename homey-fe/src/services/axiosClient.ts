@@ -1,13 +1,17 @@
-// src/services/axiosClient.ts
 import axios from "axios";
-import { API_URL } from "../constants";
 
+// Dùng trực tiếp URL API backend của bạn trên Render
 const axiosClient = axios.create({
-  baseURL: API_URL,
+  // baseURL: "http://localhost:3000/api/v1",
+
+  baseURL: "https://demo-be-hhq0.onrender.com/api/v1",
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Tự động gắn token vào header
+
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {

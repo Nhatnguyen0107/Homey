@@ -18,7 +18,7 @@ const AccommodationType: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axiosClient.get("categories");
+                const res = await axiosClient.get("/categories");
                 const list = Array.isArray(res.data) ? res.data : res.data.data;
 
                 const parsedList = list.map((item: TAny) => ({

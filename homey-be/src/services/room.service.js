@@ -1,47 +1,38 @@
+// src/services/room.service.js
 import RoomRepository from "../repositories/room.repository.js";
 
 class RoomService {
     constructor() {
-        this.repository = new RoomRepository();
+        this.roomRepository = new RoomRepository();
     }
 
     async getAllRooms(req) {
-        try {
-            return await this.repository.getAllRooms(req);
-        } catch (error) {
-            throw new Error("Error fetching rooms: " + error.message);
-        }
+        return await this.roomRepository.getAllRooms(req);
     }
+
     async getRoomById(id) {
-        try {
-            return await this.repository.getRoomById(id);
-        } catch (error) {
-            throw new Error("Error fetching room: " + error.message);
-        }
+        return await this.roomRepository.getRoomById(id);
+    }
+
+
+    async getRoomDetailById(id) {
+        return await this.roomRepository.getRoomDetailById(id);
+    }
+
+    async getRoomsByCategory(categoryId) {
+        return await this.roomRepository.getRoomsByCategory(categoryId);
     }
 
     async createRoom(data) {
-        try {
-            return await this.repository.createRoom(data);
-        } catch (error) {
-            throw new Error("Error creating room: " + error.message);
-        }
+        return await this.roomRepository.createRoom(data);
     }
 
     async editRoom(id, data) {
-        try {
-            return await this.repository.editRoom(id, data);
-        } catch (error) {
-            throw new Error("Error updating room: " + error.message);
-        }
+        return await this.roomRepository.editRoom(id, data);
     }
 
     async deleteRoom(id) {
-        try {
-            return await this.repository.deleteRoom(id);
-        } catch (error) {
-            throw new Error("Error deleting room: " + error.message);
-        }
+        return await this.roomRepository.deleteRoom(id);
     }
 }
 
