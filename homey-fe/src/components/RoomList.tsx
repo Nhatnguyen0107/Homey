@@ -25,9 +25,13 @@ const RoomList: React.FC = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const res = await axiosClient.get("rooms");
-                const data = Array.isArray(res.data) ? res.data : res.data.data;
+                const res = await axiosClient.get("/rooms");
+                console.log("Rooms API response:", res);
 
+                // Dữ liệu thật nằm sâu 3 cấp: res.data.data.data
+                const data = res?.data?.data?.data || [];
+
+                // Chuẩn hóa lại field image_url
                 const parsed = data.map((room: any) => ({
                     ...room,
                     image_url: Array.isArray(room.image_url)
@@ -36,6 +40,7 @@ const RoomList: React.FC = () => {
                 }));
 
                 setRooms(parsed);
+                console.log("Parsed rooms:", parsed);
             } catch (err) {
                 console.error("Lỗi tải rooms:", err);
             } finally {

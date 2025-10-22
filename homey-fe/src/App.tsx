@@ -48,14 +48,14 @@ function App() {
         {/* điều hướng tới trang con loại phòng */}
         <Route path="/" element={<Home />} />
         <Route path="/" element={<AccommodationType />} />
-        <Route path="/categories/:id" element={<CategoryRoomsPage />} />
+        <Route path="/categories/:categoryId" element={<CategoryRoomsPage />} />
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />
 
 
         {/* Public routes */}
         <Route path="/" element={<Home />} />
 
-        <Route path="/room/:id" element={<RoomDetailPage />} />
+        <Route path="/rooms/:id" element={<RoomDetailPage />} />
 
         <Route element={<PublicRoute />}>
 

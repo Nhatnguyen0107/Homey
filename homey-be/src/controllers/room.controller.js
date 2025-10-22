@@ -1,85 +1,93 @@
 // src/controllers/room.controller.js
 import RoomService from "../services/room.service.js";
-import BaseController from "./base.controller.js";
 
-class RoomController extends BaseController {
+class RoomController {
     constructor() {
-        super();
-        this.service = new RoomService();
+        this.roomService = new RoomService();
     }
 
-    async getAllRooms(req, res) {
+
+    getAllRooms = async (req, res) => {
         try {
-            const rooms = await this.service.getAllRooms(req);
-            res.json(rooms);
+            const rooms = await this.roomService.getAllRooms(req);
+            res.status(200).json({ success: true, data: rooms });
         } catch (error) {
-            console.error("Error fetching Rooms:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error("❌ Lỗi khi lấy danh sách phòng:", error);
+            res.status(500).json({ success: false, message: error.message });
         }
-    }
+    };
 
-    async getRoomById(req, res) {
-        try {
-            const { id } = req.params;
-            const room = await this.service.getRoomById(id);
-            res.json(room);
-        } catch (error) {
-            console.error("Error fetching room:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
-    }
 
-    async createRoom(req, res) {
-        try {
-            const data = req.body;
-            await this.service.createRoom(data);
-            return res.status(200).json({ status: true });
-        } catch (error) {
-            console.error("Error creating room:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
-    }
-
-    async editRoom(req, res) {
+    getRoomById = async (req, res) => {
         try {
             const { id } = req.params;
-            const data = req.body;
-            await this.service.editRoom(id, data);
-            return res.status(200).json({ status: true });
+            const room = await this.roomService.getRoomById(id);
+            if (!room)
+                return res.status(404).json({ success: false, message: "Không tìm thấy phòng" });
+            res.status(200).json({ success: true, data: room });
         } catch (error) {
-            console.error("Error creating room:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error("❌ Lỗi khi lấy phòng theo ID:", error);
+            res.status(500).json({ success: false, message: error.message });
         }
-    }
+    };
 
-    async deleteRoom(req, res) {
+    //  Lấy chi tiết phòng theo room_id (trang RoomDetailPage.tsx gọi API này)
+    getRoomDetailById = async (req, res) => {
         try {
             const { id } = req.params;
-            await this.service.deleteRoom(id);
-            return res.status(200).json({ status: true });
+            const detail = await this.roomService.getRoomDetailById(id);
+            if (!detail)
+                return res.status(404).json({ success: false, message: "Không tìm thấy chi tiết phòng" });
+            res.status(200).json({ success: true, data: detail });
         } catch (error) {
-            console.error("Error dalete room:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error("❌ Lỗi khi lấy chi tiết phòng:", error);
+            res.status(500).json({ success: false, message: error.message });
         }
-    }
+    };
 
-    async getRoomDetailById(req, res) {
-        try {
-            const result = await roomService.getRoomDetailById(req.params.id);
-            res.status(200).json(result);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
 
-    async getRoomsByCategory(req, res) {
+    getRoomsByCategory = async (req, res) => {
         try {
-            const result = await roomService.getRoomsByCategory(req.params.categoryId);
-            res.status(200).json(result);
+            const { categoryId } = req.params;
+            const rooms = await this.roomService.getRoomsByCategory(categoryId);
+            res.status(200).json({ success: true, data: rooms });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            console.error("❌ Lỗi khi lấy phòng theo danh mục:", error);
+            res.status(500).json({ success: false, message: error.message });
         }
-    }
+    };
+
+    createRoom = async (req, res) => {
+        try {
+            const newRoom = await this.roomService.createRoom(req.body);
+            res.status(201).json({ success: true, data: newRoom });
+        } catch (error) {
+            console.error("❌ Lỗi khi tạo phòng:", error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    };
+
+    editRoom = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const updatedRoom = await this.roomService.editRoom(id, req.body);
+            res.status(200).json({ success: true, data: updatedRoom });
+        } catch (error) {
+            console.error("❌ Lỗi khi cập nhật phòng:", error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    };
+
+    deleteRoom = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const deletedRoom = await this.roomService.deleteRoom(id);
+            res.status(200).json({ success: true, data: deletedRoom });
+        } catch (error) {
+            console.error("❌ Lỗi khi xóa phòng:", error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    };
 }
 
 export default RoomController;
