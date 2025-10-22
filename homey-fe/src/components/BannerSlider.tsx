@@ -10,7 +10,7 @@ const BannerSlider: React.FC = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrent((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
-        }, 5000); // 5 giây đổi ảnh
+        }, 3000); // 5 giây đổi ảnh
         return () => clearInterval(interval);
     }, [banners.length]);
 

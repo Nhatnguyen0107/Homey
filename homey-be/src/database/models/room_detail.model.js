@@ -3,17 +3,10 @@ import { Model, DataTypes } from "sequelize";
 export default (sequelize) => {
     class RoomDetail extends Model {
         static associate(models) {
-            // ❌ Cũ: alias là "room"
-            // RoomDetail.belongsTo(models.Room, {
-            //     foreignKey: "room_id",
-            //     as: "room",
-            //     onDelete: "CASCADE",
-            // });
-
-            // ✅ Đổi alias đồng bộ với Room model ("room_detail")
+            // Mỗi bản ghi chi tiết thuộc về 1 phòng
             RoomDetail.belongsTo(models.Room, {
                 foreignKey: "room_id",
-                as: "room_detail",
+                as: "room", // ✅ alias phải là "room"
                 onDelete: "CASCADE",
             });
         }

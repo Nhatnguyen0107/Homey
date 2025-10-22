@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../assets/img/lg.png";
+import Logo from "../assets/img/lg.svg";
 import { useAppDispatch } from "../hooks";
 import { useAuth } from "../hooks/useAuth";
 import { signout } from "../redux/authSlice";
@@ -20,7 +20,7 @@ const Header: React.FC = () => {
     return (
         <header className="bg-blue-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">
-                <img src={Logo} alt="logo" className="h-20 w-50 object-contain" />
+                <img src={Logo} alt="logo" className="h-10 w-50 object-contain" />
 
                 <div className="space-x-4 flex items-center">
                     {isAuthenticated && user ? (

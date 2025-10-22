@@ -7,7 +7,7 @@ class RoomRepository {
         this.model = db.Room;
     }
 
-    // ✅ Lấy tất cả phòng (có phân trang)
+    //  Lấy tất cả phòng (có phân trang)
     async getAllRooms(req) {
         try {
             const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
@@ -56,7 +56,7 @@ class RoomRepository {
         }
     }
 
-    // ✅ Lấy phòng theo ID
+    // Lấy phòng theo ID
     async getRoomById(id) {
         try {
             const room = await this.model.findByPk(id, {
@@ -84,7 +84,7 @@ class RoomRepository {
         }
     }
 
-    // ✅ Lấy chi tiết phòng theo room_id
+    // Lấy chi tiết phòng theo room_id
     async getRoomDetailById(roomId) {
         try {
             const detail = await db.RoomDetail.findOne({
@@ -92,7 +92,7 @@ class RoomRepository {
                 include: [
                     {
                         model: db.Room,
-                        as: "room",
+                        as: "room", // alias đúng theo model
                         include: [
                             { model: db.Category, as: "category", attributes: ["id", "name"] },
                             { model: db.City, as: "city", attributes: ["id", "name"] },
@@ -108,6 +108,7 @@ class RoomRepository {
             throw new Error("Error fetching room detail: " + error.message);
         }
     }
+
 
     // ✅ Lấy danh sách phòng theo category_id
     async getRoomsByCategory(categoryId) {
@@ -144,7 +145,7 @@ class RoomRepository {
         }
     }
 
-    // ✅ Tạo mới phòng
+    //  Tạo mới phòng
     async createRoom(data) {
         try {
             if (!data.category_id) throw new Error("category_id là bắt buộc");

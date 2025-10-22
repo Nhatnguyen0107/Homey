@@ -22,7 +22,6 @@ interface BookingContextType {
     resetBooking: () => void;
 }
 
-// Giá trị mặc định
 const BookingContext = createContext<BookingContextType>({
     booking: {
         room: null,
@@ -36,7 +35,6 @@ const BookingContext = createContext<BookingContextType>({
     resetBooking: () => { },
 });
 
-// Provider
 export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [booking, setBooking] = useState<BookingInfo>({
         room: null,
@@ -46,7 +44,6 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         totalPrice: 0,
     });
 
-    // Khi chọn phòng trong trang chi tiết
     const selectRoom = (room: RoomInfo) => {
         setBooking((prev) => ({
             ...prev,
@@ -55,7 +52,6 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }));
     };
 
-    // Khi cập nhật ngày / số khách / tính tiền
     const updateBooking = (info: Partial<BookingInfo>) => {
         setBooking((prev) => ({
             ...prev,
@@ -63,7 +59,6 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }));
     };
 
-    // Reset khi đặt phòng xong
     const resetBooking = () => {
         setBooking({
             room: null,
@@ -75,13 +70,10 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     return (
-        <BookingContext.Provider
-            value={{ booking, selectRoom, updateBooking, resetBooking }}
-        >
+        <BookingContext.Provider value={{ booking, selectRoom, updateBooking, resetBooking }}>
             {children}
         </BookingContext.Provider>
     );
 };
 
-// Hook để gọi trong component
 export const useBooking = () => useContext(BookingContext);

@@ -8,52 +8,45 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
+    // Lấy thông tin người dùng hiện tại
     const fetchUser = async () => {
         try {
             const res = await axiosClient.get<User>("/auth/me");
             setUser(res.data);
-        } catch {
+        } catch (err) {
+            console.warn(" Không thể lấy user:", err);
             setUser(null);
         }
     };
 
+    // ✅ Chạy khi load trang hoặc có token
     useEffect(() => {
         const token = localStorage.getItem("access_token");
         if (token) {
             fetchUser();
         } else {
-            console.warn("Không có token — bỏ qua auth để hiển thị trang");
+            console.log(" Không có token trong localStorage");
         }
     }, []);
 
+    // ✅ Hàm đăng nhập
     const login: TAny = async (email: string, password: string) => {
         const res = await axiosClient.post<{ token: string; user: User }>("/auth/signin", {
             email,
             password,
         });
-
-        // Lưu token vào localStorage
-        localStorage.setItem("token", res.data.token);
-
+        localStorage.setItem("access_token", res.data.token);
         setUser(res.data.user);
     };
 
-    // const signup = async (
-    //     userName: string,
-    //     email: string,
-    //     password: string,
-    //     phone: string
-    // ) => {
-    //     await api.post("/auth/signup", { userName, email, password, phone });
-    // };
-
+    // ✅ Hàm đăng xuất
     const logout = async () => {
         try {
             await axiosClient.post("/auth/signout");
         } catch {
-            // ignore nếu backend không trả về gì
+            // ignore nếu backend không trả gì
         }
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         setUser(null);
     };
 
