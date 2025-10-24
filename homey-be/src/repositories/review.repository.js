@@ -21,27 +21,26 @@ class ReviewRepository {
             const limit = Math.max(parseInt(pageSize), 1);
             const offset = (Math.max(parseInt(page), 1) - 1) * limit;
 
-            // Đếm tổng số user thỏa điều kiện search
+            // Đếm tổng review theo comment
             const count = await this.model.count({
                 where: {
-                    id: {
+                    comment: {
                         [Op.like]: `%${search}%`,
                     },
                 },
             });
 
-            // Lấy danh sách reivew
+            // Lấy danh sách review có phân trang
             const rows = await db.sequelize.query(
                 `
-          SELECT id, room_id, user_id, rating, comment, createdAt, updatedAt
-          FROM reviews
-        `,
+      SELECT id, room_id, user_id, rating, comment, createdAt, updatedAt
+      FROM reviews
+      WHERE comment LIKE :search
+      ORDER BY ${sortField} ${sortOrder}
+      LIMIT :limit OFFSET :offset
+      `,
                 {
-                    bind: {
-                        limit,
-                        offset,
-                        search: `%${search}%`,
-                    },
+                    replacements: { search: `%${search}%`, limit, offset },
                     type: QueryTypes.SELECT,
                 }
             );
@@ -56,7 +55,7 @@ class ReviewRepository {
                 },
             };
         } catch (error) {
-            throw new Error("Error fetching rooms: " + error.message);
+            throw new Error("Error fetching reviews: " + error.message);
         }
     }
 

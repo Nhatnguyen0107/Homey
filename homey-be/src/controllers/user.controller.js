@@ -31,7 +31,19 @@ class UserController extends BaseController {
   async createUser(req, res) {
     try {
       const userData = req.body;
-      await this.service.createUser(userData);
+      const newUser = await this.service.createUser(userData);
+      return res.status(201).json(newUser);
+    } catch (error) {
+      console.error("Error creating user:", error); // log chi tiết
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  async updateUser(req, res) {
+    try {
+      const { id } = req.params;
+      const userData = req.body;
+      await this.service.updateUser(id, userData);
       return res.status(200).json({ status: true });
     } catch (error) {
       console.error("Error creating user:", error);
@@ -39,28 +51,16 @@ class UserController extends BaseController {
     }
   }
 
-  // async updateUser(req, res) {
-  //   try {
-  //     const { id } = req.params;
-  //     const userData = req.body;
-  //     await this.service.updateUser(id, userData);
-  //     return res.status(200).json({ status: true });
-  //   } catch (error) {
-  //     console.error("Error creating user:", error);
-  //     return res.status(500).json({ error: "Internal Server Error" });
-  //   }
-  // }
-
-  // async deleteUser(req, res) {
-  //   try {
-  //     const { id } = req.params;
-  //     await this.service.deleteUser(id);
-  //     return res.status(200).json({ status: true });
-  //   } catch (error) {
-  //     console.error("Error creating user:", error);
-  //     return res.status(500).json({ error: "Internal Server Error" });
-  //   }
-  // }
+  async deleteUser(req, res) {
+    try {
+      const { id } = req.params;
+      await this.service.deleteUser(id);
+      return res.status(200).json({ status: true });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 }
 
 export default UserController;

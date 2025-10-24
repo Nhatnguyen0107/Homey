@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, /*FaTrash*/ } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash, /*FaTrash*/ } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
@@ -33,11 +33,11 @@ const RoomList: React.FC = () => {
     //     navigate("/admin/room-form");
     // }
 
-    const editRoom = (id?: string) => {
-        if (id) {
-            navigate(`/admin/category-form/${id}`);
-        }
-    };
+    // const editRoom = (id?: string) => {
+    //     if (id) {
+    //         navigate(`/admin/category-form/${id}`);
+    //     }
+    // };
 
 
     // const deleteRoom = (id?: string) => {
@@ -86,12 +86,12 @@ const RoomList: React.FC = () => {
                             <td>{room.image_url}</td>
                             <td>{room.stock}</td>
                             <td className="action-cell">
-                                <button className="btn-action edit" type="button" onClick={() => editRoom(room.id)}>
+                                <button className="btn-action edit" type="button">
                                     <FaEdit /> Edit
                                 </button>
-                                {/* <button className="btn-action delete" type="button" onClick={() => deleteRoom(room.id)}>
+                                <button className="btn-action delete" type="button">
                                     <FaTrash /> Delete
-                                </button> */}
+                                </button>
                             </td>
                         </tr>
                     ))}

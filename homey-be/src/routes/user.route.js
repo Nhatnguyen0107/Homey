@@ -12,4 +12,3 @@ router.post("/", controller.createUser);
 // router.put("/:id", controller.editUser);
 
 export default router;
-
