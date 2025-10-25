@@ -69,6 +69,46 @@ class UserRepository {
     }
   }
 
+  async createUser(data) {
+    try {
+      const id = uuidv4(); // id user mới
+
+      // Lấy roleId từ database
+      const role = await db.Role.findOne({ where: { name: data.role } });
+      if (!role) throw new Error(`Role "${data.role}" does not exist`);
+      const roleId = role.id;
+
+      const result = await db.sequelize.query(
+        `INSERT INTO users (id, userName, email, password, phone, role_id, createdAt, updatedAt)
+       VALUES (:id, :userName, :email, :password, :phone, :roleId, NOW(), NOW())`,
+        {
+          replacements: {
+            id,
+            userName: data.userName,
+            email: data.email,
+            password: data.password, // sau này hash bằng bcrypt
+            phone: data.phone || null,
+            roleId,
+          },
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      return {
+        id,
+        userName: data.userName,
+        email: data.email,
+        phone: data.phone || null,
+        role_id: roleId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    } catch (error) {
+      throw new Error("Error creating user: " + error.message);
+    }
+  }
+
+
   async getUserById(id, includeRefreshToken = false) {
     try {
       return await (includeRefreshToken
@@ -82,34 +122,7 @@ class UserRepository {
     }
   }
 
-  async createUser(userData) {
-    try {
-      const roleId =
-        userData.role === "admin" ? 1 :
-          userData.role === "customer" ? 2 : 3;
 
-      const [result] = await db.sequelize.query(
-        `INSERT INTO users (id, userName, email, password, role_id, createdAt, updatedAt)
-       VALUES (:id, :userName, :email, :password, :role_id, NOW(), NOW())
-       RETURNING *;`,
-        {
-          replacements: {
-            id: uuidv4(),
-            userName: userData.name,
-            email: userData.email,
-            password: userData.password,
-            role_id: roleId,
-          },
-          type: QueryTypes.INSERT,
-        }
-      );
-
-      return result[0]; // trả về user vừa tạo
-    } catch (error) {
-      console.error("Error creating user:", error);
-      throw error;
-    }
-  }
 
   async updateUser(id, data, updateRefreshToken = false) {
     const { refreshToken: token, ...userData } = data;

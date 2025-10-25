@@ -1,22 +1,27 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, /*useState*/ } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-// import { useNavigate } from "react-router-dom";
 import { resetStatus, getPromotionList } from "../../../redux/promotionSlice";
 import "../../../styles/admin/table.css";
 
 const PromotionList: React.FC = () => {
-    // const [search, setSearch] = useState("");
-    // const [sortAsc, setSortAsc] = useState(true);
-
-    const promotions = useAppSelector((state) => state.promotion.promotions);
-    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const promotions = useAppSelector((state) => state.promotion.promotions);
+    const pagination = useAppSelector((state) => state.promotion.pagination);
+
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(5); // số lượng mỗi trang
 
     useEffect(() => {
         dispatch(resetStatus());
-        dispatch(getPromotionList({}));
-    }, []);
+        dispatch(getPromotionList({ page, pageSize }));
+    }, [dispatch, page, pageSize]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= (pagination?.totalPages || 1)) {
+            setPage(newPage);
+        }
+    };
 
     return (
         <div className="data-container">
@@ -42,9 +47,9 @@ const PromotionList: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {promotions.map((promo) => (
+                    {promotions.map((promo, index) => (
                         <tr key={promo.id}>
-                            <td>{promo.id}</td>
+                            <td>{(page - 1) * pageSize + index + 1}</td> {/* STT liên tục */}
                             <td>{promo.code}</td>
                             <td>{promo.discount_type}</td>
                             <td>{promo.discount_value}</td>
@@ -61,12 +66,35 @@ const PromotionList: React.FC = () => {
                             </td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
 
             <div className="pagination">
-                <button className="page-btn active">1</button>
+                <button
+                    className="page-btn"
+                    disabled={page === 1}
+                    onClick={() => handlePageChange(page - 1)}
+                >
+                    Prev
+                </button>
+
+                {Array.from({ length: pagination?.totalPages || 1 }, (_, i) => (
+                    <button
+                        key={`page-${i + 1}`}
+                        className={`page-btn ${page === i + 1 ? "active" : ""}`}
+                        onClick={() => handlePageChange(i + 1)}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+
+                <button
+                    className="page-btn"
+                    disabled={page === pagination?.totalPages}
+                    onClick={() => handlePageChange(page + 1)}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

@@ -6,7 +6,16 @@ export type Room = {
     description?: string;
     price?: number;
     stock?: number;
-    image_url?: string;
+    image_url?: string[]; // backend trả về mảng
+    category_id?: string;
+    category?: {
+        id: string;
+        name: string;
+    };
+    city?: {
+        id: string;
+        name: string;
+    };
 };
 
 export interface RoomResDto {

@@ -6,7 +6,7 @@ const controller = new UserController();
 const router = Router();
 // define the about route
 router.get("/", controller.getAllUsers);
-router.get("/:id", controller.getUserById);
+// router.get("/:id", controller.getUserById);
 router.post("/", controller.createUser);
 // router.delete("/:id", controller.deleteUser);
 // router.put("/:id", controller.editUser);

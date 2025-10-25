@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, FaTrash, /*FaTrash*/ } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
@@ -6,10 +6,8 @@ import { resetStatus, getRoomList } from "../../../redux/roomSlice";
 import "../../../styles/admin/table.css";
 
 const RoomList: React.FC = () => {
-    const rooms = useAppSelector((state) => state.room.rooms);
+    const rooms = useAppSelector((state) => state.room.rooms) || [];
     const pagination = useAppSelector((state) => state.room.pagination);
-    // backend nên trả về { data, pagination: { page, pageSize, totalPages, totalItems } }
-
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -19,39 +17,11 @@ const RoomList: React.FC = () => {
     useEffect(() => {
         dispatch(resetStatus());
         dispatch(getRoomList({ page, pageSize }));
-    }, [dispatch, page]);
+    }, [dispatch, page, pageSize]);
 
-    // Hàm xử lý khi chuyển trang
     const handlePageChange = (newPage: number) => {
-        if (newPage !== page) {
-            setPage(newPage);
-        }
+        if (newPage !== page) setPage(newPage);
     };
-
-    // Chuyển hướng tới trang thêm loại phòng
-    // function addRoom() {
-    //     navigate("/admin/room-form");
-    // }
-
-    // const editRoom = (id?: string) => {
-    //     if (id) {
-    //         navigate(`/admin/category-form/${id}`);
-    //     }
-    // };
-
-
-    // const deleteRoom = (id?: string) => {
-    //     if (id) {
-    //         dispatch(
-    //             deleteRoom({
-    //                 id,
-    //                 // cb: () => {
-    //                 //   dispatch(getRoomList({}));
-    //                 // },
-    //             })
-    //         );
-    //     }
-    // };
 
     return (
         <div className="data-container">
@@ -77,24 +47,32 @@ const RoomList: React.FC = () => {
                 </thead>
 
                 <tbody>
-                    {rooms.map((room) => (
-                        <tr key={room.id}>
-                            <td>{room.id}</td>
-                            <td>{room.name}</td>
-                            <td>{room.description}</td>
-                            <td>{room.price}</td>
-                            <td>{room.image_url}</td>
-                            <td>{room.stock}</td>
-                            <td className="action-cell">
-                                <button className="btn-action edit" type="button">
-                                    <FaEdit /> Edit
-                                </button>
-                                <button className="btn-action delete" type="button">
-                                    <FaTrash /> Delete
-                                </button>
+                    {Array.isArray(rooms) && rooms.length > 0 ? (
+                        rooms.map((room, i) => (
+                            <tr key={`${room.id || i}`}>
+                                <td>{(page - 1) * pageSize + i + 1}</td>
+                                <td>{room.name}</td>
+                                <td>{room.description}</td>
+                                <td>{room.price}</td>
+                                <td>{room.image_url}</td>
+                                <td>{room.stock}</td>
+                                <td className="action-cell">
+                                    <button className="btn-action edit" type="button">
+                                        <FaEdit /> Edit
+                                    </button>
+                                    <button className="btn-action delete" type="button">
+                                        <FaTrash /> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={7} style={{ textAlign: "center" }}>
+                                No rooms found.
                             </td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
 
@@ -110,7 +88,7 @@ const RoomList: React.FC = () => {
 
                 {Array.from({ length: pagination?.totalPages || 1 }, (_, i) => (
                     <button
-                        key={i + 1}
+                        key={`page-${i + 1}`}
                         className={`page-btn ${page === i + 1 ? "active" : ""}`}
                         onClick={() => handlePageChange(i + 1)}
                     >

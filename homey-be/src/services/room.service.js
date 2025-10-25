@@ -1,4 +1,3 @@
-// src/services/room.service.js
 import RoomRepository from "../repositories/room.repository.js";
 
 class RoomService {
@@ -14,7 +13,6 @@ class RoomService {
         return await this.roomRepository.getRoomById(id);
     }
 
-
     async getRoomDetailById(id) {
         return await this.roomRepository.getRoomDetailById(id);
     }
@@ -24,6 +22,7 @@ class RoomService {
     }
 
     async createRoom(data) {
+        // Đây là service thật sự: chỉ nhận data
         return await this.roomRepository.createRoom(data);
     }
 

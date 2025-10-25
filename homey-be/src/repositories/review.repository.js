@@ -21,7 +21,7 @@ class ReviewRepository {
             const limit = Math.max(parseInt(pageSize), 1);
             const offset = (Math.max(parseInt(page), 1) - 1) * limit;
 
-            // Đếm tổng review theo comment
+            // Count tổng số review
             const count = await this.model.count({
                 where: {
                     comment: {
@@ -30,15 +30,19 @@ class ReviewRepository {
                 },
             });
 
-            // Lấy danh sách review có phân trang
+            // Query join user và room
             const rows = await db.sequelize.query(
                 `
-      SELECT id, room_id, user_id, rating, comment, createdAt, updatedAt
-      FROM reviews
-      WHERE comment LIKE :search
-      ORDER BY ${sortField} ${sortOrder}
-      LIMIT :limit OFFSET :offset
-      `,
+            SELECT r.id, r.rating, r.comment, r.createdAt, r.updatedAt,
+                   u.userName AS user_name,
+                   rm.name AS room_name
+            FROM reviews r
+            JOIN users u ON r.user_id = u.id
+            JOIN rooms rm ON r.room_id = rm.id
+            WHERE r.comment LIKE :search
+            ORDER BY ${sortField} ${sortOrder}
+            LIMIT :limit OFFSET :offset
+            `,
                 {
                     replacements: { search: `%${search}%`, limit, offset },
                     type: QueryTypes.SELECT,
@@ -58,6 +62,7 @@ class ReviewRepository {
             throw new Error("Error fetching reviews: " + error.message);
         }
     }
+
 
     //   async getUserById(id, includeRefreshToken = false) {
     //     try {
