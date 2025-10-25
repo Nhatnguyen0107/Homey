@@ -49,6 +49,7 @@ function App() {
 
         {/* điều hướng tới trang con loại phòng */}
         <Route path="/" element={<Home />} />
+        <Route path="/user" element={<Home />} />
         <Route path="/" element={<AccommodationType />} />
         <Route path="/categories/:categoryId" element={<CategoryRoomsPage />} />
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />

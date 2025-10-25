@@ -17,10 +17,12 @@ const Header: React.FC = () => {
         navigate("/login");
     };
 
+    const role = user?.role || user?.roleName || "customer";
+
     return (
         <header className="bg-blue-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">
-                <img src={Logo} alt="logo" className="h-10 w-50 object-contain" />
+                <img src={Logo} alt="logo" className="h-10 w-50 object-contain cursor-pointer" onClick={() => navigate("/")} />
 
                 <div className="space-x-4 flex items-center">
                     {isAuthenticated && user ? (
@@ -37,16 +39,16 @@ const Header: React.FC = () => {
                             >
                                 Logout
                             </button>
-                            <Link
-                                to="/admin"
-                                className="underline hover:text-yellow-300 ml-2"
-                            >
-                                Admin
-                            </Link>
-                            <Link
-                                to="/"
-                                className="underline hover:text-yellow-300 ml-2"
-                            >
+
+                            {/* chỉ admin hoặc room_owner mới thấy Admin */}
+                            {(role === "admin" || role === "room_owner") && (
+                                <Link to="/admin" className="underline hover:text-yellow-300 ml-2">
+                                    Admin
+                                </Link>
+                            )}
+
+                            {/* mọi user đều thấy User */}
+                            <Link to="/user" className="underline hover:text-yellow-300 ml-2">
                                 User
                             </Link>
                         </>
