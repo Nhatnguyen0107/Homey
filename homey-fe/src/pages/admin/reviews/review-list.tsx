@@ -1,22 +1,27 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, /*useState*/ } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-// import { useNavigate } from "react-router-dom";
-import "../../../styles/admin/table.css";
 import { resetStatus, getReviewList } from "../../../redux/reviewSlice";
+import "../../../styles/admin/table.css";
 
 const ReviewList: React.FC = () => {
-    // const [search, setSearch] = useState("");
-    // const [sortAsc, setSortAsc] = useState(true);
-
-    const reviews = useAppSelector((state) => state.review.reviews);
-    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const reviews = useAppSelector((state) => state.review.reviews);
+    const pagination = useAppSelector((state) => state.review.pagination);
+
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(5); // số lượng mỗi trang
 
     useEffect(() => {
         dispatch(resetStatus());
-        dispatch(getReviewList({}));
-    }, []);
+        dispatch(getReviewList({ page, pageSize }));
+    }, [dispatch, page, pageSize]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= (pagination?.totalPages || 1)) {
+            setPage(newPage);
+        }
+    };
 
     return (
         <div className="data-container">
@@ -32,19 +37,19 @@ const ReviewList: React.FC = () => {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>User_id</th>
-                        <th>Room_id</th>
+                        <th>User Name</th>
+                        <th>Room Name</th>
                         <th>Rating</th>
                         <th>Comment</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {reviews.map((review) => (
+                    {reviews.map((review, index) => (
                         <tr key={review.id}>
-                            <td>{review.id}</td>
-                            <td>{review.user_id}</td>
-                            <td>{review.room_id}</td>
+                            <td>{(page - 1) * pageSize + index + 1}</td> {/* STT liên tục */}
+                            <td>{review.user_name}</td>   {/* tên user */}
+                            <td>{review.room_name}</td>   {/* tên room */}
                             <td>{review.rating}</td>
                             <td>{review.comment}</td>
                             <td className="action-cell">
@@ -57,12 +62,35 @@ const ReviewList: React.FC = () => {
                             </td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
 
             <div className="pagination">
-                <button className="page-btn active">1</button>
+                <button
+                    className="page-btn"
+                    disabled={page === 1}
+                    onClick={() => handlePageChange(page - 1)}
+                >
+                    Prev
+                </button>
+
+                {Array.from({ length: pagination?.totalPages || 1 }, (_, i) => (
+                    <button
+                        key={`page-${i + 1}`}
+                        className={`page-btn ${page === i + 1 ? "active" : ""}`}
+                        onClick={() => handlePageChange(i + 1)}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+
+                <button
+                    className="page-btn"
+                    disabled={page === pagination?.totalPages}
+                    onClick={() => handlePageChange(page + 1)}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

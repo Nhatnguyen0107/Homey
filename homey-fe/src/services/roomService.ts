@@ -1,17 +1,23 @@
 // src/services/roomService.ts
 import axiosJson from "./axiosJson";
-import type { GetAllRoomParams } from "../types/room";
+import type { GetAllRoomParams, RoomResDto } from "../types/room";
 import type { TAny } from "../types/common";
+import axiosClient from "./axiosClient";
 
 export const RoomService = {
-    async getAll(params?: GetAllRoomParams): Promise<any> {
-        const res = await axiosJson.get("/rooms", { params });
-        return res; // Giữ nguyên vì bạn bỏ .data
-    },
-
-    async getById(id: string): Promise<TAny> {
-        const res = await axiosJson.get<TAny>(`/rooms/${id}`);
-        return res.data;
+    async getAll(params?: GetAllRoomParams): Promise<RoomResDto> {
+        const res = await axiosClient.get("/rooms", { params });
+        return {
+            data: res.data.data.data, // array rooms
+            pagination: {
+                page: res.data.data.pagination.page,
+                pageSize: res.data.data.pagination.pageSize,
+                totalPages: Math.ceil(
+                    res.data.data.pagination.total / res.data.data.pagination.pageSize
+                ),
+                total: res.data.data.pagination.total, // phải là 'total', không phải 'totalItems'
+            },
+        };
     },
 
     async getRoomDetailById(id: string): Promise<TAny> {

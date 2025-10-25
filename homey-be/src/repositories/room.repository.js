@@ -19,7 +19,7 @@ class RoomRepository {
                 order: [["createdAt", "DESC"]],
                 limit,
                 offset,
-                attributes: ["id", "name", "description", "price", "image_url", "category_id"],
+                attributes: ["id", "name", "description", "price", "image_url", "stock", "category_id"],
                 include: [
                     {
                         model: db.Category,
@@ -34,8 +34,10 @@ class RoomRepository {
                 ],
             });
 
-            const data = rows.map((r) => {
+            const data = rows.map((r, idx) => {
                 const room = r.toJSON();
+
+                // Parse image_url nếu là string
                 if (typeof room.image_url === "string") {
                     try {
                         room.image_url = JSON.parse(room.image_url);
@@ -43,8 +45,13 @@ class RoomRepository {
                         room.image_url = [room.image_url];
                     }
                 }
+
+                // Thêm số thứ tự theo pagination
+                room.index = offset + idx + 1;
+
                 return room;
             });
+
 
             return {
                 data,

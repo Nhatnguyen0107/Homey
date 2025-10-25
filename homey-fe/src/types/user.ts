@@ -6,6 +6,8 @@ export type User = {
     password?: string;
     email?: string;
     phone?: number;
+    role_id?: string;      // 👈 Khóa ngoại liên kết đến bảng roles
+    roleName?: string;
 };
 
 export interface UserResDto {

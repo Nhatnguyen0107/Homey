@@ -6,6 +6,8 @@ export type Review = {
     user_id?: string;
     rating?: string;
     comment?: string;
+    user_name: string; // thêm
+    room_name: string; // thêm
     createdAt?: string;
     updatedAt?: string;
 };

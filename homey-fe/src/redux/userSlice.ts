@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { User, GetAllUserParams } from "../types/user";
-import type { Pagination, /*TAny*/ } from "../types/common";
+import type { Pagination, TAny, /*TAny*/ } from "../types/common";
 import UserService from "../services/userService";
 
 type UserState = {
@@ -36,67 +36,67 @@ export const getUserList = createAsyncThunk(
         }
     }
 );
-// export const updateCategory = createAsyncThunk(
-//     "category/updateCategory", // type
-//     async (payload: TAny, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.update(payload.id, payload.data);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const updateUser = createAsyncThunk(
+    "user/updateUser", // type
+    async (payload: TAny, { rejectWithValue }) => {
+        try {
+            const response = await UserService.update(payload.id, payload.data);
+            return response; // Dữ liệu trả về sẽ nằm ở action.payload
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
-// export const deleteCategory = createAsyncThunk(
-//     "category/deleteCategory", // type
-//     async ({ id }: TAny, { dispatch, rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.delete(id);
-//             // cb();
-//             dispatch(getCategoryList({}));
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const deleteUser = createAsyncThunk(
+    "user/deleteUser", // type
+    async ({ id }: TAny, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await UserService.delete(id);
+            // cb();
+            dispatch(getUserList({}));
+            return response; // Dữ liệu trả về sẽ nằm ở action.payload
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
-// export const getCategoryDetail = createAsyncThunk(
-//     "category/getCategoryDetail", // type
-//     async (id: string, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.getById(id);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const getUserDetail = createAsyncThunk(
+    "user/getUserDetail", // type
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await UserService.getById(id);
+            return response; // Dữ liệu trả về sẽ nằm ở action.payload
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
-// export const createCategory = createAsyncThunk(
-//     "category/createCategory", // type
-//     async (payload: TAny, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.create(payload);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const createUser = createAsyncThunk(
+    "user/createUser", // type
+    async (payload: TAny, { rejectWithValue }) => {
+        try {
+            const response = await UserService.create(payload);
+            return response; // Dữ liệu trả về sẽ nằm ở action.payload
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
 const userSlice = createSlice({
     name: "user",
@@ -123,64 +123,64 @@ const userSlice = createSlice({
                 state.error = action.payload as string; // Lưu lỗi nếu có
             });
 
-        // builder
-        //     // getCategoryDetail
-        //     .addCase(getCategoryDetail.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(getCategoryDetail.fulfilled, (state, action) => {
-        //         state.loading = false;
-        //         state.category = action.payload;
-        //     })
-        //     .addCase(getCategoryDetail.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // getUserDetail
+            .addCase(getUserDetail.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getUserDetail.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+            .addCase(getUserDetail.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string; // Lưu lỗi nếu có
+            });
 
-        // builder
-        //     // createCategory
-        //     .addCase(createCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(createCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //         state.status = true;
-        //     })
-        //     .addCase(createCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // createUser
+            .addCase(createUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createUser.fulfilled, (state) => {
+                state.loading = false;
+                state.status = true;
+            })
+            .addCase(createUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string; // Lưu lỗi nếu có
+            });
 
-        // builder
-        //     // editCategory
-        //     .addCase(updateCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(updateCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //         state.status = true;
-        //     })
-        //     .addCase(updateCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // editUser
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUser.fulfilled, (state) => {
+                state.loading = false;
+                state.status = true;
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string; // Lưu lỗi nếu có
+            });
 
-        // builder
-        //     // deleteCategory
-        //     .addCase(deleteCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(deleteCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //     })
-        //     .addCase(deleteCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // deleteUser
+            .addCase(deleteUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteUser.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string; // Lưu lỗi nếu có
+            });
     },
 });
 
