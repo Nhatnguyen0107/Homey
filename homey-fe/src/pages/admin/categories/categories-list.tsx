@@ -70,6 +70,7 @@ const CategoryList: React.FC = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Image</th>
             <th>Name</th>
             <th>Actions</th>
           </tr>
@@ -78,6 +79,17 @@ const CategoryList: React.FC = () => {
           {categories.map((cate, index) => (
             <tr key={cate.id}>
               <td>{(page - 1) * pageSize + index + 1}</td> {/* số thứ tự theo trang */}
+              <td>
+                {cate.image_url ? (
+                  <img
+                    src={cate.image_url}
+                    alt={cate.name}
+                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
+                  />
+                ) : (
+                  <span>No image</span>
+                )}
+              </td>
               <td>{cate.name}</td>
               <td>
                 <button

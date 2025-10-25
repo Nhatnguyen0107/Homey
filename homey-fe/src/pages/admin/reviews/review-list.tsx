@@ -53,9 +53,6 @@ const ReviewList: React.FC = () => {
                             <td>{review.rating}</td>
                             <td>{review.comment}</td>
                             <td className="action-cell">
-                                <button className="btn-action edit">
-                                    <FaEdit /> Edit
-                                </button>
                                 <button className="btn-action delete">
                                     <FaTrash /> Delete
                                 </button>

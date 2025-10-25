@@ -37,10 +37,10 @@ const RoomList: React.FC = () => {
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Image</th>
                         <th>Room Name</th>
                         <th>Description</th>
                         <th>Price (VND)</th>
-                        <th>Image</th>
                         <th>Stock</th>
                         <th>Actions</th>
                     </tr>
@@ -51,10 +51,20 @@ const RoomList: React.FC = () => {
                         rooms.map((room, i) => (
                             <tr key={`${room.id || i}`}>
                                 <td>{(page - 1) * pageSize + i + 1}</td>
+                                <td>
+                                    {room.image_url ? (
+                                        <img
+                                            src={room.image_url}
+                                            alt={room.name}
+                                            style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
+                                        />
+                                    ) : (
+                                        <span>No image</span>
+                                    )}
+                                </td>
                                 <td>{room.name}</td>
                                 <td>{room.description}</td>
                                 <td>{room.price}</td>
-                                <td>{room.image_url}</td>
                                 <td>{room.stock}</td>
                                 <td className="action-cell">
                                     <button className="btn-action edit" type="button">

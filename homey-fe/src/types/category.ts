@@ -3,6 +3,7 @@ import type { Pagination } from "./common";
 export type Category = {
   id?: string;
   name?: string;
+  image_url?: string;
 };
 
 export interface CategoryResDto {
