@@ -4,8 +4,6 @@ import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import axiosClient from "../services/axiosClient";
 import {
-    FaSwimmingPool, FaWifi, FaParking, FaConciergeBell, FaSmokingBan,
-    FaUtensils, FaShuttleVan, FaWheelchair, FaUsers, FaTree,
     FaMapMarkerAlt, FaStar, FaRegClock, FaBed, FaCalendarAlt, FaUserFriends
 } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
@@ -183,7 +181,7 @@ const RoomDetailPage: React.FC = () => {
                             <DatePicker
                                 selected={endDate}
                                 onChange={setEndDate}
-                                minDate={startDate}
+                                minDate={startDate || undefined}
                                 dateFormat="dd/MM/yyyy"
                                 className="border rounded-md p-2 w-full"
                                 placeholderText="Chọn ngày đi"

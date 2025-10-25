@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { resetStatus, getReviewList } from "../../../redux/reviewSlice";

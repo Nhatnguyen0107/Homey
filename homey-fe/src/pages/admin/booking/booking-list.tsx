@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { resetStatus, getBookingList } from "../../../redux/bookingSlice";
@@ -26,12 +26,7 @@ const BookingList: React.FC = () => {
     return (
         <div className="data-container">
             <div className="data-header">
-                <div className="title-name">
-                    <h2>Categories List</h2>
-                    <button className="btn-add">
-                        <FaPlus /> Add Booking
-                    </button>
-                </div>
+                <h2>Booking List</h2>
                 <div className="search-box">
                     <FaSearch className="search-icon" />
                     <input type="text" placeholder="Search bookings..." />

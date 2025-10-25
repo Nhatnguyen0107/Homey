@@ -1,8 +1,9 @@
 // src/services/roomService.ts
-import axiosJson from "./axiosJson";
+// import axiosJson from "./axiosJson";
 import type { GetAllRoomParams, RoomResDto } from "../types/room";
 import type { TAny } from "../types/common";
 import axiosClient from "./axiosClient";
+import axios from "axios";
 
 export const RoomService = {
     async getAll(params?: GetAllRoomParams): Promise<RoomResDto> {
@@ -21,22 +22,22 @@ export const RoomService = {
     },
 
     async getRoomDetailById(id: string): Promise<TAny> {
-        const res = await axiosJson.get<TAny>(`/rooms/room-detail/${id}`);
+        const res = await axios.get<TAny>(`/rooms/room-detail/${id}`);
         return res.data;
     },
 
     async create(data: Partial<TAny>): Promise<TAny> {
-        const res = await axiosJson.post<TAny>("/rooms", data);
+        const res = await axios.post<TAny>("/rooms", data);
         return res.data;
     },
 
     async update(id: string, data: Partial<TAny>): Promise<TAny> {
-        const res = await axiosJson.put<TAny>(`/rooms/${id}`, data);
+        const res = await axios.put<TAny>(`/rooms/${id}`, data);
         return res.data;
     },
 
     async delete(id: string): Promise<void> {
-        await axiosJson.delete(`/rooms/${id}`);
+        await axios.delete(`/rooms/${id}`);
     },
 };
 

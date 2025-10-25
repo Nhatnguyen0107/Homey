@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Room, GetAllRoomParams } from "../types/room";
-import type { Pagination, TAny } from "../types/common";
+import type { Pagination } from "../types/common";
 import RoomService from "../services/roomService";
 
 type RoomState = {

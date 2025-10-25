@@ -1,14 +1,14 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { resetStatus, getRoomList } from "../../../redux/roomSlice";
 import "../../../styles/admin/table.css";
 
 const RoomList: React.FC = () => {
     const rooms = useAppSelector((state) => state.room.rooms) || [];
     const pagination = useAppSelector((state) => state.room.pagination);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     const [page, setPage] = useState(1);
@@ -54,7 +54,7 @@ const RoomList: React.FC = () => {
                                 <td>
                                     {room.image_url ? (
                                         <img
-                                            src={room.image_url}
+                                            src={room.image_url[0]} // hiển thị ảnh đầu tiên
                                             alt={room.name}
                                             style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                                         />
