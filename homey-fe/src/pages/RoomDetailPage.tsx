@@ -64,10 +64,11 @@ const RoomDetailPage: React.FC = () => {
     };
 
     const handleBooking = () => {
-        scrollToBookingForm(); //  chỉ cuộn xuống
+        scrollToBookingForm();
     };
 
     const handleConfirmBooking = async () => {
+        console.log("👤 user hiện tại:", user);
         if (!user) {
             alert("⚠️ Bạn cần đăng nhập để đặt phòng!");
             navigate("/login");

@@ -7,48 +7,58 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    // Lấy thông tin người dùng hiện tại
+
     const fetchUser = async () => {
         try {
-            const res = await axiosClient.get<User>("/auth/me");
-            setUser(res.data);
-        } catch (err) {
-            console.warn(" Không thể lấy user:", err);
+            const res = await axiosClient.get("/auth/me");
+            console.log("🔍 /auth/me response:", res.data);
+
+
+            setUser(res.data.user || res.data);
+        } catch (error) {
+            console.warn("❌ Không thể lấy user từ /auth/me:", error);
             setUser(null);
+        } finally {
+            setLoading(false);
         }
     };
 
-    // ✅ Chạy khi load trang hoặc có token
+    //  Kiểm tra token và lấy user khi vừa vào app
     useEffect(() => {
         const token = localStorage.getItem("access_token");
-        if (token) {
-            fetchUser();
-        } else {
-            console.log(" Không có token trong localStorage");
-        }
+        if (token) fetchUser();
+        else setLoading(false);
     }, []);
 
-    // ✅ Hàm đăng nhập
+    //  Đăng nhập
     const login: TAny = async (email: string, password: string) => {
-        const res = await axiosClient.post<{ token: string; user: User }>("/auth/signin", {
-            email,
-            password,
-        });
+        const res = await axiosClient.post<{ token: string; user: User }>(
+            "/auth/signin",
+            { email, password }
+        );
         localStorage.setItem("access_token", res.data.token);
         setUser(res.data.user);
     };
 
-    // ✅ Hàm đăng xuất
+    //  Đăng xuất
     const logout = async () => {
         try {
             await axiosClient.post("/auth/signout");
-        } catch {
-            // ignore nếu backend không trả gì
-        }
+        } catch { }
         localStorage.removeItem("access_token");
         setUser(null);
     };
+
+
+    if (loading) {
+        return (
+            <div className="text-center py-10 text-gray-500">
+                Đang xác thực tài khoản...
+            </div>
+        );
+    }
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

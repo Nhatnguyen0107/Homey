@@ -9,7 +9,7 @@ const axiosClient = axios.create({
   },
 });
 
-//  Đồng bộ lại: tất cả dùng "access_token"
+// Luôn đính kèm token
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
   if (token) {
@@ -18,5 +18,16 @@ axiosClient.interceptors.request.use((config) => {
   return config;
 });
 
-export default axiosClient;
+//  Nếu token hết hạn → xóa token để AuthContext biết logout
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.warn("⚠️ Token hết hạn hoặc không hợp lệ — xóa access_token");
+      localStorage.removeItem("access_token");
+    }
+    return Promise.reject(error);
+  }
+);
 
+export default axiosClient;
