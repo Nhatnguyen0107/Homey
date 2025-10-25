@@ -36,14 +36,18 @@ const Login = () => {
         withCredentials: true,
       });
 
-      // ✅ lưu token và user vào localStorage
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      // ✅ cập nhật redux user
       dispatch(getMe());
 
-      navigate("/"); // điều hướng về home
+      const role = res.data.user.role;
+
+      // ✅ Điều hướng đúng trang
+      if (role === "admin" || role === "room_owner") {
+        navigate("/admin");
+      } else {
+        navigate("/user");
+      }
     } catch (err: any) {
       alert(err.response?.data?.message || "Login failed");
     }

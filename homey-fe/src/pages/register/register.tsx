@@ -12,12 +12,17 @@ type RegisterForm = {
     email: string;
     password: string;
     confirmPassword: string;
+    phone: string;
 };
 
 // Yup schema validate
 const schema = yup.object({
     full_name: yup.string().required("Full name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
+    phone: yup
+        .string()
+        .required("Phone number is required")
+        .matches(/^[0-9]{9,11}$/, "Invalid phone number"),
     password: yup
         .string()
         .required("Password is required")
@@ -46,6 +51,8 @@ export default function Register() {
                 userName: data.full_name,
                 email: data.email,
                 password: data.password,
+                phone: data.phone,
+                roleName: "customer", // mặc định là customer
             });
 
             alert("Register success! Please login.");
@@ -61,25 +68,16 @@ export default function Register() {
                 <h2>Register</h2>
                 {error && <p className="error">{error}</p>}
 
-                <input
-                    type="text"
-                    placeholder="Full Name"
-                    {...register("full_name")}
-                />
+                <input type="text" placeholder="Full Name" {...register("full_name")} />
                 <p className="error">{errors.full_name?.message}</p>
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    {...register("email")}
-                />
+                <input type="email" placeholder="Email" {...register("email")} />
                 <p className="error">{errors.email?.message}</p>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password")}
-                />
+                <input type="text" placeholder="Phone Number" {...register("phone")} />
+                <p className="error">{errors.phone?.message}</p>
+
+                <input type="password" placeholder="Password" {...register("password")} />
                 <p className="error">{errors.password?.message}</p>
 
                 <input
@@ -92,8 +90,7 @@ export default function Register() {
                 <button type="submit">Register</button>
 
                 <p className="redirect">
-                    Already have an account?{" "}
-                    <Link to="/login">Login</Link>
+                    Already have an account? <Link to="/login">Login</Link>
                 </p>
             </form>
         </div>
