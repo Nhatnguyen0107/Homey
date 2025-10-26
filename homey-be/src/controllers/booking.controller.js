@@ -1,4 +1,4 @@
-import ProductService from "../services/booking.service.js";
+import BookingService from "../services/booking.service.js";
 import BaseController from "./base.controller.js";
 
 class BookingController extends BaseController {
