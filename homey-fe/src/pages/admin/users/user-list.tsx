@@ -32,7 +32,16 @@ const UserList: React.FC = () => {
   };
 
   const deleteUsers = (id?: string) => {
-    if (id) dispatch(deleteUser({ id }));
+    if (id) {
+      dispatch(
+        deleteUser({
+          id,
+          cb: () => {
+            dispatch(getUserList({ page, pageSize })); // gọi lại danh sách sau khi xóa
+          },
+        })
+      );
+    }
   };
 
   return (
