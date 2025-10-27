@@ -1,10 +1,19 @@
+// src/pages/RoomDetailPage.tsx
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { useAuth } from "../context/AuthContext";
 import axiosClient from "../services/axiosClient";
 import {
+<<<<<<< HEAD
     FaMapMarkerAlt, FaStar, FaRegClock, FaBed, FaCalendarAlt, FaUserFriends
+=======
+    FaMapMarkerAlt,
+    FaStar,
+    FaRegClock,
+    FaBed,
+    FaCalendarAlt,
+    FaUserFriends,
+>>>>>>> a071fac (u)
 } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import DatePicker from "react-datepicker";
@@ -22,7 +31,21 @@ interface RoomDetail {
 const RoomDetailPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user } = useAuth();
+
+    // Lấy user từ localStorage: hỗ trợ key "me" (đề xuất) hoặc "user" (nếu bạn còn dùng)
+    const getStoredUser = () => {
+        try {
+            const raw = localStorage.getItem("me") || localStorage.getItem("user");
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            console.warn("Không parse được user từ localStorage:", e);
+            return null;
+        }
+    };
+
+    // Lấy user lần đầu khi component mount (không dùng context để tránh sync issues)
+    const [user, setUser] = useState<any | null>(getStoredUser());
+
     const [detail, setDetail] = useState<RoomDetail | null>(null);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
@@ -31,14 +54,21 @@ const RoomDetailPage: React.FC = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const bookingRef = useRef<HTMLDivElement>(null);
 
+    // Nếu localStorage thay đổi (ví dụ sau login), cập nhật user khi focus lại trang
+    useEffect(() => {
+        const onFocus = () => {
+            setUser(getStoredUser());
+        };
+        window.addEventListener("focus", onFocus);
+        return () => window.removeEventListener("focus", onFocus);
+    }, []);
+
     useEffect(() => {
         const fetchRoomDetail = async () => {
             try {
                 const res = await axiosClient.get(`rooms/room-detail/${id}`);
                 const data = res.data.data || res.data;
-                data.images = Array.isArray(data.images)
-                    ? data.images
-                    : JSON.parse(data.images || "[]");
+                data.images = Array.isArray(data.images) ? data.images : JSON.parse(data.images || "[]");
                 setDetail(data);
             } catch (error) {
                 console.error("Lỗi khi tải chi tiết phòng:", error);
@@ -51,9 +81,11 @@ const RoomDetailPage: React.FC = () => {
         if (startDate && endDate && detail) {
             const diffDays = Math.max(
                 1,
-                (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+                Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
             );
             setTotalPrice(diffDays * detail.price * quantity);
+        } else {
+            setTotalPrice(0);
         }
     }, [startDate, endDate, quantity, detail]);
 
@@ -65,9 +97,12 @@ const RoomDetailPage: React.FC = () => {
         scrollToBookingForm();
     };
 
-    const handleConfirmBooking = async () => {
-        console.log("👤 user hiện tại:", user);
-        if (!user) {
+    // Hàm đặt phòng: kiểm tra user từ localStorage, gửi user_id, start/end ở dạng ISO
+    const handleConfirmBooking = () => {
+        const storedUser = getStoredUser();
+        const currentUser = user || storedUser;
+
+        if (!currentUser) {
             alert("⚠️ Bạn cần đăng nhập để đặt phòng!");
             navigate("/login");
             return;
@@ -78,30 +113,30 @@ const RoomDetailPage: React.FC = () => {
             return;
         }
 
-        try {
-            const res = await axiosClient.post("/bookings", {
-                room_id: detail?.id,
-                start_date: startDate,
-                end_date: endDate,
-                quantity,
-                location,
-            });
-            alert("✅ Đặt phòng thành công!");
-            navigate(`/checkout/${res.data.id}`);
-        } catch (err: any) {
-            console.error("❌ Lỗi đặt phòng:", err);
-            alert("❌ Đặt phòng thất bại, vui lòng thử lại!");
+        if (endDate.getTime() <= startDate.getTime()) {
+            alert("Ngày trả phải lớn hơn ngày nhận!");
+            return;
         }
+
+        // Truyền thông tin phòng + ngày + số lượng sang trang chi tiết đặt phòng
+        navigate("/booking-detail", {
+            state: {
+                room: detail,
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString(),
+                quantity,
+                totalPrice,
+                location,
+            },
+        });
     };
 
 
-    if (!detail)
-        return <p className="text-center py-10 text-gray-500">Đang tải chi tiết phòng...</p>;
+    if (!detail) return <p className="text-center py-10 text-gray-500">Đang tải chi tiết phòng...</p>;
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <main className="flex-grow container mx-auto px-6 py-10">
-                {/* Quay lại */}
                 <button
                     onClick={() => navigate("/")}
                     className="flex items-center text-blue-600 hover:text-blue-800 mb-8 font-medium"
@@ -110,7 +145,6 @@ const RoomDetailPage: React.FC = () => {
                     Quay lại danh mục
                 </button>
 
-                {/* Tiêu đề */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                     <div>
                         <h1 className="text-4xl font-bold text-gray-800 flex items-center">
@@ -122,11 +156,7 @@ const RoomDetailPage: React.FC = () => {
                     </div>
                     <div className="mt-4 md:mt-0 text-right">
                         <p className="text-xl font-semibold text-blue-600 mb-2">
-                            {Number(detail.price).toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            })}{" "}
-                            / đêm
+                            {Number(detail.price).toLocaleString("vi-VN", { style: "currency", currency: "VND" })} / đêm
                         </p>
                         <p className="text-yellow-500 flex justify-end items-center mt-1">
                             <FaStar className="mr-1" /> {detail.rating} / 10
@@ -134,7 +164,6 @@ const RoomDetailPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Ảnh + mô tả */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                     <div className="grid grid-cols-2 gap-3">
                         {detail.images.length > 0 ? (
@@ -159,7 +188,6 @@ const RoomDetailPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Form đặt phòng */}
                 <div ref={bookingRef} className="bg-white rounded-2xl shadow-md p-6 mb-10">
                     <h3 className="text-2xl font-semibold mb-5 text-gray-800 flex items-center">
                         <FaCalendarAlt className="text-blue-500 mr-3" /> Đặt phòng của bạn
@@ -199,7 +227,6 @@ const RoomDetailPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Thêm địa điểm */}
                     <div className="mb-6">
                         <label className="block text-gray-600 mb-1">Địa điểm</label>
                         <select

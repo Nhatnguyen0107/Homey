@@ -29,6 +29,7 @@ import RoomTypeDetail from "./pages/RoomTypeDetail";
 import RoomDetailPage from "./pages/RoomDetailPage";
 // import RoomDetail from "./pages/RoomDetail";
 import CategoryRoomsPage from "./pages/CategoryRoomsPage";
+import BookingDetailPage from "./pages/BookingDetailPage";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -53,6 +54,7 @@ function App() {
         <Route path="/" element={<AccommodationType />} />
         <Route path="/categories/:categoryId" element={<CategoryRoomsPage />} />
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />
+        <Route path="/booking-detail" element={<BookingDetailPage />} />
 
 
         {/* Public routes */}

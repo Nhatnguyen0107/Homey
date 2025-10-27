@@ -1,30 +1,29 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://demo-be-hhq0.onrender.com/api/v1",
+  // baseURL: "https://demo-be-hhq0.onrender.com/api/v1",
   // baseURL: "http://localhost:3000/api/v1",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1",
+  // headers: { "Content-Type": "application/json" },
 });
 
-// Luôn đính kèm token
+// Gắn token tự động
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-//  Nếu token hết hạn → xóa token để AuthContext biết logout
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      console.warn("⚠️ Token hết hạn hoặc không hợp lệ — xóa access_token");
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("access_token");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

@@ -16,7 +16,8 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
-const port = AppConfig.port || process.env.NODE_PORT || 3000;
+const port = process.env.PORT || 8080;
+
 
 // ===================== PATH CONFIG =====================
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +31,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "http://localhost:3000",
       "https://homey-oaqp.vercel.app" // FE deploy trên Vercel
     ],
     credentials: true,
