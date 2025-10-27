@@ -17,4 +17,7 @@ export const AuthService = {
     const res = await axiosClient.get<UserRes>("/auth/me");
     return res.data;
   },
+
 };
+
+
