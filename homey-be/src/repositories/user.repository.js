@@ -8,103 +8,12 @@ class UserRepository {
     this.model = db.User; // Initialize the User model
   }
 
-  async getAllUsers(req) {
+  async getAllUsers() {
     try {
-      const {
-        page = 1,
-        pageSize = 5,
-        search = "",
-        sortField = "createdAt",
-        sortOrder = "DESC",
-      } = req.query;
-
-      const limit = Math.max(parseInt(pageSize), 1);
-      const offset = (Math.max(parseInt(page), 1) - 1) * limit;
-
-      // Đếm tổng số user thỏa điều kiện search
-      const count = await this.model.count({
-        where: {
-          userName: {
-            [Op.like]: `%${search}%`,
-          },
-        },
-      });
-
-      // Lấy danh sách user
-      const rows = await db.sequelize.query(
-        `
-  SELECT 
-    u.id,
-    u.userName,
-    u.email,
-    u.phone,
-    u.role_id,
-    r.name AS roleName,
-    u.createdAt,
-    u.updatedAt
-  FROM users u
-  LEFT JOIN roles r ON u.role_id = r.id
-  WHERE u.userName LIKE :search
-  ORDER BY ${sortField} ${sortOrder}
-  LIMIT ${limit} OFFSET ${offset}
-  `,
-        {
-          replacements: { search: `%${search}%` },
-          type: QueryTypes.SELECT,
-        }
-      );
-
-
-      return {
-        data: rows,
-        pagination: {
-          total: count,
-          page: parseInt(page),
-          pageSize: limit,
-          totalPages: Math.ceil(count / limit) || 1,
-        },
-      };
+      const [users] = await db.sequelize.query(`SELECT * FROM users`);
+      return users;
     } catch (error) {
       throw new Error("Error fetching users: " + error.message);
-    }
-  }
-
-  async createUser(data) {
-    try {
-      const id = uuidv4(); // id user mới
-
-      // Lấy roleId từ database
-      const role = await db.Role.findOne({ where: { name: data.role } });
-      if (!role) throw new Error(`Role "${data.role}" does not exist`);
-      const roleId = role.id;
-
-      const result = await db.sequelize.query(
-        `INSERT INTO users (id, userName, email, password, phone, role_id, createdAt, updatedAt)
-       VALUES (:id, :userName, :email, :password, :phone, :roleId, NOW(), NOW())`,
-        {
-          replacements: {
-            id,
-            userName: data.userName,
-            email: data.email,
-            password: data.password, // sau này hash bằng bcrypt
-            phone: data.phone || null,
-            roleId,
-          },
-          type: QueryTypes.INSERT,
-        }
-      );
-
-      return {
-        id,
-        userName: data.userName,
-        email: data.email,
-        phone: data.phone || null,
-        role_id: roleId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-    } catch (error) {
-      throw new Error("Error creating user: " + error.message);
     }
   }
 
@@ -122,50 +31,89 @@ class UserRepository {
     }
   }
 
-
-
-  async updateUser(id, data, updateRefreshToken = false) {
-    const { refreshToken: token, ...userData } = data;
+  async createUser(userData) {
     try {
-      const user = await this.getUserById(id, updateRefreshToken);
-      if (!user) throw new Error("User not found");
+      const id = uuidv4();
 
-      if (updateRefreshToken) {
-        await this._updateOrCreateRefreshToken(user, token);
-        return user;
-      } else {
-        const result = await db.sequelize.query(
-          `UPDATE users
-  SET userName=:userName, email=:email, password=:password, phone=:phone
-  WHERE id=:id`,
+      // Kiểm tra role_id hoặc role_name
+      let roleId = userData.role_id;
+      if (!roleId && userData.role_name) {
+        const [role] = await db.sequelize.query(
+          `SELECT id FROM roles WHERE name = :name`,
           {
-            replacements: {
-              id,
-              name: userData.name,
-              email: userData.email,
-              password: "",
-              phone: userData.phone,
-            },
-            type: QueryTypes.UPDATE,
+            replacements: { name: userData.role_name },
+            type: QueryTypes.SELECT,
           }
         );
-        return result;
+        if (!role) throw new Error("Role không tồn tại!");
+        roleId = role.id;
       }
+
+      // Chèn user mới
+      await db.sequelize.query(
+        `INSERT INTO users (id, "userName", email, password, phone, role_id, "createdAt", "updatedAt")
+         VALUES (:id, :userName, :email, :password, :phone, :role_id, NOW(), NOW())`,
+        {
+          replacements: {
+            id,
+            userName: userData.userName,
+            email: userData.email,
+            password: userData.password,
+            phone: userData.phone || null,
+            role_id: roleId || null,
+          },
+          type: QueryTypes.INSERT,
+        }
+      );
+
+      // Lấy user vừa thêm
+      const [newUser] = await db.sequelize.query(
+        "SELECT * FROM users WHERE id = :id",
+        {
+          replacements: { id },
+          type: QueryTypes.SELECT,
+        }
+      );
+
+      return newUser;
     } catch (error) {
+      if (error.message.includes("duplicate key")) {
+        throw new Error("Email đã tồn tại!");
+      }
+      throw new Error("Error creating user: " + error.message);
+    }
+  }
+
+
+
+  async updateUser(id, data) {
+    try {
+      const user = await this.model.findByPk(id); // hoặc this.getUserById(id)
+      if (!user) throw new Error("User not found");
+
+      return await user.update({
+        userName: data.userName,
+        email: data.email,
+        password: data.password,
+        phone: data.phone,
+        role_id: data.role_id,
+      });
+    } catch (error) {
+      if (error.message.includes("duplicate key")) {
+        throw new Error("Email đã tồn tại!");
+      }
       throw new Error("Error updating user: " + error.message);
     }
   }
 
+
   async deleteUser(id) {
     try {
-      const user = await this.getUserById(id);
+      const user = await this.model.findByPk(id); // lấy instance model trực tiếp
       if (!user) throw new Error("User not found");
-      return await db.sequelize.query(`DELETE FROM users WHERE id=:id`, {
-        replacements: {
-          id,
-        },
-        type: QueryTypes.DELETE,
-      });
+
+      await user.destroy(); // xóa user
+      return { success: true, message: "User deleted successfully" };
     } catch (error) {
       throw new Error("Error deleting user: " + error.message);
     }

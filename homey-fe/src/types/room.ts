@@ -16,6 +16,10 @@ export type Room = {
         id: string;
         name: string;
     };
+    user?: {
+        id: string;
+        userName: string;
+    };
 };
 
 export interface RoomResDto {

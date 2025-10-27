@@ -8,53 +8,10 @@ class BookingRepository {
         this.model = db.Booking; // Initialize the User model
     }
 
-    async getAllBookings(req) {
+    async getAllBookings() {
         try {
-            const {
-                page = 1,
-                pageSize = 5,
-                search = "",
-                sortField = "createdAt",
-                sortOrder = "DESC",
-            } = req.query;
-
-            const limit = Math.max(parseInt(pageSize), 1);
-            const offset = (Math.max(parseInt(page), 1) - 1) * limit;
-
-            // Đếm tổng số user thỏa điều kiện search
-            const count = await this.model.count({
-                where: {
-                    id: {
-                        [Op.like]: `%${search}%`,
-                    },
-                },
-            });
-
-            // Lấy danh sách user
-            const rows = await db.sequelize.query(
-                `
-        SELECT id, start_date, end_date, quantity, total_price, status, createdAt, updatedAt
-        FROM bookings
-        WHERE id LIKE :search
-        ORDER BY ${sortField} ${sortOrder}
-        LIMIT ${limit} OFFSET ${offset}
-      `,
-                {
-                    replacements: { search: `%${search}%` },
-                    type: QueryTypes.SELECT,
-                }
-            );
-
-
-            return {
-                data: rows,
-                pagination: {
-                    total: count,
-                    page: parseInt(page),
-                    pageSize: limit,
-                    totalPages: Math.ceil(count / limit) || 1,
-                },
-            };
+            const [bookings] = await db.sequelize.query(`SELECT * FROM bookings`);
+            return bookings;
         } catch (error) {
             throw new Error("Error fetching bookings: " + error.message);
         }

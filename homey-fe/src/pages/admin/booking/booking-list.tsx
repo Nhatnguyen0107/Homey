@@ -49,8 +49,8 @@ const BookingList: React.FC = () => {
                     {bookings.map((book, index) => (
                         <tr key={book.id}>
                             <td>{(page - 1) * pageSize + index + 1}</td> {/* STT liên tục */}
-                            <td>{book.start_date}</td>
-                            <td>{book.end_date}</td>
+                            <td>{new Date(book.start_date ?? "").toLocaleDateString()}</td>
+                            <td>{new Date(book.end_date ?? "").toLocaleDateString()}</td>
                             <td>{book.quantity}</td>
                             <td>{book.total_price}</td>
                             <td>{book.status}</td>

@@ -20,13 +20,13 @@ class BookingService {
     //   }
     // }
 
-    // async createCategory(data) {
-    //   try {
-    //     return await this.repository.createCategory(data);
-    //   } catch (error) {
-    //     throw new Error("Error creating product: " + error.message);
-    //   }
-    // }
+    async createCategory(data) {
+        try {
+            return await this.repository.createCategory(data);
+        } catch (error) {
+            throw new Error("Error creating product: " + error.message);
+        }
+    }
 
     // async editCategory(id, data) {
     //   try {

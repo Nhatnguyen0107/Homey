@@ -102,10 +102,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           className="flex items-center gap-2 px-6 py-6 border-b border-gray-100"
         >
           <img
-            src="/icons/homey-logo.svg"
+            src="../src/assets/img/admin.png"
             alt="Homey Admin"
-            className="h-8 object-contain"
+            className="h-15 object-contain"
           />
+          <h2>Homey Admin</h2>
 
         </Link>
         {/* Menu */}

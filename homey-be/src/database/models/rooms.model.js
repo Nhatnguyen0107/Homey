@@ -21,6 +21,10 @@ export default (sequelize) => {
                 foreignKey: "city_id",
                 as: "city",
             });
+            Room.belongsTo(models.User, {
+                foreignKey: "user_id",
+                as: "user", // hoặc "user"
+            });
         }
     }
 

@@ -41,6 +41,8 @@ const RoomList: React.FC = () => {
                         <th>Room Name</th>
                         <th>Description</th>
                         <th>Price (VND)</th>
+                        <th>Cities</th>
+                        <th>Categories</th>
                         <th>Stock</th>
                         <th>Actions</th>
                     </tr>
@@ -65,6 +67,8 @@ const RoomList: React.FC = () => {
                                 <td>{room.name}</td>
                                 <td>{room.description}</td>
                                 <td>{room.price}</td>
+                                <td>{room.city?.name}</td>
+                                <td>{room.category?.name}</td>
                                 <td>{room.stock}</td>
                                 <td className="action-cell">
                                     <button className="btn-action edit" type="button">

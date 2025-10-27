@@ -5,7 +5,7 @@ export type User = {
     userName?: string;
     password?: string;
     email?: string;
-    phone?: number;
+    phone?: string;
     role_id?: string;      // 👈 Khóa ngoại liên kết đến bảng roles
     roleName?: string;
 };
