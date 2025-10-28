@@ -4,16 +4,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import axiosClient from "../services/axiosClient";
 import {
-<<<<<<< HEAD
-    FaMapMarkerAlt, FaStar, FaRegClock, FaBed, FaCalendarAlt, FaUserFriends
-=======
     FaMapMarkerAlt,
     FaStar,
     FaRegClock,
     FaBed,
     FaCalendarAlt,
     FaUserFriends,
->>>>>>> a071fac (u)
 } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import DatePicker from "react-datepicker";
