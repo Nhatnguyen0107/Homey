@@ -1,0 +1,149 @@
+/* Container chính căn giữa toàn màn hình */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* full chiều cao màn hình */
+    background: #f3f4f6;
+    /* màu nền nhạt */
+    font-family: Arial, sans-serif;
+}
+
+/* Form */
+.login-form {
+    width: 400px;
+    background: #fff;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tiêu đề */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.title h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.title p {
+    color: #555;
+    font-size: 14px;
+}
+
+/* Input group */
+.input-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.input-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Remember me */
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+/* Nút login */
+.signIn-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.signIn-btn:hover {
+    background: #1e40af;
+}
+
+/* Phần cuối login */
+.endLogin {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.endLogin p {
+    margin: 10px 0;
+    color: #555;
+}
+
+/* Icon mạng xã hội */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 15px;
+}
+
+.social-icons span {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.social-icons span:hover {
+    background: #f3f4f6;
+}
+
+/* Sign up */
+.signUp {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.signUp a {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.signUp a:hover {
+    text-decoration: underline;
+}
