@@ -1,41 +1,53 @@
 import { Router } from "express";
-import Stripe from "stripe";
-import Booking from "../database/models/bookings.model.js"; // giả sử bạn có model Booking
+import { v4 as uuidv4 } from "uuid";
+import db from "../database/models/index.js";
 import { jwt } from "../middlewares/auth.js";
 
 const router = Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-router.post("/create-checkout-session", jwt(), async (req, res) => {
+// ➕ Tạo thanh toán
+router.post("/", jwt(), async (req, res) => {
     try {
-        const { bookingId } = req.body;
+        const { booking_id, method, amount, status } = req.body;
 
-        // Lấy booking info từ DB
-        const booking = await Booking.findById(bookingId);
-        if (!booking) return res.status(404).json({ error: "Booking không tồn tại" });
+        if (!booking_id || !method || !amount) {
+            return res.status(400).json({ error: "Thiếu thông tin thanh toán" });
+        }
 
-        // Tạo Stripe Checkout session
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: [
-                {
-                    price_data: {
-                        currency: "vnd",
-                        product_data: { name: booking.room_name },
-                        unit_amount: booking.total_price * 100, // Stripe tính theo cent
-                    },
-                    quantity: 1,
-                },
-            ],
-            mode: "payment",
-            success_url: `http://localhost:5173/success/${bookingId}`,
-            cancel_url: `http://localhost:5173/cancel/${bookingId}`,
+        const newPayment = await db.Payment.create({
+            id: uuidv4(),
+            booking_id,
+            method,
+            amount,
+            status: status || "paid",
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
 
-        res.json({ url: session.url });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Lỗi tạo thanh toán" });
+        return res.status(201).json({
+            success: true,
+            message: "✅ Thanh toán thành công!",
+            data: newPayment,
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi tạo payment:", error);
+        return res.status(500).json({ error: "Lỗi server khi tạo payment" });
+    }
+});
+
+// ✅ (tùy chọn) kiểm tra trạng thái thanh toán
+router.get("/status/:bookingId", jwt(), async (req, res) => {
+    try {
+        const payment = await db.Payment.findOne({
+            where: { booking_id: req.params.bookingId },
+        });
+        if (!payment) {
+            return res.status(404).json({ error: "Không tìm thấy thanh toán" });
+        }
+        return res.json(payment);
+    } catch (error) {
+        console.error("❌ Lỗi khi kiểm tra trạng thái:", error);
+        return res.status(500).json({ error: "Lỗi server" });
     }
 });
 
