@@ -27,15 +27,18 @@ import Header from "./components/Header";
 import AccommodationType from "./components/AccommodationType";
 import RoomTypeDetail from "./pages/RoomTypeDetail";
 import RoomDetailPage from "./pages/RoomDetailPage";
-// import RoomDetail from "./pages/RoomDetail";
 import CategoryRoomsPage from "./pages/CategoryRoomsPage";
 import BookingDetailPage from "./pages/BookingDetailPage";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuth();
 
-  // Nếu đã login → lấy thông tin user
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(getMe());
@@ -46,29 +49,29 @@ function App() {
     <AuthProvider>
       <Header />
 
-      <Routes>
+      <ToastContainer position="top-center" autoClose={2000} />
 
-        {/* điều hướng tới trang con loại phòng */}
+      <Routes>
+        {/* ✅ Trang người dùng */}
         <Route path="/" element={<Home />} />
         <Route path="/user" element={<Home />} />
-        <Route path="/" element={<AccommodationType />} />
+        <Route path="/accommodation-type" element={<AccommodationType />} />
         <Route path="/categories/:categoryId" element={<CategoryRoomsPage />} />
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />
+        <Route path="/rooms/:id" element={<RoomDetailPage />} />
         <Route path="/booking-detail" element={<BookingDetailPage />} />
 
+        {/* ✅ Thanh toán */}
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-
-        <Route path="/rooms/:id" element={<RoomDetailPage />} />
-
+        {/* ✅ Đăng nhập / Đăng ký */}
         <Route element={<PublicRoute />}>
-
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* Protected admin routes */}
+        {/* ✅ Trang quản trị */}
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Dashboard />} />
@@ -86,7 +89,7 @@ function App() {
           </Route>
         </Route>
 
-
+        {/* ✅ Trang không tồn tại */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>

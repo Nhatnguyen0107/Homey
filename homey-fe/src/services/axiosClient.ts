@@ -1,14 +1,8 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  // baseURL: "https://demo-be-hhq0.onrender.com/api/v1",
-  // baseURL: "http://localhost:3000/api/v1",
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1",
-  // headers: { "Content-Type": "application/json" },
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1",
+  headers: { "Content-Type": "application/json" },
 });
 
 // Gắn token tự động
