@@ -8,6 +8,10 @@ export type Room = {
     stock?: number;
     image_url?: string[]; // backend trả về mảng
     category_id?: string;
+    city_id?: string;
+    user_id?: string;
+    created_at?: string;
+    updated_at?: string;
     category?: {
         id: string;
         name: string;

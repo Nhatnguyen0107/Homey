@@ -2,6 +2,7 @@
 import type { GetAllRoomParams, RoomResDto } from "../types/room";
 import type { TAny } from "../types/common";
 import axiosClient from "./axiosClient";
+import axios from "axios";
 
 export const RoomService = {
         async getAll(params?: GetAllRoomParams): Promise<RoomResDto> {
@@ -23,7 +24,10 @@ export const RoomService = {
                 const res = await axiosClient.get<TAny>(`/rooms/room-detail/${id}`);
                 return res.data;
         },
-
+        async getById(id: string): Promise<TAny> {
+                const res = await axios.get<TAny>(`/rooms/${id}`);
+                return res.data;
+        },
         async create(data: Partial<TAny>): Promise<TAny> {
                 const res = await axiosClient.post<TAny>("/rooms", data);
                 return res.data;

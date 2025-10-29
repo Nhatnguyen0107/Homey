@@ -1,9 +1,21 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import db from "../database/models/index.js";
+import BookingController from "../controllers/booking.controller.js";
 import { jwt } from "../middlewares/auth.js"; // ✅ dùng middleware
 
+
 const router = express.Router();
+const controller = new BookingController();
+
+
+router.get("/", controller.getAllBookings.bind(controller));
+// router.get("/:id", controller.getBookingById.bind(controller));
+// router.post("/", controller.createBookings.bind(controller));
+// router.put("/:id", controller.updateBookings.bind(controller));
+// router.delete("/:id", controller.deleteBookings.bind(controller));
+
+
 
 // ✅ Chỉ cho user đăng nhập mới đặt phòng
 router.post("/", jwt(), async (req, res) => {

@@ -11,6 +11,8 @@ export type Booking = {
     status?: string;
     createdAt?: string;
     updatedAt?: string;
+    userName?: string;
+    roomName?: string;
 };
 
 export interface BookingResDto {

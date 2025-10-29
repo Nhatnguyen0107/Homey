@@ -140,11 +140,19 @@
 }
 
 .btn-action.edit {
+    color: #3730a3;
+}
+
+.btn-action.edit:hover {
     background-color: #e0e7ff;
     color: #3730a3;
 }
 
 .btn-action.delete {
+    color: #b91c1c;
+}
+
+.btn-action.delete:hover {
     background-color: #fee2e2;
     color: #b91c1c;
 }

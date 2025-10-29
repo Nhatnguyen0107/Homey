@@ -9,6 +9,16 @@ class BookingController extends BaseController {
         this.service = new BookingService();
     }
 
+    async getAllBookings(req, res) {
+        try {
+            const bookings = await this.service.getAllBookings(req);
+            res.status(200).json(bookings);
+        } catch (error) {
+            console.error("❌ Error fetching bookings:", error);
+            res.status(500).json({ message: "Error fetching bookings" });
+        }
+    }
+
     // 🏨 Tạo booking mới
     async createBooking(req, res) {
         try {
@@ -99,17 +109,3 @@ class BookingController extends BaseController {
 }
 
 export default BookingController;
-
-
-// async updateBooking(req, res) {
-//     try {
-//         const { id } = req.params;
-//         const bookingData = req.body;
-//         await this.service.updateBooking(id, bookingData);
-//         return res.status(200).json({ status: true });
-//     } catch (error) {
-//         console.error("Error creating booking:", error);
-//         return res.status(500).json({ error: "Internal Server Error" });
-//     }
-// }
-

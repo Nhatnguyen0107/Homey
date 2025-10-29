@@ -1,32 +1,65 @@
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-// import { useNavigate } from "react-router-dom";
-import { resetStatus, getRoomList } from "../../../redux/roomSlice";
+import { useNavigate } from "react-router-dom";
+import {
+    getRoomList,
+    resetStatus,
+    deleteRoom,
+} from "../../../redux/roomSlice";
 import "../../../styles/admin/table.css";
 
 const RoomList: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
     const rooms = useAppSelector((state) => state.room.rooms) || [];
     const pagination = useAppSelector((state) => state.room.pagination);
-    // const navigate = useNavigate();
-    const dispatch = useAppDispatch();
 
     const [page, setPage] = useState(1);
-    const pageSize = 5;
+    const [pageSize] = useState(5); // số lượng mỗi trang
 
     useEffect(() => {
         dispatch(resetStatus());
         dispatch(getRoomList({ page, pageSize }));
     }, [dispatch, page, pageSize]);
 
+    const addRoom = () => {
+        navigate("/admin/room-form");
+    };
+
+    const editRoom = (id?: string) => {
+        if (id) navigate(`/admin/room-form/${id}`);
+    };
+
+    const deleteRoomItem = (id?: string) => {
+        if (id) {
+            dispatch(
+                deleteRoom({
+                    id,
+                    cb: () => {
+                        dispatch(getRoomList({ page, pageSize }));
+                    },
+                })
+            );
+        }
+    };
+
     const handlePageChange = (newPage: number) => {
-        if (newPage !== page) setPage(newPage);
+        if (newPage >= 1 && newPage <= (pagination?.totalPages || 1)) {
+            setPage(newPage);
+        }
     };
 
     return (
         <div className="data-container">
             <div className="data-header">
-                <h2>Room List</h2>
+                <div className="title-name">
+                    <h2>Room List</h2>
+                    <button className="btn-add" onClick={addRoom}>
+                        <FaPlus /> Add Room
+                    </button>
+                </div>
                 <div className="search-box">
                     <FaSearch className="search-icon" />
                     <input type="text" placeholder="Search rooms..." />
@@ -36,29 +69,33 @@ const RoomList: React.FC = () => {
             <table className="data-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Image</th>
                         <th>Room Name</th>
                         <th>Description</th>
-                        <th>Price (VND)</th>
-                        <th>Cities</th>
-                        <th>Categories</th>
+                        <th>Price</th>
+                        <th>City</th>
+                        <th>Category</th>
                         <th>Stock</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    {Array.isArray(rooms) && rooms.length > 0 ? (
-                        rooms.map((room, i) => (
-                            <tr key={`${room.id || i}`}>
-                                <td>{(page - 1) * pageSize + i + 1}</td>
+                    {rooms.length > 0 ? (
+                        rooms.map((room, index) => (
+                            <tr key={room.id}>
+                                <td>{(page - 1) * pageSize + index + 1}</td>
                                 <td>
-                                    {room.image_url ? (
+                                    {room.image_url?.[0] ? (
                                         <img
-                                            src={room.image_url[0]} // hiển thị ảnh đầu tiên
+                                            src={room.image_url[0]}
                                             alt={room.name}
-                                            style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
+                                            style={{
+                                                width: "80px",
+                                                height: "80px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
                                         />
                                     ) : (
                                         <span>No image</span>
@@ -70,11 +107,17 @@ const RoomList: React.FC = () => {
                                 <td>{room.city?.name}</td>
                                 <td>{room.category?.name}</td>
                                 <td>{room.stock}</td>
-                                <td className="action-cell">
-                                    <button className="btn-action edit" type="button">
+                                <td>
+                                    <button
+                                        className="btn-action edit"
+                                        onClick={() => editRoom(room.id)}
+                                    >
                                         <FaEdit /> Edit
                                     </button>
-                                    <button className="btn-action delete" type="button">
+                                    <button
+                                        className="btn-action delete"
+                                        onClick={() => deleteRoomItem(room.id)}
+                                    >
                                         <FaTrash /> Delete
                                     </button>
                                 </td>
@@ -82,7 +125,7 @@ const RoomList: React.FC = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={7} style={{ textAlign: "center" }}>
+                            <td colSpan={9} style={{ textAlign: "center" }}>
                                 No rooms found.
                             </td>
                         </tr>
@@ -90,7 +133,6 @@ const RoomList: React.FC = () => {
                 </tbody>
             </table>
 
-            {/* Pagination */}
             <div className="pagination">
                 <button
                     className="page-btn"

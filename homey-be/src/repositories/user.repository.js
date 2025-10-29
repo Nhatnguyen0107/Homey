@@ -2,6 +2,7 @@ import { Op, QueryTypes } from "sequelize";
 import db from "../database/models/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { getExpiresAtFromToken } from "../helpers/jwt.js";
+import bcrypt from "bcrypt";
 
 class UserRepository {
   constructor() {
@@ -10,12 +11,27 @@ class UserRepository {
 
   async getAllUsers() {
     try {
-      const [users] = await db.sequelize.query(`SELECT * FROM users`);
+      const users = await db.sequelize.query(
+        `SELECT 
+          u.id,
+          u.userName,
+          u.email,
+          u.phone,
+          u.createdAt,
+          u.updatedAt,
+          u.role_id,
+          r.name AS roleName
+       FROM users u
+       LEFT JOIN roles r ON u.role_id = r.id
+       ORDER BY u.createdAt DESC`,
+        { type: QueryTypes.SELECT }
+      );
       return users;
     } catch (error) {
       throw new Error("Error fetching users: " + error.message);
     }
   }
+
 
 
   async getUserById(id, includeRefreshToken = false) {
@@ -35,7 +51,7 @@ class UserRepository {
     try {
       const id = uuidv4();
 
-      // Kiểm tra role_id hoặc role_name
+      // 🔍 Tìm role nếu chỉ có role_name
       let roleId = userData.role_id;
       if (!roleId && userData.role_name) {
         const [role] = await db.sequelize.query(
@@ -49,40 +65,32 @@ class UserRepository {
         roleId = role.id;
       }
 
-      // Chèn user mới
+      // ✅ Hash mật khẩu trước khi lưu
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+      // ✅ Lưu user
       await db.sequelize.query(
-        `INSERT INTO users (id, "userName", email, password, phone, role_id, "createdAt", "updatedAt")
+        `INSERT INTO users (id, userName, email, password, phone, role_id, createdAt, updatedAt)
          VALUES (:id, :userName, :email, :password, :phone, :role_id, NOW(), NOW())`,
         {
           replacements: {
             id,
             userName: userData.userName,
             email: userData.email,
-            password: userData.password,
+            password: hashedPassword, // <-- Đã hash
             phone: userData.phone || null,
-            role_id: roleId || null,
+            role_id: roleId,
           },
           type: QueryTypes.INSERT,
         }
       );
 
-      // Lấy user vừa thêm
-      const [newUser] = await db.sequelize.query(
-        "SELECT * FROM users WHERE id = :id",
-        {
-          replacements: { id },
-          type: QueryTypes.SELECT,
-        }
-      );
-
-      return newUser;
+      return { success: true, message: "User created successfully" };
     } catch (error) {
-      if (error.message.includes("duplicate key")) {
-        throw new Error("Email đã tồn tại!");
-      }
       throw new Error("Error creating user: " + error.message);
     }
   }
+
 
 
 

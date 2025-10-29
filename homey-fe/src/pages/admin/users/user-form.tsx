@@ -1,167 +1,127 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+interface FormData {
+    userName: string;
+    email: string;
+    password: string;
+    phone: string;
+}
 
 interface Role {
     id: string;
     name: string;
 }
 
-interface User {
-    userName: string;
-    email: string;
-    phone: string;
-    password?: string;
-    role_id: string;
-}
-
-const AdminUserForm: React.FC = () => {
+const AddUser = () => {
+    const { register, handleSubmit, reset } = useForm<FormData>();
     const navigate = useNavigate();
-    const { id } = useParams(); // Lấy id nếu đang edit
     const [roles, setRoles] = useState<Role[]>([]);
-    const [formData, setFormData] = useState<User | null>(null); // <-- null ban đầu
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [selectedRole, setSelectedRole] = useState<string>("");
 
-    // --- Lấy danh sách roles ---
+    // Lấy danh sách role từ API
     useEffect(() => {
         const fetchRoles = async () => {
             try {
                 const res = await axios.get("http://localhost:3000/api/v1/roles");
-                const rolesData: Role[] = res.data.data;
-                setRoles(rolesData);
-
-                if (!id && rolesData.length > 0) {
-                    // Tạo mới: set role mặc định
-                    setFormData({
-                        userName: "",
-                        email: "",
-                        phone: "",
-                        password: "",
-                        role_id: rolesData[0].id,
-                    });
+                if (Array.isArray(res.data)) {
+                    setRoles(res.data);
+                } else if (Array.isArray(res.data.data)) {
+                    // nếu API trả { data: [...] }
+                    setRoles(res.data.data);
+                } else {
+                    setRoles([]);
+                    console.warn("Roles API trả về không phải mảng:", res.data);
                 }
             } catch (err) {
-                console.error("Lỗi lấy roles:", err);
+                console.error("Lỗi khi lấy danh sách role:", err);
             }
         };
+
         fetchRoles();
-    }, [id]);
+    }, []);
 
-    // --- Fetch dữ liệu user cũ nếu edit ---
-    useEffect(() => {
-        if (!id) return;
-
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`http://localhost:3000/api/v1/users/${id}`);
-                const user = res.data.data;
-                setFormData({
-                    userName: user.userName,
-                    email: user.email,
-                    phone: user.phone,
-                    password: "", // để trống nếu không đổi
-                    role_id: user.role_id,
-                });
-            } catch (err) {
-                console.error("Lỗi lấy user:", err);
-            }
-        };
-        fetchUser();
-    }, [id]);
-
-    // --- Chưa có formData thì không render form ---
-    if (!formData) return <p>Loading...</p>;
-
-    // --- handle change ---
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    // --- validate ---
-    const validate = () => {
-        const newErrors: { [key: string]: string } = {};
-        if (!formData.userName) newErrors.userName = "Tên bắt buộc";
-        if (!formData.email) newErrors.email = "Email bắt buộc";
-        if (!formData.phone) newErrors.phone = "Số điện thoại bắt buộc";
-        if (!id && !formData.password) newErrors.password = "Password bắt buộc";
-        if (!formData.role_id) newErrors.role_id = "Chọn role";
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    // --- submit ---
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!validate()) return;
-
+    const onSubmit = async (data: FormData) => {
+        if (!selectedRole) {
+            toast.error("Vui lòng chọn role!");
+            return;
+        }
         try {
-            if (id) {
-                await axios.put(`http://localhost:3000/api/v1/users/${id}`, formData);
-                alert("Cập nhật user thành công");
-            } else {
-                await axios.post("http://localhost:3000/api/v1/users", formData);
-                alert("Thêm user thành công");
-            }
+            await axios.post("http://localhost:3000/api/v1/users", {
+                ...data,
+                role_id: selectedRole, // gửi id của role
+            });
+            toast.success("Thêm user thành công!");
+            reset();
+            console.log("Đi tới trang user list...");
             navigate("/admin/user-list");
-        } catch (err: any) {
-            console.error("Lỗi lưu user:", err.response?.data || err);
-            alert("Lưu user thất bại: " + (err.response?.data?.message || ""));
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Lỗi khi thêm user!");
         }
     };
 
     return (
-        <div className="form-container">
-            <form onSubmit={handleSubmit} className="user-form">
-                <h2>{id ? "Edit User" : "Add User"}</h2>
+        <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">Thêm người dùng mới</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <input
+                    type="text"
+                    placeholder="Họ tên"
+                    {...register("userName")}
+                    className="border p-2 rounded"
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    {...register("email")}
+                    className="border p-2 rounded"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Mật khẩu"
+                    {...register("password")}
+                    className="border p-2 rounded"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Số điện thoại"
+                    {...register("phone")}
+                    className="border p-2 rounded"
+                />
 
-                <div className="form-group">
-                    <label>User Name</label>
-                    <input name="userName" value={formData.userName} onChange={handleChange} />
-                    {errors.userName && <p className="error-message">{errors.userName}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label>Email</label>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} />
-                    {errors.email && <p className="error-message">{errors.email}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label>Phone</label>
-                    <input name="phone" value={formData.phone} onChange={handleChange} />
-                    {errors.phone && <p className="error-message">{errors.phone}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label>Password</label>
-                    <input
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        placeholder={id ? "Để trống nếu không đổi" : ""}
-                        onChange={handleChange}
-                    />
-                    {errors.password && <p className="error-message">{errors.password}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label>Role</label>
-                    <select name="role_id" value={formData.role_id} onChange={handleChange}>
-                        {roles.map((role) => (
+                <select
+                    value={selectedRole}
+                    onChange={(e) => setSelectedRole(e.target.value)}
+                    className="border p-2 rounded"
+                    required
+                >
+                    <option value="">Chọn role</option>
+                    {Array.isArray(roles) && roles.length > 0 ? (
+                        roles.map(role => (
                             <option key={role.id} value={role.id}>
                                 {role.name}
                             </option>
-                        ))}
-                    </select>
-                    {errors.role_id && <p className="error-message">{errors.role_id}</p>}
-                </div>
+                        ))
+                    ) : (
+                        <option value="">Không có role</option>
+                    )}
+                </select>
 
-                <button type="submit" className="btn-submit">
-                    {id ? "Update" : "Create"}
+                <button
+                    type="submit"
+                    className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                >
+                    Thêm User
                 </button>
             </form>
         </div>
     );
 };
 
-export default AdminUserForm;
+export default AddUser;

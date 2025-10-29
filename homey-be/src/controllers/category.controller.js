@@ -9,6 +9,7 @@ class CategoryController extends BaseController {
   }
 
 
+
   async getAllCategories(req, res) {
     try {
       const categories = await this.service.getAllCategories(req);

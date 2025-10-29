@@ -92,18 +92,10 @@ const CategoryList: React.FC = () => {
               </td>
               <td>{cate.name}</td>
               <td>
-                <button
-                  className="btn-action edit"
-                  type="button"
-                  onClick={() => editCategory(cate.id)}
-                >
+                <button className="btn-action edit" type="button" onClick={() => editCategory(cate.id)}>
                   <FaEdit /> Edit
                 </button>
-                <button
-                  className="btn-action delete"
-                  type="button"
-                  onClick={() => deleteCate(cate.id)}
-                >
+                <button className="btn-action delete" type="button" onClick={() => deleteCate(cate.id)}>
                   <FaTrash /> Delete
                 </button>
               </td>
