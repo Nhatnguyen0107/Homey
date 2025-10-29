@@ -11,6 +11,8 @@ import AppConfig from "./config/index.js";
 import ApiRouter from "./routes/index.js";
 import { fileURLToPath } from "url";
 import path from "path";
+import paymentRoute from "./routes/payments.route.js";
+import bookingRoute from "./routes/booking.route.js";
 
 dotenv.config();
 
@@ -30,6 +32,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:3000",
       "https://homey-oaqp.vercel.app" // FE deploy trên Vercel
     ],
     credentials: true,
@@ -69,6 +73,8 @@ app.use(passport.initialize());
 // ===================== MAIN API ROUTE =====================
 app.use(`/api/${AppConfig.apiVersion}`, ApiRouter[AppConfig.apiVersion]);
 
+app.use("/api/v1/bookings", bookingRoute);
+app.use("/api/v1/payments", paymentRoute);
 
 app.get("/rooms", (req, res) => {
   // Khi FE gọi nhầm /rooms, backend sẽ tự chuyển hướng đúng /api/v1/rooms

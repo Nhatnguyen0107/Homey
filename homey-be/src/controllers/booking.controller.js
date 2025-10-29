@@ -1,5 +1,7 @@
 import BookingService from "../services/booking.service.js";
 import BaseController from "./base.controller.js";
+import db from "../database/models/index.js";
+import { v4 as uuidv4 } from "uuid";
 
 class BookingController extends BaseController {
     constructor() {
@@ -7,70 +9,26 @@ class BookingController extends BaseController {
         this.service = new BookingService();
     }
 
-    async getAllBookings(req, res) {
-        try {
-            const bookings = await this.service.getAllBookings(req);
-            res.json(bookings);
-        } catch (error) {
-            console.error("Error fetching bookings:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
-    }
-
-    // async getBookingById(req, res) {
-    //     try {
-    //         const { id } = req.params;
-    //         const booking = await this.service.getBookingById(id);
-    //         res.json(booking);
-    //     } catch (error) {
-    //         console.error("Error fetching bookings:", error);
-    //         return res.status(500).json({ error: "Internal Server Error" });
-    //     }
-    // }
-
-    //  Tạo booking mới (user đặt phòng)
+    // 🏨 Tạo booking mới
     async createBooking(req, res) {
         try {
-            const user_id = req.user?.id; // lấy user từ token (auth middleware)
-            const { room_id, start_date, end_date, quantity, total_price } = req.body;
+            const { room_id, start_date, end_date, quantity, total_price, status } = req.body;
+            const user_id = req.user.id;
 
-            // async updateBooking(req, res) {
-            //     try {
-            //         const { id } = req.params;
-            //         const bookingData = req.body;
-            //         await this.service.updateBooking(id, bookingData);
-            //         return res.status(200).json({ status: true });
-            //     } catch (error) {
-            //         console.error("Error creating booking:", error);
-            //         return res.status(500).json({ error: "Internal Server Error" });
-            //     }
-            // }
-
-            // Bỏ yêu cầu bắt buộc total_price — frontend có thể gửi, nếu không backend vẫn xử lý
-            if (!room_id || !start_date || !end_date || !quantity) {
-                return res.status(400).json({ error: "Thiếu thông tin đặt phòng" });
-            }
-
-            // Nếu backend cần tính tổng tiền tự động, tốt hơn nên gọi service để lấy giá phòng và tính.
-            const finalTotalPrice = total_price ?? 0;
-
-            const newBooking = await this.service.createBooking({
+            const booking = await db.Booking.create({
                 user_id,
                 room_id,
                 start_date,
                 end_date,
                 quantity,
-                total_price: finalTotalPrice,
+                total_price,
+                status,
             });
 
-            return res.status(201).json({
-                success: true,
-                message: "Đặt phòng thành công!",
-                data: newBooking,
-            });
+            return res.status(201).json({ message: "Tạo booking thành công", data: booking });
         } catch (error) {
-            console.error("Error creating booking:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error(error);
+            return res.status(500).json({ message: "Lỗi server" });
         }
     }
 
@@ -91,7 +49,7 @@ class BookingController extends BaseController {
         }
     }
 
-    // ❌ Hủy đặt phòng (user hoặc admin)
+    // ❌ Hủy đặt phòng
     async cancelBooking(req, res) {
         try {
             const { id } = req.params;
@@ -107,7 +65,7 @@ class BookingController extends BaseController {
         }
     }
 
-    // ✅ Xác nhận đặt phòng (admin)
+    // ✅ Xác nhận đặt phòng
     async confirmBooking(req, res) {
         try {
             const { id } = req.params;
@@ -123,7 +81,7 @@ class BookingController extends BaseController {
         }
     }
 
-    // ✅ Đánh dấu hoàn thành (admin)
+    // ✅ Đánh dấu hoàn tất
     async completeBooking(req, res) {
         try {
             const { id } = req.params;
@@ -141,3 +99,17 @@ class BookingController extends BaseController {
 }
 
 export default BookingController;
+
+
+// async updateBooking(req, res) {
+//     try {
+//         const { id } = req.params;
+//         const bookingData = req.body;
+//         await this.service.updateBooking(id, bookingData);
+//         return res.status(200).json({ status: true });
+//     } catch (error) {
+//         console.error("Error creating booking:", error);
+//         return res.status(500).json({ error: "Internal Server Error" });
+//     }
+// }
+

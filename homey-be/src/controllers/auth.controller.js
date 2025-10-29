@@ -71,7 +71,7 @@ export default class AuthController {
       // !! IMPORTANT: payload uses { id, role } (not sub), and uses same JWT_SECRET as middleware
       const token = jwt.sign(
         { id: user.id, role: user.role?.name },
-        JWT_SECRET,
+        AppConfig.jwt.JWT_SECRET || process.env.JWT_SECRET || "jwt_secret",
         { expiresIn: "2h" }
       );
 
