@@ -7,6 +7,8 @@ import AccommodationType from "../../components/AccommodationType";
 import RoomList from "../../components/RoomList";
 import axiosClient from "../../services/axiosClient";
 import BannerSlider from "../../components/BannerSlider";
+import Services from "../../components/Services";
+import Footer from "../../components/Footer";
 
 interface Room {
   id: string;
@@ -59,20 +61,25 @@ const Home: React.FC = () => {
         </section>
 
         {/* Accommodation Types (Danh mục phòng) */}
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto p-6 pb-0 px-6">
           <AccommodationType />
         </div>
 
         {/* Rooms (Danh sách phòng) */}
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto pt-2 pb-6 px-6">
           <RoomList />
+        </div>
+
+        {/* dịch vụ */}
+        <div className="container mx-auto px-6 mt-8">
+          <Services />
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-blue-900 text-white text-center p-4 mt-10">
-        © 2025 Booking
-      </footer>
+      <div>
+        <Footer />
+      </div>
+
     </div>
   );
 };

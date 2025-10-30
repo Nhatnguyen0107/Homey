@@ -49,8 +49,13 @@ const Header: React.FC = () => {
 
                             {/* mọi user đều thấy User */}
                             <Link to="/user" className="underline hover:text-yellow-300 ml-2">
-                                User
+                                Trang Chủ
                             </Link>
+
+                            <Link to="/booking-history" className="underline hover:text-yellow-300 ml-2">
+                                Lịch sử đặt phòng
+                            </Link>
+
                         </>
                     ) : (
                         <>

@@ -24,6 +24,8 @@ const BookingDetailPage: React.FC = () => {
                 total_price: totalPrice,
             },
         });
+        console.log("Room data:", room);
+
 
     };
 

@@ -14,11 +14,12 @@ import path from "path";
 import paymentRoute from "./routes/payments.route.js";
 import bookingRoute from "./routes/booking.route.js";
 
+
 dotenv.config();
 
 const app = express();
 const server = createServer(app);
-const port = process.env.PORT || 3000;
+const port = AppConfig.port || process.env.NODE_PORT || 3000;
 
 
 // ===================== PATH CONFIG =====================

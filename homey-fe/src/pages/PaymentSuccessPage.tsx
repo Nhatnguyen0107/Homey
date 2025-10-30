@@ -7,7 +7,7 @@ const PaymentSuccessPage: React.FC = () => {
     const { booking, payment } = location.state || {};
 
     if (!booking || !payment) {
-        return <p className="text-center text-red-500 mt-10">Không có dữ liệu thanh toán!</p>;
+        return <p className="text-center text-green-600 mb-4">Cảm ơn bạn đã đặt phòng 🎉</p>;
     }
 
     return (

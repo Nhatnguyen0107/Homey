@@ -31,6 +31,7 @@ import CategoryRoomsPage from "./pages/CategoryRoomsPage";
 import BookingDetailPage from "./pages/BookingDetailPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import BookingHistory from "./pages/BookingHistory";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -60,6 +61,7 @@ function App() {
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />
         <Route path="/rooms/:id" element={<RoomDetailPage />} />
         <Route path="/booking-detail" element={<BookingDetailPage />} />
+        <Route path="/booking-history" element={<BookingHistory />} />
 
         {/* ✅ Thanh toán */}
         <Route path="/payment" element={<PaymentPage />} />

@@ -1,11 +1,16 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import db from "../database/models/index.js";
-import { jwt } from "../middlewares/auth.js"; // ✅ dùng middleware
+import { jwt } from "../middlewares/auth.js";
+import BookingController from "../controllers/booking.controller.js";
 
 const router = express.Router();
+const controller = new BookingController();
 
-// ✅ Chỉ cho user đăng nhập mới đặt phòng
+// ✅ Xem danh sách đặt phòng của user hiện tại
+router.get("/my-bookings", jwt(), controller.getUserBookings.bind(controller));
+
+// Chỉ cho user đăng nhập mới đặt phòng
 router.post("/", jwt(), async (req, res) => {
     try {
         const { room_id, start_date, end_date, quantity, total_price } = req.body;
@@ -14,7 +19,6 @@ router.post("/", jwt(), async (req, res) => {
             return res.status(400).json({ error: "Thiếu thông tin đặt phòng" });
         }
 
-        // ✅ Lấy user_id từ token JWT
         const user_id = req.user?.id || req.user?.sub;
         if (!user_id) {
             return res.status(401).json({ error: "Không xác định được người dùng" });
@@ -22,7 +26,7 @@ router.post("/", jwt(), async (req, res) => {
 
         const newBooking = await db.Booking.create({
             id: uuidv4(),
-            user_id, // ✅ luôn có
+            user_id,
             room_id,
             start_date,
             end_date,
@@ -42,5 +46,33 @@ router.post("/", jwt(), async (req, res) => {
         res.status(500).json({ error: "Lỗi server khi tạo đơn đặt phòng" });
     }
 });
+
+// 🧾 Xem chi tiết 1 đơn booking
+router.get("/:id", jwt(), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const booking = await db.Booking.findOne({
+            where: { id },
+            include: [
+                {
+                    model: db.Room,
+                    as: "room",
+                    attributes: ["name", "price", "description"],
+                },
+            ],
+        });
+
+        if (!booking) {
+            return res.status(404).json({ error: "Không tìm thấy đơn đặt phòng" });
+        }
+
+        res.status(200).json({ success: true, data: booking });
+    } catch (error) {
+        console.error("❌ Lỗi khi xem chi tiết booking:", error);
+        res.status(500).json({ error: "Lỗi server khi xem chi tiết đặt phòng" });
+    }
+});
+
+
 
 export default router;
