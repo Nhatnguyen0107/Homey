@@ -1,6 +1,6 @@
 import React from "react";
 import vnIcon from "../assets/img/Vn.png"; // kiểm tra tên file cho đúng (vn.png hoặc Vn.png)
-import footer1 from "../assets/img/lg.png"; // logo đầu tiên
+import footer1 from "../assets/img/footer1.png"; // logo đầu tiên
 import footer2 from "../assets/img/footer2.png";
 import footer3 from "../assets/img/footer3.png";
 
