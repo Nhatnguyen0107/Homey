@@ -73,6 +73,27 @@ router.get("/:id", jwt(), async (req, res) => {
     }
 });
 
+// Kiểm tra user đã đặt và hoàn tất phòng này chưa
+router.get("/check/:roomId", jwt(), async (req, res) => {
+    try {
+        const user_id = req.user.id || req.user.sub; // đảm bảo lấy đúng user
+        const { roomId } = req.params;
+
+        const booking = await db.Booking.findOne({
+            where: {
+                user_id,
+                room_id: roomId,
+                status: "completed", // chỉ hoàn tất mới cho đánh giá
+            },
+        });
+
+        res.status(200).json({ hasBooked: !!booking });
+    } catch (err) {
+        console.error("Error checking booking:", err);
+        res.status(500).json({ hasBooked: false });
+    }
+});
+
 
 
 export default router;
