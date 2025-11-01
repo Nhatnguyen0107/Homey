@@ -21,7 +21,7 @@ import Profile from "./pages/admin/setting/profile";
 import CategoriesList from "./pages/admin/categories/categories-list";
 import CategoriesForm from "./pages/admin/categories/categories-form";
 import UsersForm from "./pages/admin/users/user-form";
-// import RoomsForm from "./pages/admin/rooms/room-form";
+import RoomsForm from "./pages/admin/rooms/room-form";
 
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
@@ -86,8 +86,8 @@ function App() {
             <Route path="category-form/:id" element={<CategoriesForm />} />
             <Route path="user-form" element={<UsersForm />} />
             <Route path="user-form/:id" element={<UsersForm />} />
-            {/* <Route path="room-form" element={<RoomsForm />} />
-            <Route path="room-form/:id" element={<RoomsForm />} /> */}
+            <Route path="room-form" element={<RoomsForm />} />
+            <Route path="room-form/:id" element={<RoomsForm />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Route>

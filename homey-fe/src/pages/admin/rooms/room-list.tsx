@@ -86,16 +86,15 @@ const RoomList: React.FC = () => {
                             <tr key={room.id}>
                                 <td>{(page - 1) * pageSize + index + 1}</td>
                                 <td>
-                                    {room.image_url?.[0] ? (
+                                    {room.image_url?.length ? (
                                         <img
-                                            src={room.image_url[0]}
+                                            src={
+                                                room.image_url?.[0]?.startsWith("http")
+                                                    ? room.image_url[0]
+                                                    : `http://localhost:3000${room.image_url[0]}`
+                                            }
                                             alt={room.name}
-                                            style={{
-                                                width: "80px",
-                                                height: "80px",
-                                                objectFit: "cover",
-                                                borderRadius: "8px",
-                                            }}
+                                            style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
                                         />
                                     ) : (
                                         <span>No image</span>

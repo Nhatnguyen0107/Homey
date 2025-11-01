@@ -68,7 +68,9 @@ const RoomList: React.FC = () => {
                             <img
                                 src={
                                     room.image_url && room.image_url.length > 0
-                                        ? `${room.image_url[0]}`
+                                        ? room.image_url[0].startsWith("http")
+                                            ? room.image_url[0]
+                                            : `http://localhost:3000${room.image_url[0]}`
                                         : "/default-room.jpg"
                                 }
                                 alt={room.name}

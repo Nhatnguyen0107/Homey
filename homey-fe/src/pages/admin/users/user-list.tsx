@@ -56,7 +56,7 @@ export default function UserList() {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
-  // 🔍 Lọc theo tên/email
+  // 🔍 search Lọc theo tên/email
   const filteredUsers = users.filter(
     (u) =>
       u.userName.toLowerCase().includes(search.toLowerCase()) ||
@@ -105,24 +105,40 @@ export default function UserList() {
           </tr>
         </thead>
         <tbody>
-          {displayedUsers.map((user, index) => (
-            <tr key={user.id}>
-              <td>{(page - 1) * pageSize + index + 1}</td>
-              <td>{user.userName}</td>
-              <td>********</td>
-              <td>{user.email}</td>
-              <td>{user.phone}</td>
-              <td>{user.roleName}</td>
-              <td>
-                <button className="btn-action edit" type="button" onClick={() => editUser(user.id)}>
-                  <FaEdit /> Edit
-                </button>
-                <button className="btn-action delete" type="button" onClick={() => deleteUser(user.id)}>
-                  <FaTrash /> Delete
-                </button>
+          {displayedUsers.length > 0 ? (
+            displayedUsers.map((user, index) => (
+              <tr key={user.id}>
+                <td>{(page - 1) * pageSize + index + 1}</td>
+                <td>{user.userName}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.roleName}</td>
+                <td>{new Date(user.createdAt).toLocaleDateString("vi-VN")}</td>
+                <td>
+                  <button
+                    className="btn-action edit"
+                    type="button"
+                    onClick={() => editUser(user.id)}
+                  >
+                    <FaEdit /> Edit
+                  </button>
+                  <button
+                    className="btn-action delete"
+                    type="button"
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7} style={{ textAlign: "center" }}>
+                No users found.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 

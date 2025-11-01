@@ -8,6 +8,7 @@ import bookingRouter from "./booking.route.js";
 import promotionRouter from "./promotion.route.js";
 import reviewRouter from "./review.route.js";
 import roleRouter from "./role.route.js"
+import cityRouter from "./city.route.js";
 
 const v1Router = Router();
 
@@ -20,6 +21,7 @@ v1Router
   .use("/bookings", bookingRouter)
   .use("/promotions", promotionRouter)
   .use("/reviews", reviewRouter)
-  .use("/roles", roleRouter);
+  .use("/roles", roleRouter)
+  .use("/cities", cityRouter);
 
 export default { v1: v1Router };

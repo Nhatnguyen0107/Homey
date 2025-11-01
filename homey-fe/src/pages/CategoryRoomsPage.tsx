@@ -95,9 +95,15 @@ const CategoryRoomsPage: React.FC = () => {
                             className="border rounded-lg shadow hover:shadow-lg transition p-3 block"
                         >
                             <img
-                                src={Array.isArray(room.image_url) ? room.image_url[0] : room.image_url}
+                                src={
+                                    room.image_url && room.image_url.length > 0
+                                        ? room.image_url[0].startsWith("http")
+                                            ? room.image_url[0]
+                                            : `http://localhost:3000${room.image_url[0]}`
+                                        : "/default-room.jpg"
+                                }
                                 alt={room.name}
-                                className="w-full h-48 object-cover rounded-md"
+                                className="w-full h-48 object-cover"
                             />
 
                             <h4 className="text-lg font-semibold mt-2">{room.name}</h4>

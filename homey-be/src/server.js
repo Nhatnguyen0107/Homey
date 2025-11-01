@@ -26,6 +26,7 @@ const __dirname = path.dirname(__filename);
 
 // ===================== STATIC FILES =====================
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 
 // ===================== CORS CONFIG =====================
 app.use(
