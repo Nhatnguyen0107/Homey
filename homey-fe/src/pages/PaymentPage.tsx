@@ -4,12 +4,15 @@ import Swal from "sweetalert2";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import anh1 from "../assets/img/the1.webp";
+import anh2 from "../assets/img/the2.webp";
+import anh3 from "../assets/img/the3.jpg";
+
 export default function PaymentPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
     const { room_id, total_price, start_date, end_date, quantity } = location.state || {};
-
     const [cardInfo, setCardInfo] = useState({ name: "", number: "", expiry: "", cvc: "" });
     const [loading, setLoading] = useState(false);
 
@@ -23,7 +26,6 @@ export default function PaymentPage() {
             toast.error("Không tìm thấy thông tin phòng!");
             return;
         }
-
         if (!cardInfo.name || !cardInfo.number || !cardInfo.expiry || !cardInfo.cvc) {
             toast.error("Vui lòng nhập đầy đủ thông tin thẻ!");
             return;
@@ -31,8 +33,6 @@ export default function PaymentPage() {
 
         try {
             setLoading(true);
-
-            // B1. Tạo booking trước
             const bookingRes = await axiosClient.post("/bookings", {
                 room_id,
                 start_date,
@@ -45,7 +45,6 @@ export default function PaymentPage() {
             const bookingId = bookingRes.data?.data?.id;
             if (!bookingId) throw new Error("Không lấy được ID booking!");
 
-            // B2. Tạo payment gắn booking_id
             await axiosClient.post("/payments", {
                 booking_id: bookingId,
                 method: "credit_card",
@@ -58,9 +57,7 @@ export default function PaymentPage() {
                 text: "Đặt phòng của bạn đã được xác nhận.",
                 icon: "success",
                 confirmButtonText: "OK",
-            }).then(() => {
-                navigate("/payment-success");
-            });
+            }).then(() => navigate("/payment-success"));
         } catch (error) {
             console.error("❌ Payment error:", error);
             toast.error("Có lỗi xảy ra khi thanh toán!");
@@ -74,6 +71,13 @@ export default function PaymentPage() {
             <h2 className="text-2xl font-semibold mb-6">Thanh toán bằng thẻ</h2>
 
             <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-xl shadow-lg w-[420px]">
+                {/* ✅ THÊM 3 ẢNH Ở ĐÂY */}
+                <div className="flex justify-center items-center gap-4 mb-5">
+                    <img src={anh1} alt="Thẻ 1" className="w-14 h-9 object-contain rounded" />
+                    <img src={anh2} alt="Thẻ 2" className="w-14 h-9 object-contain rounded" />
+                    <img src={anh3} alt="Thẻ 3" className="w-14 h-9 object-contain rounded" />
+                </div>
+
                 <div className="mb-4">
                     <label className="block mb-1 text-sm">Tên chủ thẻ *</label>
                     <input
@@ -85,6 +89,7 @@ export default function PaymentPage() {
                         placeholder="Nguyễn Văn A"
                     />
                 </div>
+
                 <div className="mb-4">
                     <label className="block mb-1 text-sm">Số thẻ *</label>
                     <input
@@ -96,6 +101,7 @@ export default function PaymentPage() {
                         placeholder="xxxx xxxx xxxx xxxx"
                     />
                 </div>
+
                 <div className="flex gap-3 mb-4">
                     <div className="flex-1">
                         <label className="block mb-1 text-sm">Ngày hết hạn *</label>

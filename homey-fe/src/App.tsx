@@ -34,6 +34,7 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import BookingHistory from "./pages/BookingHistory";
 import Hotel from "./pages/Hotel";
 import ActivityPage from "./pages/ActivityPage";
+import ChatWidget from "./components/ChatWidget";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -51,6 +52,7 @@ function App() {
   return (
     <AuthProvider>
       <Header />
+      <ChatWidget />
 
       <ToastContainer position="top-center" autoClose={2000} />
 
