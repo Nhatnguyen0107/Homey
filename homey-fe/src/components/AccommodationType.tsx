@@ -57,7 +57,9 @@ const AccommodationType: React.FC = () => {
                             <img
                                 src={
                                     c.image_url && c.image_url.length > 0
-                                        ? `${c.image_url[0]}`
+                                        ? c.image_url[0].startsWith("http")
+                                            ? c.image_url[0]
+                                            : `http://localhost:3000${c.image_url[0]}`
                                         : "/default-room.jpg"
                                 }
                                 alt={c.name}

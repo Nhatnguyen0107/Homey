@@ -18,11 +18,23 @@ const RoomList: React.FC = () => {
 
     const [page, setPage] = useState(1);
     const [pageSize] = useState(5); // số lượng mỗi trang
+    const [search, setSearch] = useState(""); // từ khóa tìm kiếm
 
+    // Load danh sách khi page thay đổi hoặc lần đầu
     useEffect(() => {
         dispatch(resetStatus());
-        dispatch(getRoomList({ page, pageSize }));
+        dispatch(getRoomList({ page, pageSize, search }));
     }, [dispatch, page, pageSize]);
+
+    // Tìm kiếm với debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPage(1); // reset về trang 1 khi search
+            dispatch(getRoomList({ page: 1, pageSize, search }));
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [search, dispatch, pageSize]);
 
     const addRoom = () => {
         navigate("/admin/room-form");
@@ -38,7 +50,7 @@ const RoomList: React.FC = () => {
                 deleteRoom({
                     id,
                     cb: () => {
-                        dispatch(getRoomList({ page, pageSize }));
+                        dispatch(getRoomList({ page, pageSize, search }));
                     },
                 })
             );
@@ -62,7 +74,12 @@ const RoomList: React.FC = () => {
                 </div>
                 <div className="search-box">
                     <FaSearch className="search-icon" />
-                    <input type="text" placeholder="Search rooms..." />
+                    <input
+                        type="text"
+                        placeholder="Search rooms..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </div>
             </div>
 

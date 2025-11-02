@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
     createCategory,
@@ -17,6 +17,7 @@ import "../../../styles/admin/form.css";
 const schema = yup
     .object({
         name: yup.string().required(),
+        images: yup.mixed().optional(),
     })
     .required();
 
@@ -27,6 +28,9 @@ const CategoriesForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const [previewImages, setPreviewImages] = useState<string[]>([]);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
     const {
         register,
         handleSubmit,
@@ -35,13 +39,50 @@ const CategoriesForm = () => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+
     const onSubmit = (data: TAny) => {
+        const formData = {
+            name: data.name,
+            images: selectedFiles,
+        };
+
         if (id) {
-            dispatch(updateCategory({ id, data }));
+            dispatch(updateCategory({ id, data: formData }));
         } else {
-            dispatch(createCategory(data));
+            dispatch(createCategory(formData));
         }
     };
+
+    // Xử lý khi chọn file
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const fileArray = Array.from(files);
+            setSelectedFiles(fileArray);
+
+            // Cleanup previous URLs
+            previewImages.forEach(url => {
+                if (url.startsWith('blob:')) {
+                    URL.revokeObjectURL(url);
+                }
+            });
+
+            // Tạo preview URLs
+            const urls = fileArray.map(file => URL.createObjectURL(file));
+            setPreviewImages(urls);
+        }
+    };
+
+    // Cleanup URLs when component unmounts
+    useEffect(() => {
+        return () => {
+            previewImages.forEach(url => {
+                if (url.startsWith('blob:')) {
+                    URL.revokeObjectURL(url);
+                }
+            });
+        };
+    }, [previewImages]);
 
     useEffect(() => {
         if (status) {
@@ -54,8 +95,15 @@ const CategoriesForm = () => {
             reset({
                 name: category.name,
             });
+
+            // Hiển thị ảnh hiện tại nếu có
+            if (category.image_url && Array.isArray(category.image_url)) {
+                setPreviewImages(category.image_url.map(url =>
+                    url.startsWith('http') ? url : `http://localhost:3000${url}`
+                ));
+            }
         }
-    }, [category]);
+    }, [category, reset]);
 
     useEffect(() => {
         if (id) {
@@ -72,12 +120,39 @@ const CategoriesForm = () => {
                     <p className="error-message">{errors.name?.message}</p>
                 </div>
 
+                <div className="form-group">
+                    <label htmlFor="images">Category Images</label>
+                    <input
+                        type="file"
+                        id="images"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                </div>
+
+                {/* Preview ảnh */}
+                {previewImages.length > 0 && (
+                    <div className="image-preview">
+                        <label>Image Preview:</label>
+                        <div className="preview-container">
+                            {previewImages.map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt={`preview ${index}`}
+                                    className="preview-image"
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 <button type="submit" className="btn-submit">
                     {id ? "Update" : "Create"}
                 </button>
             </form>
         </div>
-
     );
 };
 export default CategoriesForm;

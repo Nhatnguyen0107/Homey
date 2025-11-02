@@ -13,11 +13,11 @@ export default function PaymentPage() {
     const [cardInfo, setCardInfo] = useState({ name: "", number: "", expiry: "", cvc: "" });
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCardInfo({ ...cardInfo, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!room_id) {
             toast.error("Không tìm thấy thông tin phòng!");

@@ -13,13 +13,41 @@ export const CategoryService = {
     return res.data;
   },
 
-  async create(data: Partial<TAny>): Promise<TAny> {
-    const res = await axios.post<TAny>("/categories", data);
+  async create(data: TAny): Promise<TAny> {
+    const formData = new FormData();
+
+    // Thêm các field thông thường
+    formData.append("name", data.name);
+
+    // Thêm files nếu có
+    if (data.images && Array.isArray(data.images)) {
+      data.images.forEach((file: File) => {
+        formData.append("images", file);
+      });
+    }
+
+    const res = await axios.post("/categories", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return res.data;
   },
 
   async update(id: string, data: Partial<TAny>): Promise<TAny> {
-    const res = await axios.put<TAny>(`/categories/${id}`, data);
+    const formData = new FormData();
+
+    // Thêm các field thông thường
+    formData.append("name", data.name);
+
+    // Thêm files nếu có
+    if (data.images && Array.isArray(data.images)) {
+      data.images.forEach((file: File) => {
+        formData.append("images", file);
+      });
+    }
+
+    const res = await axios.put(`/categories/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return res.data;
   },
 

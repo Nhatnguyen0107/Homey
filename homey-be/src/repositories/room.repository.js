@@ -8,15 +8,25 @@ class RoomRepository {
         this.model = db.Room;
     }
 
-    //  Lấy tất cả phòng (có phân trang)
+    //  Lấy tất cả phòng (có phân trang và search)
     async getAllRooms(req) {
         try {
             const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
             const pageSize = Number(req.query.pageSize) > 0 ? Number(req.query.pageSize) : 6;
+            const search = req.query.search || "";
             const limit = pageSize;
             const offset = (page - 1) * limit;
 
+            // Điều kiện where cho search
+            const whereCondition = search ? {
+                [Op.or]: [
+                    { name: { [Op.like]: `%${search}%` } },
+                    { description: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
+
             const { count, rows } = await this.model.findAndCountAll({
+                where: whereCondition,
                 order: [["createdAt", "DESC"]],
                 limit,
                 offset,

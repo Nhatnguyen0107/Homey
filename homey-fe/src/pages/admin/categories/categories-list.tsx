@@ -18,15 +18,27 @@ const CategoryList: React.FC = () => {
 
   const [page, setPage] = useState(1);
   const [pageSize] = useState(5); // số lượng mỗi trang
+  const [search, setSearch] = useState(""); // từ khóa tìm kiếm
 
+  // Load danh sách khi page thay đổi hoặc lần đầu
   useEffect(() => {
     dispatch(resetStatus());
-    dispatch(getCategoryList({ page, pageSize }));
+    dispatch(getCategoryList({ page, pageSize, search }));
   }, [dispatch, page, pageSize]);
 
-  function addCategory() {
+  // Tìm kiếm với debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1); // reset về trang 1 khi search
+      dispatch(getCategoryList({ page: 1, pageSize, search }));
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search, dispatch, pageSize]);
+
+  const addCategory = () => {
     navigate("/admin/category-form");
-  }
+  };
 
   const editCategory = (id?: string) => {
     if (id) navigate(`/admin/category-form/${id}`);
@@ -38,7 +50,7 @@ const CategoryList: React.FC = () => {
         deleteCategory({
           id,
           cb: () => {
-            dispatch(getCategoryList({ page, pageSize })); // gọi lại danh sách sau khi xóa
+            dispatch(getCategoryList({ page, pageSize, search })); // gọi lại danh sách sau khi xóa
           },
         })
       );
@@ -62,7 +74,12 @@ const CategoryList: React.FC = () => {
         </div>
         <div className="search-box">
           <FaSearch className="search-icon" />
-          <input type="text" placeholder="Search categories..." />
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
 
@@ -78,13 +95,22 @@ const CategoryList: React.FC = () => {
         <tbody>
           {categories.map((cate, index) => (
             <tr key={cate.id}>
-              <td>{(page - 1) * pageSize + index + 1}</td> {/* số thứ tự theo trang */}
+              <td>{(page - 1) * pageSize + index + 1}</td>
               <td>
-                {cate.image_url ? (
+                {cate.image_url?.length ? (
                   <img
-                    src={cate.image_url}
+                    src={
+                      cate.image_url[0].startsWith("http")
+                        ? cate.image_url[0]
+                        : `http://localhost:3000${cate.image_url[0]}`
+                    }
                     alt={cate.name}
-                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
                   />
                 ) : (
                   <span>No image</span>
@@ -92,15 +118,30 @@ const CategoryList: React.FC = () => {
               </td>
               <td>{cate.name}</td>
               <td>
-                <button className="btn-action edit" type="button" onClick={() => editCategory(cate.id)}>
+                <button
+                  className="btn-action edit"
+                  type="button"
+                  onClick={() => editCategory(cate.id)}
+                >
                   <FaEdit /> Edit
                 </button>
-                <button className="btn-action delete" type="button" onClick={() => deleteCate(cate.id)}>
+                <button
+                  className="btn-action delete"
+                  type="button"
+                  onClick={() => deleteCate(cate.id)}
+                >
                   <FaTrash /> Delete
                 </button>
               </td>
             </tr>
           ))}
+          {categories.length === 0 && (
+            <tr>
+              <td colSpan={4} style={{ textAlign: "center" }}>
+                No categories found
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
