@@ -3,6 +3,42 @@ import db from "../database/models/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { getExpiresAtFromToken } from "../helpers/jwt.js";
 
+
+export const addReview = async (req, res) => {
+    try {
+        const { room_id, user_id, rating, comment } = req.body;
+
+        // ✅ Kiểm tra có đặt phòng này không (và đã thanh toán / hoàn tất)
+        const booking = await db.Booking.findOne({
+            where: {
+                user_id,
+                room_id,
+                status: { [Op.in]: ["paid", "completed"] }, // tùy DB bạn dùng
+            },
+        });
+
+        if (!booking) {
+            return res.status(403).json({
+                message: "Bạn chỉ có thể đánh giá khi đã đặt và hoàn thành phòng này!",
+            });
+        }
+
+        // ✅ Tạo review (kèm id)
+        const review = await db.Review.create({
+            id: uuidv4(),
+            room_id,
+            user_id,
+            rating,
+            comment,
+        });
+
+        return res.status(201).json(review);
+    } catch (error) {
+        console.error("❌ Error adding review:", error);
+        res.status(500).json({ message: "Lỗi khi gửi đánh giá!" });
+    }
+};
+
 class ReviewRepository {
     constructor() {
         this.model = db.Review; // Initialize the User model
@@ -121,6 +157,28 @@ class ReviewRepository {
             throw new Error("Error deleting Review: " + error.message);
         }
     }
+
+    async getReviewsByRoom(roomId) {
+        try {
+            const reviews = await db.sequelize.query(
+                `
+            SELECT r.id, r.rating, r.comment, r.createdAt, u.userName
+            FROM reviews r
+            JOIN users u ON u.id = r.user_id
+            WHERE r.room_id = :roomId
+            ORDER BY r.createdAt DESC
+            `,
+                {
+                    replacements: { roomId },
+                    type: QueryTypes.SELECT,
+                }
+            );
+            return reviews;
+        } catch (error) {
+            throw new Error("Error fetching reviews by room: " + error.message);
+        }
+    }
+
 }
 
 export default ReviewRepository;

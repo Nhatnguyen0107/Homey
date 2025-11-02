@@ -43,6 +43,15 @@ class ReviewService {
             throw new Error("Error deleting Reviews: " + error.message);
         }
     }
+
+    async getReviewsByRoom(roomId) {
+        try {
+            return await this.repository.getReviewsByRoom(roomId);
+        } catch (error) {
+            throw new Error("Error fetching reviews by room: " + error.message);
+        }
+    }
+
 }
 
 export default ReviewService;

@@ -1,5 +1,9 @@
 // tailwind.config.js
 module.exports = {
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: {} },
+  plugins: [],
   // ... other Tailwind CSS configurations
   //   daisyui: {
   //     themes: [
@@ -13,6 +17,6 @@ module.exports = {
   //     ],
   //   },
   //   plugins: [require("daisyui")],
-  tailwindcss: {},
-  autoprefixer: {},
+  // tailwindcss: {},
+  // autoprefixer: {},
 };

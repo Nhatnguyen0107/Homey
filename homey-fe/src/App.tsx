@@ -32,6 +32,10 @@ import CategoryRoomsPage from "./pages/CategoryRoomsPage";
 import BookingDetailPage from "./pages/BookingDetailPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import BookingHistory from "./pages/BookingHistory";
+import Hotel from "./pages/Hotel";
+import ActivityPage from "./pages/ActivityPage";
+import ChatWidget from "./components/ChatWidget";
 
 // import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -49,6 +53,7 @@ function App() {
   return (
     <AuthProvider>
       <Header />
+      <ChatWidget />
 
       {/* <ToastContainer position="top-center" autoClose={2000} /> */}
 
@@ -61,6 +66,9 @@ function App() {
         <Route path="/room-types/:id" element={<RoomTypeDetail />} />
         <Route path="/rooms/:id" element={<RoomDetailPage />} />
         <Route path="/booking-detail" element={<BookingDetailPage />} />
+        <Route path="/booking-history" element={<BookingHistory />} />
+        <Route path="/hotels" element={<Hotel />} />
+        <Route path="/activity" element={<ActivityPage />} />
 
         {/* ✅ Thanh toán */}
         <Route path="/payment" element={<PaymentPage />} />

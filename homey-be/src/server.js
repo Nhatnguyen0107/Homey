@@ -14,6 +14,7 @@ import path from "path";
 import paymentRoute from "./routes/payments.route.js";
 import bookingRoute from "./routes/booking.route.js";
 
+
 dotenv.config();
 
 const app = express();

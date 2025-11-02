@@ -14,6 +14,7 @@ import {
 import { IoMdArrowBack } from "react-icons/io";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaStar as StarIcon } from "react-icons/fa";
 
 interface RoomDetail {
     id: string;
@@ -28,7 +29,20 @@ const RoomDetailPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    // Lấy user từ localStorage: hỗ trợ key "me" (đề xuất) hoặc "user" (nếu bạn còn dùng)
+    // ======== STATE ========
+    const [detail, setDetail] = useState<RoomDetail | null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [quantity, setQuantity] = useState(1);
+    const [location, setLocation] = useState("TP. Hồ Chí Minh");
+    const [totalPrice, setTotalPrice] = useState(0);
+    const bookingRef = useRef<HTMLDivElement>(null);
+
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [newComment, setNewComment] = useState("");
+    const [newRating, setNewRating] = useState(5);
+
+    // ======== USER HANDLING ========
     const getStoredUser = () => {
         try {
             const raw = localStorage.getItem("me") || localStorage.getItem("user");
@@ -39,18 +53,8 @@ const RoomDetailPage: React.FC = () => {
         }
     };
 
-    // Lấy user lần đầu khi component mount (không dùng context để tránh sync issues)
     const [user, setUser] = useState<any | null>(getStoredUser());
 
-    const [detail, setDetail] = useState<RoomDetail | null>(null);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
-    const [quantity, setQuantity] = useState(1);
-    const [location, setLocation] = useState("TP. Hồ Chí Minh");
-    const [totalPrice, setTotalPrice] = useState(0);
-    const bookingRef = useRef<HTMLDivElement>(null);
-
-    // Nếu localStorage thay đổi (ví dụ sau login), cập nhật user khi focus lại trang
     useEffect(() => {
         const onFocus = () => {
             setUser(getStoredUser());
@@ -59,25 +63,45 @@ const RoomDetailPage: React.FC = () => {
         return () => window.removeEventListener("focus", onFocus);
     }, []);
 
+    // ======== LOAD ROOM DETAIL ========
     useEffect(() => {
         const fetchRoomDetail = async () => {
             try {
                 const res = await axiosClient.get(`rooms/room-detail/${id}`);
                 const data = res.data.data || res.data;
-                data.images = Array.isArray(data.images) ? data.images : JSON.parse(data.images || "[]");
+                data.images = Array.isArray(data.images)
+                    ? data.images
+                    : JSON.parse(data.images || "[]");
                 setDetail(data);
             } catch (error) {
                 console.error("Lỗi khi tải chi tiết phòng:", error);
             }
         };
-        fetchRoomDetail();
+        if (id) fetchRoomDetail();
     }, [id]);
 
+    // ======== LOAD REVIEWS ========
+    const loadReviews = async () => {
+        try {
+            const res = await axiosClient.get(`reviews/room/${id}`);
+            setReviews(res.data || []);
+        } catch (error) {
+            console.error("Error loading reviews:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (id) loadReviews();
+    }, [id]);
+
+    // ======== CALCULATE TOTAL ========
     useEffect(() => {
         if (startDate && endDate && detail) {
             const diffDays = Math.max(
                 1,
-                Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+                Math.ceil(
+                    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+                )
             );
             setTotalPrice(diffDays * detail.price * quantity);
         } else {
@@ -85,6 +109,7 @@ const RoomDetailPage: React.FC = () => {
         }
     }, [startDate, endDate, quantity, detail]);
 
+    // ======== BOOKING ========
     const scrollToBookingForm = () => {
         bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
@@ -93,7 +118,6 @@ const RoomDetailPage: React.FC = () => {
         scrollToBookingForm();
     };
 
-    // Hàm đặt phòng: kiểm tra user từ localStorage, gửi user_id, start/end ở dạng ISO
     const handleConfirmBooking = () => {
         const storedUser = getStoredUser();
         const currentUser = user || storedUser;
@@ -114,7 +138,6 @@ const RoomDetailPage: React.FC = () => {
             return;
         }
 
-        // Truyền thông tin phòng + ngày + số lượng sang trang chi tiết đặt phòng
         navigate("/booking-detail", {
             state: {
                 room: detail,
@@ -127,8 +150,13 @@ const RoomDetailPage: React.FC = () => {
         });
     };
 
-
-    if (!detail) return <p className="text-center py-10 text-gray-500">Đang tải chi tiết phòng...</p>;
+    // ======== RETURN UI ========
+    if (!detail)
+        return (
+            <p className="text-center py-10 text-gray-500">
+                Đang tải chi tiết phòng...
+            </p>
+        );
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -141,18 +169,24 @@ const RoomDetailPage: React.FC = () => {
                     Quay lại danh mục
                 </button>
 
+                {/* ========== Room Info ========== */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                     <div>
                         <h1 className="text-4xl font-bold text-gray-800 flex items-center">
                             <FaBed className="text-blue-600 mr-3" /> {detail.room_name}
                         </h1>
                         <p className="text-gray-500 mt-1 flex items-center">
-                            <FaMapMarkerAlt className="text-red-500 mr-2" /> Vị trí trung tâm, thuận tiện di chuyển
+                            <FaMapMarkerAlt className="text-red-500 mr-2" /> Vị trí trung tâm,
+                            thuận tiện di chuyển
                         </p>
                     </div>
                     <div className="mt-4 md:mt-0 text-right">
                         <p className="text-xl font-semibold text-blue-600 mb-2">
-                            {Number(detail.price).toLocaleString("vi-VN", { style: "currency", currency: "VND" })} / đêm
+                            {Number(detail.price).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            })}{" "}
+                            / đêm
                         </p>
                         <p className="text-yellow-500 flex justify-end items-center mt-1">
                             <FaStar className="mr-1" /> {detail.rating} / 10
@@ -160,21 +194,31 @@ const RoomDetailPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* ========== Images + Description ========== */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                     <div className="grid grid-cols-2 gap-3">
                         {detail.images.length > 0 ? (
                             detail.images.map((img, i) => (
-                                <img key={i} src={img} alt={`Ảnh ${i + 1}`}
-                                    className="rounded-xl shadow-md hover:scale-105 transition-transform duration-300 object-cover h-48 w-full" />
+                                <img
+                                    key={i}
+                                    src={img}
+                                    alt={`Ảnh ${i + 1}`}
+                                    className="rounded-xl shadow-md hover:scale-105 transition-transform duration-300 object-cover h-48 w-full"
+                                />
                             ))
                         ) : (
-                            <img src="/default-room.jpg" alt="Không có ảnh"
-                                className="rounded-xl shadow-md object-cover h-48 w-full" />
+                            <img
+                                src="/default-room.jpg"
+                                alt="Không có ảnh"
+                                className="rounded-xl shadow-md object-cover h-48 w-full"
+                            />
                         )}
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-                        <p className="text-gray-700 leading-relaxed mb-4">{detail.description}</p>
+                        <p className="text-gray-700 leading-relaxed mb-4">
+                            {detail.description}
+                        </p>
                         <button
                             onClick={handleBooking}
                             className="bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all flex items-center justify-center"
@@ -184,6 +228,7 @@ const RoomDetailPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* ========== Booking Form ========== */}
                 <div ref={bookingRef} className="bg-white rounded-2xl shadow-md p-6 mb-10">
                     <h3 className="text-2xl font-semibold mb-5 text-gray-800 flex items-center">
                         <FaCalendarAlt className="text-blue-500 mr-3" /> Đặt phòng của bạn
@@ -244,7 +289,9 @@ const RoomDetailPage: React.FC = () => {
                     </div>
 
                     <p className="text-gray-700 mb-3">
-                        <strong>Giá mỗi đêm:</strong> {detail.price.toLocaleString("vi-VN")} VND<br />
+                        <strong>Giá mỗi đêm:</strong> {detail.price.toLocaleString("vi-VN")}{" "}
+                        VND
+                        <br />
                         <strong>Tổng tiền:</strong> {totalPrice.toLocaleString("vi-VN")} VND
                     </p>
 
@@ -255,10 +302,102 @@ const RoomDetailPage: React.FC = () => {
                         Tôi sẽ đặt
                     </button>
                 </div>
+
+                {/* ========== Reviews Section ========== */}
+                <div className="bg-white rounded-2xl shadow-md p-6 mb-10">
+                    <h3 className="text-2xl font-semibold mb-5 text-gray-800 flex items-center">
+                        <StarIcon className="text-yellow-500 mr-2" /> Đánh giá từ khách hàng
+                    </h3>
+
+                    {user ? (
+                        <form
+                            onSubmit={async (e) => {
+                                e.preventDefault();
+                                if (!newComment.trim()) return;
+                                try {
+                                    await axiosClient.post("reviews/user", {
+                                        room_id: id,
+                                        user_id: user.id,
+                                        rating: newRating,
+                                        comment: newComment,
+                                    });
+                                    setNewComment("");
+                                    setNewRating(5);
+                                    loadReviews();
+                                } catch (err) {
+                                    console.error("Error submitting review:", err);
+                                    alert("Không thể gửi đánh giá!");
+                                }
+                            }}
+                            className="mb-6 border-b pb-6"
+                        >
+                            <div className="flex items-center mb-3">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                    <StarIcon
+                                        key={s}
+                                        className={`cursor-pointer mr-1 ${s <= newRating ? "text-yellow-500" : "text-gray-300"}`}
+                                        onClick={() => setNewRating(s)}
+                                    />
+                                ))}
+                                <span className="ml-2 text-gray-600">({newRating} sao)</span>
+                            </div>
+                            <textarea
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="Chia sẻ cảm nhận của bạn..."
+                                className="w-full border rounded-md p-3 mb-3"
+                            />
+                            <button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md"
+                            >
+                                Gửi đánh giá
+                            </button>
+                        </form>
+                    ) : (
+                        <p className="text-gray-600 mb-4">
+                            <a href="/login" className="text-blue-600 underline">
+                                Đăng nhập
+                            </a>{" "}
+                            để gửi đánh giá của bạn.
+                        </p>
+                    )}
+
+                    {reviews.length === 0 ? (
+                        <p className="text-gray-500">Chưa có đánh giá nào cho phòng này.</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {reviews.map((rev) => (
+                                <div
+                                    key={rev.id}
+                                    className="border rounded-lg p-4 shadow-sm bg-gray-50"
+                                >
+                                    <div className="flex justify-between items-center mb-1">
+                                        <p className="font-semibold text-gray-800">
+                                            {rev.userName}
+                                        </p>
+                                        <div className="flex">
+                                            {[...Array(rev.rating)].map((_, i) => (
+                                                <StarIcon key={i} className="text-yellow-500" />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <p className="text-gray-700 mb-1">{rev.comment}</p>
+                                    <p className="text-gray-400 text-sm">
+                                        {new Date(rev.createdAt).toLocaleString("vi-VN")}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </main>
+
             <Footer />
         </div>
     );
 };
 
 export default RoomDetailPage;
+
+

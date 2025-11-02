@@ -1,5 +1,5 @@
 import BookingRepository from "../repositories/booking.repository.js";
-
+import db from "../database/models/index.js";
 class BookingService {
     constructor() {
         this.repository = new BookingRepository();
@@ -10,6 +10,27 @@ class BookingService {
             return await this.repository.getAllBookings(req);
         } catch (error) {
             throw new Error("Error fetching bookings: " + error.message);
+        }
+    }
+
+    //  hàm này để hiển thị lịch sử đặt phòng của user
+    async getBookingsByUserId(user_id) {
+        try {
+            return await db.Booking.findAll({
+                where: { user_id },
+                include: [
+                    {
+                        model: db.Room,
+                        as: "room",
+                        attributes: ["id", "name", "price", "image_url"],
+                    },
+
+
+                ],
+                order: [["createdAt", "DESC"]],
+            });
+        } catch (error) {
+            throw new Error("Error fetching user bookings: " + error.message);
         }
     }
     // async getCategoryById(id) {

@@ -32,6 +32,21 @@ class BookingRepository {
         }
     }
 
+    async getBookingsByUserId(user_id) {
+        return await db.Booking.findAll({
+            where: { user_id },
+            include: [
+                {
+                    model: db.Room,
+                    as: "room",
+                    attributes: ["name", "price", "description", "image"],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+    }
+
+
     //   async getUserById(id, includeRefreshToken = false) {
     //     try {
     //       return await (includeRefreshToken
