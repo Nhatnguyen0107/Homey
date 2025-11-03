@@ -14,37 +14,30 @@ class PromotionRepository {
                 page = 1,
                 pageSize = 5,
                 search = "",
-                // sortField = "createdAt",
-                // sortOrder = "DESC",
             } = req.query;
 
             const limit = Math.max(parseInt(pageSize), 1);
             const offset = (Math.max(parseInt(page), 1) - 1) * limit;
 
-            // Đếm tổng số user thỏa điều kiện search
-            const count = await this.model.count({
-                where: {
-                    code: {
-                        [Op.like]: `%${search}%`,
-                    },
-                },
-            });
+            // Điều kiện where cho search
+            const whereCondition = search ? {
+                [Op.or]: [
+                    { code: { [Op.like]: `%${search}%` } },
+                    { discount_type: { [Op.like]: `%${search}%` } },
+                    { status: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
 
-            // Lấy danh sách user
-            const rows = await db.sequelize.query(
-                `
-          SELECT id, code, discount_type, discount_value, start_date, end_date, status, createdAt, updatedAt
-          FROM promotions
-                `,
-                {
-                    bind: {
-                        limit,
-                        offset,
-                        search: `%${search}%`,
-                    },
-                    type: QueryTypes.SELECT,
-                }
-            );
+            // Đếm tổng số promotion thỏa điều kiện search
+            const count = await this.model.count({ where: whereCondition });
+
+            // Lấy danh sách promotion với pagination
+            const rows = await this.model.findAll({
+                where: whereCondition,
+                order: [["createdAt", "DESC"]],
+                limit,
+                offset,
+            });
 
             return {
                 data: rows,

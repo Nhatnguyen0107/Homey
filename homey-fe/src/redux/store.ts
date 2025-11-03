@@ -6,6 +6,8 @@ import roomSlice from "./roomSlice";
 import bookingSlice from "./bookingSlice";
 import promotionSlice from "./promotionSlice";
 import reviewSlice from "./reviewSlice";
+import paymentSlice from "./paymentSlice";
+import dashboardSlice from "./dashboardSlice";
 // import citySlice from "./citySlice";
 
 export const store = configureStore({
@@ -17,6 +19,8 @@ export const store = configureStore({
     booking: bookingSlice,
     promotion: promotionSlice,
     review: reviewSlice,
+    payment: paymentSlice,
+    dashboard: dashboardSlice,
     // city: citySlice,
   },
 });

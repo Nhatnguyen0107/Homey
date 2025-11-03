@@ -41,7 +41,6 @@ const ReviewList: React.FC = () => {
                         <th>Room Name</th>
                         <th>Rating</th>
                         <th>Comment</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,11 +51,6 @@ const ReviewList: React.FC = () => {
                             <td>{review.room_name}</td>   {/* tên room */}
                             <td>{review.rating}</td>
                             <td>{review.comment}</td>
-                            <td className="action-cell">
-                                <button className="btn-action delete">
-                                    <FaTrash /> Delete
-                                </button>
-                            </td>
                         </tr>
                     ))}
                 </tbody>

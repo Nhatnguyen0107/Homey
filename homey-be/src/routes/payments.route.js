@@ -2,8 +2,10 @@ import { Router } from "express";
 import { v4 as uuidv4 } from "uuid";
 import db from "../database/models/index.js";
 import { jwt } from "../middlewares/auth.js";
-
+import PaymentController from "../controllers/payment.controller.js";
 const router = Router();
+
+const controller = new PaymentController();
 
 // ➕ Tạo thanh toán
 router.post("/", jwt(), async (req, res) => {
@@ -50,5 +52,11 @@ router.get("/status/:bookingId", jwt(), async (req, res) => {
         return res.status(500).json({ error: "Lỗi server" });
     }
 });
+
+
+router.get("/", controller.getAllPayments.bind(controller));
+router.get("/:id", controller.getPaymentById.bind(controller));
+router.put("/:id", controller.editPayment.bind(controller));
+router.delete("/:id", controller.deletePayment.bind(controller));
 
 export default router;

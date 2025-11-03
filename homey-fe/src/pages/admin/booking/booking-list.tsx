@@ -90,9 +90,6 @@ export default function BookingList() {
             <div className="data-header">
                 <div className="title-name">
                     <h2>Bookings List</h2>
-                    <button className="btn-add" onClick={addBooking}>
-                        <FaPlus /> Add Booking
-                    </button>
                 </div>
                 <div className="search-box">
                     <FaSearch className="search-icon" />

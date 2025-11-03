@@ -64,6 +64,12 @@ const menu: MenuType = [
     children: [],
   },
   {
+    label: "Quản lý thanh toán",
+    to: "payment-list",
+    icon: <FaClipboardList />, // phiếu/booking
+    children: [],
+  },
+  {
     label: "Cài đặt",
     to: "profile",
     icon: <FaUserCog />, // cài đặt tài khoản

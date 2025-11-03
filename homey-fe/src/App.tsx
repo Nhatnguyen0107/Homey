@@ -22,6 +22,7 @@ import CategoriesList from "./pages/admin/categories/categories-list";
 import CategoriesForm from "./pages/admin/categories/categories-form";
 import UsersForm from "./pages/admin/users/user-form";
 import RoomsForm from "./pages/admin/rooms/room-form";
+import PromotionForm from "./pages/admin/promotions/promotion-form";
 
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
@@ -39,6 +40,7 @@ import ChatWidget from "./components/ChatWidget";
 
 // import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PaymentList from "./pages/admin/payments/payment-list";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -90,12 +92,15 @@ function App() {
             <Route path="promotion-list" element={<PromotionList />} />
             <Route path="review-list" element={<ReviewList />} />
             <Route path="category-list" element={<CategoriesList />} />
+            <Route path="payment-list" element={<PaymentList />} />
             <Route path="category-form" element={<CategoriesForm />} />
             <Route path="category-form/:id" element={<CategoriesForm />} />
             <Route path="user-form" element={<UsersForm />} />
             <Route path="user-form/:id" element={<UsersForm />} />
             <Route path="room-form" element={<RoomsForm />} />
             <Route path="room-form/:id" element={<RoomsForm />} />
+            <Route path="promotion-form" element={<PromotionForm />} />
+            <Route path="promotion-form/:id" element={<PromotionForm />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Route>

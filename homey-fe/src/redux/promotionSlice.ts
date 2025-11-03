@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Promotion, GetAllPromotionParams } from "../types/promotion";
-import type { Pagination, /*TAny*/ } from "../types/common";
+import type { Pagination, TAny } from "../types/common";
 import PromotionService from "../services/promotionService";
 
 type PromotionState = {
@@ -23,11 +23,11 @@ const initialState: PromotionState = {
 };
 
 export const getPromotionList = createAsyncThunk(
-    "promotion/getPromotionList", // type
+    "promotion/getPromotionList",
     async (payload: GetAllPromotionParams, { rejectWithValue }) => {
         try {
             const response = await PromotionService.getAll(payload);
-            return response; // Dữ liệu trả về sẽ nằm ở action.payload
+            return response;
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
@@ -36,67 +36,67 @@ export const getPromotionList = createAsyncThunk(
         }
     }
 );
-// export const updateCategory = createAsyncThunk(
-//     "category/updateCategory", // type
-//     async (payload: TAny, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.update(payload.id, payload.data);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
 
-// export const deleteCategory = createAsyncThunk(
-//     "category/deleteCategory", // type
-//     async ({ id }: TAny, { dispatch, rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.delete(id);
-//             // cb();
-//             dispatch(getCategoryList({}));
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const getPromotionDetail = createAsyncThunk(
+    "promotion/getPromotionDetail",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await PromotionService.getById(id);
+            return response;
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
-// export const getCategoryDetail = createAsyncThunk(
-//     "category/getCategoryDetail", // type
-//     async (id: string, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.getById(id);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const createPromotion = createAsyncThunk(
+    "promotion/createPromotion",
+    async (payload: TAny, { rejectWithValue }) => {
+        try {
+            const response = await PromotionService.create(payload);
+            return response;
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
-// export const createCategory = createAsyncThunk(
-//     "category/createCategory", // type
-//     async (payload: TAny, { rejectWithValue }) => {
-//         try {
-//             const response = await CategoryService.create(payload);
-//             return response; // Dữ liệu trả về sẽ nằm ở action.payload
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError(err)) {
-//                 return rejectWithValue(err.response?.data || "Lỗi không xác định");
-//             }
-//             return rejectWithValue("Lỗi không xác định");
-//         }
-//     }
-// );
+export const updatePromotion = createAsyncThunk(
+    "promotion/updatePromotion",
+    async (payload: TAny, { rejectWithValue }) => {
+        try {
+            const response = await PromotionService.update(payload.id, payload.data);
+            return response;
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
+
+export const deletePromotion = createAsyncThunk(
+    "promotion/deletePromotion",
+    async ({ id }: TAny, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await PromotionService.delete(id);
+            dispatch(getPromotionList({}));
+            return response;
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                return rejectWithValue(err.response?.data || "Lỗi không xác định");
+            }
+            return rejectWithValue("Lỗi không xác định");
+        }
+    }
+);
 
 const promotionSlice = createSlice({
     name: "promotion",
@@ -120,67 +120,67 @@ const promotionSlice = createSlice({
             })
             .addCase(getPromotionList.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload as string; // Lưu lỗi nếu có
+                state.error = action.payload as string;
             });
 
-        // builder
-        //     // getCategoryDetail
-        //     .addCase(getCategoryDetail.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(getCategoryDetail.fulfilled, (state, action) => {
-        //         state.loading = false;
-        //         state.category = action.payload;
-        //     })
-        //     .addCase(getCategoryDetail.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // getPromotionDetail
+            .addCase(getPromotionDetail.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getPromotionDetail.fulfilled, (state, action) => {
+                state.loading = false;
+                state.promotion = action.payload.data;
+            })
+            .addCase(getPromotionDetail.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
 
-        // builder
-        //     // createCategory
-        //     .addCase(createCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(createCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //         state.status = true;
-        //     })
-        //     .addCase(createCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // createPromotion
+            .addCase(createPromotion.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createPromotion.fulfilled, (state) => {
+                state.loading = false;
+                state.status = true;
+            })
+            .addCase(createPromotion.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
 
-        // builder
-        //     // editCategory
-        //     .addCase(updateCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(updateCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //         state.status = true;
-        //     })
-        //     .addCase(updateCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // updatePromotion
+            .addCase(updatePromotion.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updatePromotion.fulfilled, (state) => {
+                state.loading = false;
+                state.status = true;
+            })
+            .addCase(updatePromotion.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
 
-        // builder
-        //     // deleteCategory
-        //     .addCase(deleteCategory.pending, (state) => {
-        //         state.loading = true;
-        //         state.error = null;
-        //     })
-        //     .addCase(deleteCategory.fulfilled, (state) => {
-        //         state.loading = false;
-        //     })
-        //     .addCase(deleteCategory.rejected, (state, action) => {
-        //         state.loading = false;
-        //         state.error = action.payload as string; // Lưu lỗi nếu có
-        //     });
+        builder
+            // deletePromotion
+            .addCase(deletePromotion.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deletePromotion.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(deletePromotion.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
     },
 });
 
