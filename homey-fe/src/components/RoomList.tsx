@@ -1,7 +1,7 @@
+// src/components/RoomList.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../services/axiosClient";
-
 
 interface Category {
     id: string;
@@ -13,25 +13,25 @@ interface Room {
     name: string;
     description: string;
     price: number;
-    image_url: string[]; // Mảng ảnh JSON
+    image_url: string[];
     category?: Category;
 }
 
-const RoomList: React.FC = () => {
+interface RoomListProps {
+    searchTerm?: string; // nhận từ Home
+}
+
+const RoomList: React.FC<RoomListProps> = ({ searchTerm = "" }) => {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRooms = async () => {
             try {
                 const res = await axiosClient.get("/rooms");
-                console.log("Rooms API response:", res);
-
-                // Dữ liệu thật nằm sâu 3 cấp: res.data.data.data
                 const data = res?.data?.data?.data || [];
 
-                // Chuẩn hóa lại field image_url
                 const parsed = data.map((room: any) => ({
                     ...room,
                     image_url: Array.isArray(room.image_url)
@@ -40,7 +40,6 @@ const RoomList: React.FC = () => {
                 }));
 
                 setRooms(parsed);
-                console.log("Parsed rooms:", parsed);
             } catch (err) {
                 console.error("Lỗi tải rooms:", err);
             } finally {
@@ -53,13 +52,25 @@ const RoomList: React.FC = () => {
 
     if (loading) return <p className="text-center py-10">Đang tải danh sách phòng...</p>;
 
+    // 🔍 Lọc theo tên phòng
+    const filteredRooms = rooms.filter((room) =>
+        room.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (searchTerm && filteredRooms.length === 0)
+        return (
+            <p className="text-center py-10 text-red-500 text-lg font-semibold">
+                Không tìm thấy phòng phù hợp với "{searchTerm}"
+            </p>
+        );
+
     return (
         <section className="py-10 bg-gray-50">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold mb-6 text-gray-800">Danh sách phòng</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {rooms.map((room) => (
+                    {filteredRooms.map((room) => (
                         <div
                             key={room.id}
                             onClick={() => navigate(`/rooms/${room.id}`)}

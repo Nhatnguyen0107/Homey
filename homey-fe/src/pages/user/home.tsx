@@ -21,6 +21,7 @@ interface Room {
 const Home: React.FC = () => {
 
   const [/*rooms*/, setRooms] = useState<Room[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -47,7 +48,7 @@ const Home: React.FC = () => {
           <p className="text-gray-600 mb-6">
             Tìm ưu đãi khách sạn, chỗ nghỉ dạng nhà và nhiều hơn nữa...
           </p>
-          <SearchBar />
+          <SearchBar onSearch={setSearchTerm} />
         </section>
 
         {/* Offers */}
@@ -67,7 +68,7 @@ const Home: React.FC = () => {
 
         {/* Rooms (Danh sách phòng) */}
         <div className="container mx-auto pt-2 pb-6 px-6">
-          <RoomList />
+          <RoomList searchTerm={searchTerm} />
         </div>
 
         {/* dịch vụ */}
