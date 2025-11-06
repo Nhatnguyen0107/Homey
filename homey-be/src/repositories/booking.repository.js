@@ -12,20 +12,20 @@ class BookingRepository {
         try {
             const [bookings] = await db.sequelize.query(`
         SELECT 
-          b.id,
-          b.start_date,
-          b.end_date,
-          b.quantity,
-          b.total_price,
-          b.status,
-          b.createdAt,
-          u.userName AS userName,
-          r.name AS roomName
+            b.id,
+            b.start_date,
+            b.end_date,
+            b.quantity,
+            b.total_price,
+            b.status,
+            b.createdAt,
+            u.userName AS userName,
+            r.name AS roomName
         FROM bookings b
-        JOIN users u ON b.user_id = u.id
-        JOIN rooms r ON b.room_id = r.id
+        LEFT JOIN users u ON b.user_id = u.id
+        LEFT JOIN rooms r ON b.room_id = r.id
         ORDER BY b.createdAt DESC
-      `);
+        `);
             return bookings;
         } catch (error) {
             throw new Error("Error fetching bookings: " + error.message);

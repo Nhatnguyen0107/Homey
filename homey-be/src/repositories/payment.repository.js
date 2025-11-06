@@ -19,21 +19,26 @@ class PaymentRepository {
             const limit = Math.max(parseInt(pageSize, 10), 1);
             const offset = (Math.max(parseInt(page, 10), 1) - 1) * limit;
 
-            // Build where condition for search
-            const searchCondition = search ? `
-                AND (u.userName LIKE '%${search}%' OR r.name LIKE '%${search}%' OR p.method LIKE '%${search}%')
-            ` : '';
+            // escape search để tránh SQL injection
+            const searchValue = search ? `%${search}%` : null;
+
+            // Build điều kiện tìm kiếm
+            const searchCondition = searchValue
+                ? `AND (u.userName LIKE ${db.sequelize.escape(searchValue)} 
+                        OR r.name LIKE ${db.sequelize.escape(searchValue)} 
+                        OR p.method LIKE ${db.sequelize.escape(searchValue)})`
+                : "";
 
             // Count total records
             const [countResult] = await db.sequelize.query(`
                 SELECT COUNT(*) as total
                 FROM payments p
-                JOIN bookings b ON p.booking_id = b.id
-                JOIN users u ON b.user_id = u.id
-                JOIN rooms r ON b.room_id = r.id
+                LEFT JOIN bookings b ON p.booking_id = b.id
+                LEFT JOIN users u ON b.user_id = u.id
+                LEFT JOIN rooms r ON b.room_id = r.id
                 WHERE 1=1 ${searchCondition}
             `);
-            const total = countResult[0].total;
+            const total = countResult[0]?.total || 0;
 
             // Get paginated data
             const [payments] = await db.sequelize.query(`
@@ -48,9 +53,9 @@ class PaymentRepository {
                     u.userName AS userName,
                     r.name AS roomName
                 FROM payments p
-                JOIN bookings b ON p.booking_id = b.id
-                JOIN users u ON b.user_id = u.id
-                JOIN rooms r ON b.room_id = r.id
+                LEFT JOIN bookings b ON p.booking_id = b.id
+                LEFT JOIN users u ON b.user_id = u.id
+                LEFT JOIN rooms r ON b.room_id = r.id
                 WHERE 1=1 ${searchCondition}
                 ORDER BY p.${sortField} ${sortOrder}
                 LIMIT ${limit} OFFSET ${offset}
