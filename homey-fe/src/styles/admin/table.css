@@ -1,0 +1,305 @@
+/* Container */
+.data-container {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+}
+
+/* Header: title + button + search */
+.data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.data-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Add button */
+.btn-add {
+    background-color: #4f46e5;
+    color: #fff;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add:hover {
+    background-color: #4338ca;
+}
+
+/* Search box */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: 10px;
+    color: #888;
+    font-size: 14px;
+}
+
+.search-box input {
+    padding: 8px 12px 8px 32px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    width: 260px;
+    transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+/* =============================
+   📊 TABLE STYLE WITH COLUMN SEPARATORS
+============================= */
+
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    /* Quan trọng để hiển thị border dọc */
+    border-spacing: 0;
+    /* Xóa khoảng trống giữa ô */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    /* 🔹 Thêm đường kẻ dọc giữa các cột */
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+    border-right: none;
+    /* Bỏ đường kẻ cuối bảng */
+}
+
+.data-table th {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    background-color: #f9fafb;
+    user-select: none;
+}
+
+.data-table td {
+    font-size: 14px;
+    color: #444;
+}
+
+.data-table tr:hover td {
+    background-color: #f5f5f5;
+}
+
+/* Description cell (nội dung dài) */
+.desc-cell {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Action buttons */
+.action-cell {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.btn-action.edit {
+    color: #3730a3;
+}
+
+.btn-action.edit:hover {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+.btn-action.delete {
+    color: #b91c1c;
+}
+
+.btn-action.delete:hover {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-action:hover {
+    opacity: 0.9;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.page-btn.active {
+    background-color: #4f46e5;
+    color: #fff;
+    border-color: #4f46e5;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.btn-add {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-add:hover {
+    background-color: #43a047;
+}
+
+.title-name {
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+/* Payment status and method badges */
+.status-badge,
+.method-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.paid {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.unpaid {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.method-badge.cash {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.method-badge.credit_card {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.method-badge.momo {
+    background-color: #fce7f3;
+    color: #be185d;
+}
+
+.method-badge.zalo_pay {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+/* Promotion specific badges */
+.code-badge {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+}
+
+.type-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.type-badge.percent {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.type-badge.fixed {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge.active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
